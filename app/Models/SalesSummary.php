@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model
+class SalesSummary extends Model
 {
     use HasFactory;
 
     protected $guarded;
 
-    
+    function sales()
+    {
+        return $this->hasMany(Sales::class, 'summary_id');
+    }
 }

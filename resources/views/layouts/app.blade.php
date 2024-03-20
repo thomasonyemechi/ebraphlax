@@ -11,32 +11,16 @@
     <meta name="author" content="Bitech" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}">
+    {{-- <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}"> --}}
     <!-- App css -->
     <link href="{{ asset('assets/css/bootstrap.min.css ') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/metismenu.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/slick.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/icons.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/fonts/flaticon/font/flaticon.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/fonts/flaticon/flaticon.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Sweet Alert -->
-    <link href="{{ asset('assets/plugins/sweet-alert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css">
-    <!-- DataTables -->
-    <link href="{{ asset('assets/plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
-    <!-- Responsive datatable -->
-    <link href="{{ asset('assets/plugins/datatables/responsive.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
-    <!-- Datepicker  -->
-    <link href="{{ asset('assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}"
-        rel="stylesheet">
-    <!-- Chartist  -->
-    <link rel="stylesheet" href="{{ asset('assets/plugins/chartist/css/chartist.min.css') }}">
-    <!-- Select2  -->
-    <link href="{{ asset('assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- include summernote css/js -->
-    <link rel="stylesheet" href="{{ asset('assets/css/summernote-bs4.css') }}">
-    <!-- Load style form view css -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/toast.min.css') }}">
+
 
     <!-- Custom css  -->
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
@@ -49,7 +33,11 @@
         }
     </style>
 
-
+    <style>
+        .al_bg {
+            background: linear-gradient(to right, #b04300, #ff0000) !important;
+        }
+    </style>
 
 </head>
 
@@ -65,6 +53,8 @@
         @include('layouts.head')
 
         @include('layouts.nav')
+
+
 
         <div class="content-page">
             @yield('page_content')
@@ -83,25 +73,7 @@
         <script src="{{ asset('assets/js/waves.min.js?v=3.5') }}"></script>
         <!-- App js-->
         <script src="{{ asset('assets/js/app.js?v=3.5') }}"></script>
-        <!-- Sweet-Alert  -->
-        <script src="{{ asset('assets/plugins/sweet-alert2/sweetalert2.min.js?v=3.5') }}"></script>
-        <script src="{{ asset('assets/pages/sweet-alert.init.js?v=3.5') }}"></script>
-        <!-- Required datatable js -->
-        <script src="{{ asset('assets/plugins/datatables/jquery.dataTables.min.js?v=3.5') }}"></script>
-        <script src="{{ asset('assets/plugins/datatables/dataTables.bootstrap4.min.js?v=3.5') }}"></script>
-        <!-- Responsive examples -->
-        <script src="{{ asset('assets/plugins/datatables/dataTables.responsive.min.js?v=3.5') }}"></script>
-        <script src="{{ asset('assets/plugins/datatables/responsive.bootstrap4.min.js?v=3.5') }}"></script>
 
-        <script src="{{ asset('assets/plugins/select2/js/select2.min.js?v=3.5') }}"></script>
-        <!-- Datepicker  -->
-        <script src="{{ asset('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js?v=3.5') }}"></script>
-        <!-- Chart  -->
-        <script src="{{ asset('assets/plugins/chartjs/Chart.js?v=3.5') }}"></script>
-        <script src="{{ asset('assets/plugins/chartist/js/chartist.min.js?v=3.5') }}"></script>
-        <script src="{{ asset('assets/plugins/chartist/js/chartist-plugin-tooltip.min.js?v=3.5') }}"></script>
-        <!-- peity JS -->
-        <script src="{{ asset('assets/plugins/peity-chart/jquery.peity.min.js?v=3.5') }}"></script>
         <script src="{{ asset('assets/js/slick.min.js?v=3.5') }}"></script>
         <!-- Vue -->
         <script src="{{ asset('assets/js/app.js') }}"></script>
@@ -109,9 +81,55 @@
 
 
 
-        <script src="{{ asset('assets/js/custom.js?v=3.5') }}"></script>
+        {{-- <script src="{{ asset('assets/js/custom.js?v=3.5') }}"></script> --}}
         <script src="{{ asset('assets/js/custom-dev.js?v=3.5') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/toast.js') }}"></script>
 
+        @if (session('error'))
+            <script>
+                Toastify({
+                    text: "<?= session('error') ?>",
+                    duration: 5000,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #b04300, #ff0000)",
+                    },
+                }).showToast();
+            </script>
+        @endif
+
+        @if (session('success'))
+            <script>
+                Toastify({
+                    text: "<?= session('success') ?>",
+                    duration: 5000,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #01ff01)",
+                    },
+                }).showToast();
+            </script>
+        @endif
+
+
+        <script>
+            $(function() {
+                setTimeout(function() {
+                    $(".refresh").fadeOut(3000);
+                }, 3000);
+
+            })
+        </script>
+
+
+
+        @stack('scripts')
 
 
     </div>

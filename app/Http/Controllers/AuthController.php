@@ -10,6 +10,9 @@ class AuthController extends Controller
 {
     function loginIndex()
     {
+        if(auth()->user()) {
+            return redirect('/control/dashboard');
+        }
         return view('login');
     }
 
@@ -24,6 +27,6 @@ class AuthController extends Controller
         if (!Auth::attempt($val, 1)) {
             return back()->with('error', 'Invalid credentials, please try again');
         }
-        return redirect('/dashboard')->with('success', 'Welcome back ' . auth()->user()->name);
+        return redirect('/control/dashboard')->with('success', 'Welcome back ' . auth()->user()->name);
     }
 }
