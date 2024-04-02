@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-sm-3 offset-3">
                         <div class="d-flex justify-content-end">
-                            <a href="/admin/expense_overview" class="btn btn-primary">Expenses Overview</a>
+                            <a href="/control/expense_overview" class="btn btn-primary">Expenses Overview</a>
                         </div>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                         <div class="card-body">
                             <div class="d-flex mb-3 justify-content-between">
                                 <h4 class="fw-bold card-title">Add Expenses</h4>
-                                <button class="btn btn-secondary py-0 btn-sm" data-bs-toggle="modal"
+                                <button class="btn btn-secondary add_category py-0 btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#add_item">Create Expense Category</button>
                             </div>
                             <form action="/admin/create-expenses" method="post"> @csrf
@@ -64,9 +64,11 @@
                                                     class="required">*</span></label>
 
                                             <select name="" class="form-control" id="">
-                                                <option disabled selected>Suppliers</option>
 
-                                                <option disabled selected>Customers</option>
+                                                @foreach ($all_client as $client)
+                                                    <option value="{{ json_encode($client) }}"> {{ $client['name'] }} |
+                                                        {{ $client['role'] }} </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -175,43 +177,44 @@
                         <div class="col-lg-12 mb-3 mb-3 mt-2">
                             <label class="form-label">Description</label>
                             <textarea name="description" class="form-control" rows="2"></textarea>
+
+                            <div class="d-flex mt-2 justify-content-end">
+                                <button type="submit" class="btn py-2 btn-primary">Save Category</button>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn py-2 btn-primary">Save Category</button>
-                        </div>
+
                     </form>
+                    <div class="card shadow border-1">
+                        <div class="table-responsive mt-3 border-0 overflow-y-hidden">
 
-                    <hr>
-
-                    <div class="table-responsive mt-3 border-0 overflow-y-hidden">
-
-                        <h4 class="fw-bold">Category List</h4>
-                        <table class="table mb-0 text-nowrap">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0">Category </th>
-                                    <th class="border-0">Description</th>
-                                    <th class="border-0"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($categories as $cat)
+                            <table class="table mb-0 text-nowrap">
+                                <thead class="table-light">
                                     <tr>
-                                        <td> {{ $cat->title }} </td>
-                                        <td> {{ $cat->description }} </td>
-                                        <td>
-                                            <div class="d-flex justify-content-end ">
-                                                <a class="text-danger"
-                                                    href="/control/delete_expenses_category/{{ $cat->id }}"> <i
-                                                        class="fa fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
+                                        <th class="border-0">Category </th>
+                                        <th class="border-0">Description</th>
+                                        <th class="border-0"></th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($categories as $cat)
+                                        <tr>
+                                            <td> {{ $cat->title }} </td>
+                                            <td> {{ $cat->description }} </td>
+                                            <td>
+                                                <div class="d-flex justify-content-end ">
+                                                    <a class="text-danger"
+                                                        href="/control/delete_expenses_category/{{ $cat->id }}"> <i
+                                                            class="fa fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
 
                 </div>
             </div>
@@ -221,4 +224,11 @@
 
 
 @push('scripts')
+    <script>
+        $(function() {
+            $('.add_category').on('click', function() {
+                $('#add_category').modal('show')
+            })
+        })
+    </script>
 @endpush

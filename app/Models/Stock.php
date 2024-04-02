@@ -28,7 +28,7 @@ class Stock extends Model
 
     public function client()
     {
-        if($this->action == 'import') {
+        if($this->supplier_id) {
             return $this->belongsTo(Supplier::class, 'supplier_id');
         }else {
             return $this->belongsTo(Customer::class, 'customer_id');

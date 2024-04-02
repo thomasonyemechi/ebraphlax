@@ -20,4 +20,16 @@ class Cstock extends Model
     {
         return $this->belongsTo(Products::class, 'product_id');
     }
+
+
+    
+    public function client()
+    {
+        if($this->action == 'import') {
+            return $this->belongsTo(Supplier::class, 'client_id');
+        }else {
+            return $this->belongsTo(Customer::class, 'client_id');
+        }
+    }
+
 }

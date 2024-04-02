@@ -56,6 +56,11 @@
 
                 <li class="menu-title">Store Management</li>
 
+                <li class="">
+                    <a class="" href="/control/today/{{ auth()->user()->id }}" class="">
+                        <i class="flaticon-bill"></i><span> Today Info </span>
+                    </a>
+                </li>
 
                 @if ($mis->manage_staff)
                     <li class="">
@@ -66,7 +71,24 @@
                 @endif
 
 
+                @if ($mis->manage_stock)
+                    <li class="">
+                        <a class="" href="/control/manage-stock" class="">
+                            <i class="flaticon-bill"></i><span> Stock  </span>
+                        </a>
+                    </li>
+                @endif
+
+
+
                 @if ($mis->cost_analysis)
+                    <li class="">
+                        <a class="" href="/control/manage-stock" class="">
+                            <i class="flaticon-bill"></i><span> Manage Stock </span>
+                        </a>
+                    </li>
+
+
                     <li class="">
                         <a class="" href="/control/pos" class="">
                             <i class="flaticon-bill"></i><span> Cost Analysis </span>
@@ -93,18 +115,46 @@
                                 <a href="/control/expense_overview">Overview </a>
                             </li>
                             <li>
-                                <a href="/control/expense">Manage Expense</a>
+                                <a href="/control/expenses">Manage Expense</a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+
+                
+                @if ($mis->manage_customer)
+                    <li>
+                        <a href="#" class=""><i class="flaticon-new-product"></i><span>
+                                Manage Importers
+                                <span class="float-right menu-arrow">
+                                    <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="10 15 15 20 20 15"></polyline>
+                                        <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                    </svg>
+                                </span>
+                            </span></a>
+                        <ul class="submenu">
+                            <li class=""><a href="/control/suppliers">Add Supplier</a>
+                            </li>
+                            <li class=""><a href="/control/supplier/all">All Suppliers</a>
+                            </li>
+                            <li class=""><a href="/control/suppliers/balance">Suppliers Balance</a>
+                            </li>
+
+                            <li class=""><a href="javascript::">Inactive Supplier </a>
                             </li>
                         </ul>
                     </li>
                 @endif
 
 
-
                 @if ($mis->manage_customer)
                     <li>
                         <a href="#" class=""><i class="flaticon-new-product"></i><span>
-                            Exporters
+                                Exporters
                                 <span class="float-right menu-arrow">
                                     <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -121,6 +171,9 @@
                             <li class=""><a href="/control/customers">Exporter's List </a>
                             </li>
                             <li class=""><a href="/control/customers/balance">Exporters Balance </a>
+                            </li>
+
+                            <li class=""><a href="javascript:;">Inactive Exporters </a>
                             </li>
                         </ul>
                     </li>
@@ -145,40 +198,8 @@
 
 
 
-                @if ($mis->manage_stock)
-                    <li class="">
-                        <a class="" href="/control/manage-stock" class="">
-                            <i class="flaticon-bill"></i><span> Manage Stock </span>
-                        </a>
-                    </li>
-                @endif
 
 
-
-                @if ($mis->manage_customer)
-                    <li>
-                        <a href="#" class=""><i class="flaticon-new-product"></i><span>
-                                Manage Importers
-                                <span class="float-right menu-arrow">
-                                    <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <polyline points="10 15 15 20 20 15"></polyline>
-                                        <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                    </svg>
-                                </span>
-                            </span></a>
-                        <ul class="submenu">
-                            <li class=""><a href="/control/suppliers">Add Supplier</a>
-                            </li>
-                            <li class=""><a href="/control/supplier/all">All Suppliers</a>
-                            </li>
-                            <li class=""><a href="/control/suppliers/balance">Suppliers Balance</a>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
             </ul>
         </div>
         <!-- Sidebar -->

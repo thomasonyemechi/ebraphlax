@@ -93,9 +93,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom py-2">
                                     <span>Balance</span>
-                                    @php
-                                        $balance = $total_capital - $total_supplied;
-                                    @endphp
+                             
                                     <span class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} ">
                                         {{ $balance > 0 ? 'To Supply' : 'owing' }}
                                         <br>
@@ -111,36 +109,6 @@
                                 </div>
                             @endif
 
-                            <div class="d-flex justify-content-between border-bottom py-2">
-                                <span>Net Weight</span>
-                                <span>
-                                </span>
-                            </div>
-                            <div class="d-flex justify-content-between border-bottom py-2">
-                                <span>Total Expense</span>
-                                <span>
-                                </span>
-                            </div>
-                            <div class="d-flex justify-content-between border-bottom py-2">
-                                <span>Biggest Purchase</span>
-                                <span>
-                                    {{ money(2459000) }}
-                                    <br>
-                                    {{ date('Y M D') }}
-                                </span>
-                            </div>
-
-                            <div class="d-flex justify-content-between border-bottom py-2">
-                                <span>Average Price</span>
-                                <span class="fw-bold">
-                                </span>
-                            </div>
-
-                            <div class="d-flex justify-content-between border-bottom py-2">
-                                <span>Restock Summary</span>
-                                <span class="fw-bold">
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -198,42 +166,73 @@
                         <div class="card-body">
                             <div class="d-flex  justify-content-between ">
                                 <h5 class="fw-bold">Ledger</h5>
-                                <a href="/control/supplier/ledger/{{ $supplier->id }}">See Customer Ledger</a>
                             </div>
-                            <table class="table table-sm mt-2 p-0 ">
+                            <table class="table table-bordered mt-2 p-0 ">
                                 <thead>
                                     <tr>
-                                        <th>S/N </th>
-                                        <th>Date </th>
-                                        <th>Commodity</th>
-                                        <th>Bags</th>
-                                        <th>Gross Weight</th>
-                                        <th>Net weight</th>
-                                        <th>Moisture Disc</th>
-                                        <th>Tares </th>
-                                        <th>Price</th>
-                                        <th>Amount</th>
-                                        <th>Expenses</th>
-                                        <th></th>
+                                        <th class="align-middle">Date</th>
+                                        <th class="align-middle">Commodity</th>
+                                        <th class="align-middle">Bags</th>
+
+                                        <th class="align-middle">Gross <br>/wt (kg)</th>
+                                        <th class="align-middle">Tares</th>
+                                        <th class="align-middle">Moisture <br>/dis</th>
+
+                                        <th class="align-middle">Net<br>/wt (kg)</th>
+
+                                        <th class="align-middle">Price (₦)</th>
+                                        <th class="align-middle">Ext Price</th>
+                                        <th class="align-middle">Ammount Paid</th>
+                                        <th class="align-middle">Debit</th>
+                                        <th class="align-middle">Credit </th>
+                                        <th class="align-middle">Balance </th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                     @foreach ($stocks as $stock)
+                                        @php
+                                            $amount_paid = getAmmountPaid($stock->summary_id);
+                                        @endphp
+                                        @if ($stock->action == 'import')
                                         <tr>
-                                            <td> {{$loop->iteration}} </td>
-                                            <td> {{$stock->created_at}} </td>
-                                            <td> {{$stock->product->name ?? ''}} </td>
-                                            <td> {{$stock->bags}} </td>
-                                            <td> {{ number_format($stock->gross_weight)}} </td>
-                                            <td> {{number_format($stock->net_weight)}} </td>
-                                            <td> {{$stock->moisture_discount  ?? 0}} % </td>
-                                            <td> {{($stock->bags * 1.5)}} </td>
-                                            <td> {{money($stock->price)}} </td>
-                                            <td> {{money($stock->total)}} </td>
-                                            <td> </td>
-                                            <td> </td>
+                                            <td> {{ $stock->created_at }} </td>
+                                            <td> {{ $stock->product->name }} Import </td>
+                                            <td> {{ number_format(abs($stock->bags)) }} </td>
+                                            <td> {{ number_format(abs($stock->gross_weight)) }} </td>
+
+                                            <td> {{ abs($stock->bags * 1.5) }} </td>
+                                            <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
+                                            <td> {{ number_format(abs($stock->net_weight)) }} </td>
+                                            <td> {{ money($stock->price) }} </td>
+                                            <td> {{ money($stock->total) }} </td>
+                                            <td> {{ money($stock->amount_paid) }} </td>
+                                            <td> {{ money($stock->current_balance - $stock->total + $stock->amount_paid) }} </td>
+                                            <td></td>
+                                            <td> {{ money($stock->current_balance) }} </td>
+
+
                                         </tr>
+
+                                        @elseif($stock->action == 'capital')
+                                          <tr>
+                                            <td> {{ $stock->created_at }} </td>
+                                            <td> {{$stock->remark ?? 'Capital Given'}}  </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> {{ money($stock->total) }} </td>
+                                            <td>-</td>
+                                            <td> {{ money($stock->total) }} </td>
+                                            <td> {{ money($stock->current_balance + $stock->total) }} </td>
+
+                                        </tr>
+                                        @endif
+                                      
                                     @endforeach
 
                                 </tbody>
@@ -272,6 +271,8 @@
                             <input type="hidden" name="action" value="import">
                             <input type="hidden" name="user_id" value="{{ $supplier->id }}">
 
+                            <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>                            
+                            <textarea name="narration" class="form-control" rows="2"></textarea>
 
                             <div class="d-flex mt-3 justify-content-end">
                                 <button type="submit" class="btn py-2 btn-primary">Add Capital</button>

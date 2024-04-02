@@ -58,7 +58,6 @@ Exporters
 
                     <div class="d-flex  justify-content-between">
                         <button class="btn btn-primary "> Update Profile </button>
-                        <button class="btn btn-info "> View Ledger </button>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -98,16 +97,6 @@ Exporters
                                 </div>
                             @endif
 
-                            <div class="d-flex justify-content-between border-bottom py-2">
-                                <span>Net Weight</span>
-                                <span>
-                                </span>
-                            </div>
-                            <div class="d-flex justify-content-between border-bottom py-2">
-                                <span>Total Expense</span>
-                                <span>
-                                </span>
-                            </div>
                             {{-- <div class="d-flex justify-content-between border-bottom py-2">
                                 <span>Biggest Purchase</span>
                                 <span>
@@ -143,24 +132,26 @@ Exporters
                                     </thead>
                                     <tbody>
 
+
+
                                         @foreach ($capitals as $capital)
-                                            <tr>
-                                                <td>{{ money($capital->amount) }}</td>
-                                                <td>
-                                                    <div class="badge py-1 badge-success">
-                                                        {{ $capital->status }}
-                                                    </div>
-                                                </td>
-                                                <td>{{ $capital->user->name }}</td>
-                                                <td>
-                                                    <a href="/control/delete_capital/{{ $capital->id }}"
-                                                        class="text-danger"
-                                                        onclick="return confirm('Capital will be removed from this account and will be accounted for')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                        <tr>
+                                            <td>{{ money($capital->total) }}</td>
+                                            <td>
+                                                <div class="badge py-1 badge-success">
+                                                    {{ date('j M, Y', strtotime($capital->created_at)) }}
+                                                </div>
+                                            </td>
+                                            <td>{{ $capital->user->name }}</td>
+                                            <td>
+                                                <a href="/control/delete_capital/{{ $capital->id }}"
+                                                    class="text-danger"
+                                                    onclick="return confirm('Capital will be removed from this account and will be accounted for')">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
 
                                     </tbody>
                                 </table>
@@ -171,11 +162,11 @@ Exporters
 
 
                 <div class="col-md-12">
-                    <div class="card">
+                    <div class="card mt-3">
                         <div class="card-body">
                             <div class="d-flex  justify-content-between ">
                                 <h5 class="fw-bold">Ledger</h5>
-                                <a href="/control/customer/ledger/{{ $customer->id }}">See Customer Ledger</a>
+                                {{-- <a href="/control/customer/ledger/{{ $customer->id }}">See Customer Ledger</a> --}}
                             </div>
                             <table class="table table-bordered mt-2 p-0 ">
                                 <thead>
@@ -193,7 +184,9 @@ Exporters
                                         <th class="align-middle">Price (₦)</th>
                                         <th class="align-middle">Ext Price</th>
                                         <th class="align-middle">Ammount Paid</th>
-                                        <th class="align-middle">Credit /Debit</th>
+                                        <th class="align-middle">Debit</th>
+                                        <th class="align-middle">Credit </th>
+                                        <th class="align-middle">Balance </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -202,6 +195,7 @@ Exporters
                                         @php
                                             $amount_paid = getAmmountPaid($stock->summary_id);
                                         @endphp
+                                        @if ($stock->action == 'export')
                                         <tr>
                                             <td> {{ $stock->created_at }} </td>
                                             <td> {{ $stock->product->name }} </td>
@@ -213,11 +207,34 @@ Exporters
                                             <td> {{ number_format(abs($stock->net_weight)) }} </td>
                                             <td> {{ money($stock->price) }} </td>
                                             <td> {{ money($stock->total) }} </td>
-                                            <td> {{ money($amount_paid) }} </td>
-                                            <td> {{ money($stock->current_balance - $stock->total) }} </td>
-                                            <td> {{ money($amount_paid - $stock->total) }} </td>
+                                            <td> {{ money($stock->amount_paid) }} </td>
+                                            <td> {{ money($stock->current_balance - $stock->total + $stock->amount_paid) }} </td>
+                                            <td></td>
+                                            <td> {{ money($stock->current_balance) }} </td>
+
 
                                         </tr>
+
+                                        @elseif($stock->action == 'capital')
+                                          <tr>
+                                            <td> {{ $stock->created_at }} </td>
+                                            <td> {{$stock->remark ?? 'Capital Given'}}  </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                            <td> - </td>
+                                       
+                                            <td> {{ money($stock->total) }} </td>
+                                            <td>-</td>
+                                            <td> {{ money($stock->total) }} </td>
+                                            <td> {{ money($stock->current_balance + $stock->total) }} </td>
+
+                                        </tr>
+                                        @endif
+                                      
                                     @endforeach
 
                                 </tbody>
@@ -262,6 +279,9 @@ Exporters
                             <input type="number" class="form-control" name="amount">
                             <input type="hidden" name="action" value="export">
                             <input type="hidden" name="user_id" value="{{ $customer->id }}">
+
+                            <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>                            
+                            <textarea name="narration" class="form-control" rows="2"></textarea>
 
 
                             <div class="d-flex mt-3 justify-content-end">

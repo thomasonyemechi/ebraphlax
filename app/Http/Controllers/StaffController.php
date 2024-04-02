@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Login;
 use App\Models\Permission;
 use App\Models\SalesSummary;
+use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -165,6 +166,30 @@ class StaffController extends Controller
         }
 
         return back()->with('success', 'Permission has been sucessfly updated');
+    }
+
+
+
+    public function todayInfo(Request $request, $id)
+    {
+        $id = (auth()->user()->role == 'administrator') ? $id : auth()->user()->id;
+
+        $date = ($request->date) ? date('y-m-d' ,strtotime($request->date)) : date('y-m-d');
+
+        $user = User::findorFail($id);
+
+        $my_sales = Stock::where(['user_id' => $id])->whereDate('created_at', '=', $date)->get();
+
+
+        $total_invoice = Stock::where(['user_id' => $id])->whereDate('created_at', '=', $date)->count();
+        $export = Stock::where(['user_id' => $id, 'action' => 'export'])->whereDate('created_at', '=', $date)->count();
+        $total_sales = Stock::where(['user_id' => $id, 'action' => 'export'])->whereDate('created_at', '=', $date)->sum('total');
+        $money_in = Stock::where(['user_id' => $id, 'action' => 'export'])->whereDate('created_at', '=', $date)->sum('amount_paid');
+
+
+        $today_sales = SalesSummary::with(['sales'])->where(['user_id' => $id])->whereDate('created_at', '=', $date)->get();
+
+        return view('control.today_info',compact(['user', 'my_sales', 'date', 'total_invoice', 'export', 'total_sales', 'money_in', 'today_sales']));
     }
 
 }

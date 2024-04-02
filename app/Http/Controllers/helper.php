@@ -33,8 +33,8 @@ function customerCredit($user_id)
 
     // return $first_capital;
     // get total capital used from first datte of first capital assigned
-    $total_received = Stock::where(['customer_id' => $user_id, 'action' => 'export' ,  ['created_at', '>', $first_capital->created_at]])->sum('total');
-    $amount_paid = Stock::where(['customer_id' => $user_id, 'action' => 'export' ,  ['created_at', '>', $first_capital->created_at]])->sum('amount_paid');
+    $total_received = Stock::where(['customer_id' => $user_id, 'action' => 'export' , ])->sum('total');
+    $amount_paid = Stock::where(['customer_id' => $user_id, 'action' => 'export' , ])->sum('amount_paid');
 
     $total_capital = Stock::where(['customer_id' => $user_id, 'action' => 'capital'])->sum('total');
 
@@ -54,11 +54,13 @@ function supplierCredit($supplier_id)
 
     // return $first_capital;
     // get total capital used from first datte of first capital assigned
-    $total_received = Stock::where(['supplier_id' => $supplier_id, 'action' => 'import' ,  ['created_at', '>', $first_capital->created_at]])->sum('total');
+    $total_received = Stock::where(['supplier_id' => $supplier_id, 'action' => 'import'])->sum('total');
+
+    $amount_paid = Stock::where(['supplier_id' => $supplier_id, 'action' => 'import'])->sum('amount_paid');
 
     $total_capital = Stock::where(['supplier_id' => $supplier_id, 'action' => 'capital'])->sum('total');
 
-    return $total_capital - $total_received;
+    return ($total_capital + $amount_paid) - $total_received;
 }
 
 

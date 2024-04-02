@@ -30,7 +30,7 @@
                                 </select>
 
                             </div>
-                            <a href="/admin/add-expenses" class="btn btn-primary">Expenses</a>
+                            <a href="javascript:;" class="btn btn-primary">Expenses</a>
                         </div>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                                     <h2 class="fw-bold mt-0 mb-1">
                                         200
                                     </h2>
-                        a        </div>
+                                </div>
                             </div>
                         </div>
                     </div>

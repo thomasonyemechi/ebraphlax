@@ -34,13 +34,13 @@
 
                     <div class="row">
                         @isset($_GET['customer'])
-                        <div class="col-md-12" >
-                            <div class="alert mb-3 alert-info" >
-                                <h5 class="fw-bold" >These are the search results for  "{{ $_GET['customer'] }}"</h5>
-                                you can search based on customers name, nick name, company, phone number and address
+                            <div class="col-md-12">
+                                <div class="alert mb-3 alert-info">
+                                    <h5 class="fw-bold">These are the search results for "{{ $_GET['customer'] }}"</h5>
+                                    you can search based on customers name, nick name, company, phone number and address
+                                </div>
                             </div>
-                        </div>
-                    @endisset
+                        @endisset
 
 
                         @foreach ($customers as $customer)
@@ -63,6 +63,7 @@
                                             </div>
                                         </div>
                                         <div class=" d-flex justify-content-center text-white  mb-2 mt-0">
+                                            <span class="badge bg-warning mr-2 light">EB_EXP_{{ $customer->id }}</span>
                                             <span class="badge bg-success mr-2 light">{{ $customer->phone }}</span>
                                             <span
                                                 class="badge bg-danger light">{{ date('j M, Y', strtotime($customer->created_at)) }}</span>

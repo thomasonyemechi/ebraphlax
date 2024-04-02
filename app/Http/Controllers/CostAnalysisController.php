@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cstock;
+use App\Models\Expenses;
 use App\Models\Products;
 use App\Models\Restock;
+use App\Models\Sales;
+use App\Models\SalesSummary;
 use App\Models\Stock;
 use App\Models\Supplier;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,6 +30,8 @@ class CostAnalysisController extends Controller
     }
 
 
+
+
     function generalStockLedgerIndex($product_id)
     {
         $product = Products::findorfail($product_id);
@@ -37,6 +43,11 @@ class CostAnalysisController extends Controller
         $weight_balance = $this->productWeight($product->id);
         return view('control.general_stock_legder', compact(['product', 'stocks', 'bag_balance', 'weight_balance', 'total_stock', 'total_in']));
     }
+
+
+
+
+
 
 
 
@@ -105,6 +116,224 @@ class CostAnalysisController extends Controller
     {
         Cstock::where('id', $id)->delete();
         return back()->with('success', 'Stock has been sucessfuly deleted');
+    }
+
+
+
+    function calculateNetWeight($gross_weight, $discount, $rate, $tares, $type = 1) {
+        if ($type == 2) {
+            $net_weight = ($gross_weight / $rate) * 1000;
+            return $net_weight;
+        } else {
+            return ($gross_weight - $discount) - $tares;
+        }
+    }
+
+
+
+    public function makeSales(Request $request)
+    {
+        $customer_id = $request->customer_id;
+        $summary = SalesSummary::create([
+            'warehouse_id' => 1,
+            'user_id' => auth()->user()->id,
+            'customer_id' => $customer_id,
+            'total' => $request->total,
+            'amount_paid' => $request->advance ?? 0,
+            'lorry_number' => $request->lorry_number,
+            'sales_price' => $request->sales_price
+        ]);
+
+
+    
+
+  
+        $total_net_weight = 0;
+
+
+        foreach ($request->items as $item) {
+            $price = $item['price'];
+            $intial_stock = Stock::find($item['stock_id']);
+            $product_id = $intial_stock->product_id;
+            $bags = $item['bags'];
+            $net_weight = $item['net_weight'];
+            $item_total = $net_weight * $price;
+            $total_net_weight += $net_weight;
+
+
+
+
+            $stock = Stock::create([
+                'product_id' => $product_id,
+                'warehouse_id' => 1,
+                'net_weight' => $net_weight,
+                'customer_id' => $request->customer_id,
+                'summary_id' => $summary->id,
+                'price' => $price,
+                'bags' => $bags,
+                'total' => $item_total,
+                'action' => 'export',
+                'user_id' => auth()->user()->id,
+                'amount_paid' => $request->advance ?? 0,
+                'current_balance' => customerCredit($request->customer_id),
+                'remark' => $item['stock_id']
+            ]);
+    
+            $stock->update([
+                'bag_balance' => $this->productBags($request->product_id),
+                'weight_balance' => $this->productWeight($request->product_id),
+            ]);
+
+
+            $bags_out = $intial_stock->bags_out;
+            $weight_out = $intial_stock->weight_out;
+            $intial_stock->update([
+                'bags_out' => ($bags_out + $bags),
+                'weight_out' => ($weight_out + $net_weight)
+            ]);    
+        }
+
+
+
+        if ($request->expenses) {
+            foreach ($request->expenses as $expense) {
+                $stock = Stock::create([
+                    'remark' => $expense['title'],
+                    'total' => $expense['amount'],
+                    'customer_id' => $request->customer_id,
+                    'action' => 'expenses',
+                    'user_id' => auth()->user()->id,
+                ]);
+            }
+        }
+
+
+        return response([
+            'message' => $total_net_weight . ' (kg) has been exported',
+            'status' => true
+        ]);
+    }
+
+
+
+    function addStockExpense($expenses, $summary_id, $client, $action)
+    {
+        if ($expenses) {
+            foreach ($expenses as $expense) {
+                Expenses::create([
+                    'category_id' => 1,
+                    'client_id' => $client['id'],
+                    'user_type' => $client['user_type'],
+                    'summary_id' => $summary_id,
+                    'amount' => $expense['amount'],
+                    'remark' => $expense['title'],
+                    'added_by' => auth()->user()->id,
+                    'type' => $action,
+                ]);
+            }
+        }
+        return;
+    }
+
+
+
+
+    function stockStock()
+    {
+        $products = Products::orderby('name', 'asc')->get();
+        foreach($products as $product) {
+            $product->stock_weight = $this->stockWeight($product->id);
+            $product->stock_bag = $this->stockBags($product->id);
+        }
+
+        $suppliers = Supplier::orderby('name','asc')->get(['id', 'name', 'nick_name', 'phone']);
+        $customers = Customer::orderby('name','asc')->get(['id', 'name', 'nick_name', 'phone']);
+        $stocks = Cstock::orderby('id', 'desc')->paginate(100);
+        return view('control.manage_stock_2', compact(['products', 'stocks', 'suppliers', 'customers']));   
+    }
+
+
+
+    function addToStockeStoreKeeper(Request $request)
+    {
+
+        Validator::make($request->all(), [
+            'action' => 'required|string', 
+            'product_id' => 'required|exists:products,id',
+            'bags' => 'required|integer', 
+            'weight' => 'required'
+        ])->validate();
+
+        $client_id = 0;
+
+        if($request->action == 'import') {
+            Validator::make($request->all(), [
+                'supplier_id' => 'required|exists:suppliers,id',
+            ])->validate();
+
+            $client_id = $request->supplier_id;
+        }else {
+            Validator::make($request->all(), [
+                'customer_id' => 'required|exists:customers,id',
+            ])->validate(); 
+            
+            $client_id = $request->customer_id;
+        }
+
+        $bags = $request->bags; $weight = $request->weight;
+
+        if($request->action == 'export'){
+            $bags = -$bags; $weight = -($weight);
+        }
+
+        $stock = Cstock::create([
+            'warehouse_id' => 1,
+            'product_id' => $request->product_id,
+            'client_id' => $client_id,
+            'action' => $request->action, 
+            'bags' => $bags,
+            'weight' => $weight,
+            'status' => 1,
+            'user_id' => auth()->user()->id
+        ]);
+
+        $stock->update([
+            'bag_balance' => $this->stockBags($request->product_id), 
+            'weight_balance' => $this->stockWeight($request->product_id)
+        ]);
+        return back()->with(['success', 'Stock has been recorded']);
+    }
+
+
+    
+
+    function generalStockLedgerIndex2($product_id)
+    {
+        $product = Products::findorfail($product_id);
+        $stocks = Cstock::where(['product_id' => $product_id])->orderby('id', 'desc')->paginate(100);
+
+        $total_stock = Cstock::where(['product_id' => $product_id])->count();
+        $total_in = Cstock::where(['product_id' => $product_id, ['bags', '>', 0 ]])->count();
+        $bag_balance = $this->StockBags($product->id);
+        $weight_balance = $this->StockWeight($product->id);
+        return view('control.manage_stock_ledger', compact(['product', 'stocks', 'bag_balance', 'weight_balance', 'total_stock', 'total_in']));
+    }
+
+
+
+
+
+        
+    function stockBags($product_id)
+    {
+        $total_bags = Cstock::where(['product_id' => $product_id])->sum('bags');
+        return $total_bags;
+    }
+
+    function stockWeight($product_id)
+    {
+        $total_bags = Cstock::where(['product_id' => $product_id])->sum('weight');
+        return $total_bags;
     }
 
 }

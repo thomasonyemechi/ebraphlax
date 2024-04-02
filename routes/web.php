@@ -57,7 +57,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     Route::get('/pos', [StockController::class, 'posIndex']);
     Route::post('/import_stock', [StockController::class, 'restockProduct']);
-    Route::post('/make_export', [StockController::class, 'makeSales']);
+    Route::post('/make_export', [CostAnalysisController::class, 'makeSales']);
 
     Route::get('/staffs', [StaffController::class, 'createStaffIndex']);
     Route::post('/add_staff', [StaffController::class, 'createStaff']);
@@ -67,6 +67,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     Route::get('/expense_overview', [ExpenseController::class, 'expensesIndex']);
     Route::get('/expenses', [ExpenseController::class, 'addIndex']);
+    Route::post('/create-expenses-category', [ExpenseController::class, 'addExpensesCategory']);
 
     Route::get('/suppliers', [SupplierController::class, 'allSupplierIndex']);
     Route::get('/supplier/all', [SupplierController::class, 'supplierListIndex']);
@@ -99,6 +100,12 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/delete-bag/{id}', [JuteController::class, 'deleteBag']);
 
 
+    Route::get('/stock', [CostAnalysisController::class, 'stockStock']);
+    Route::post('/add_store_stock', [CostAnalysisController::class, 'addToStockeStoreKeeper']);
+    Route::get('/stock/{id}', [CostAnalysisController::class, 'generalStockLedgerIndex2']);
+
+
+
     Route::get('/manage-stock', [CostAnalysisController::class, 'coostanalysisIndex']);
     Route::post('/add-stocks', [CostAnalysisController::class, 'addStocks']);
     Route::get('/delete-stock/{id}', [CostAnalysisController::class, 'deleteStock']);
@@ -107,6 +114,9 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     Route::get('/manage-permission', [StaffController::class, 'managePermissionIndex']);
     Route::post('/update-permission', [StaffController::class, 'updatePermission']);
+
+
+    Route::get('/today/{id}', [StaffController::class, 'todayInfo']);
 });
 
 

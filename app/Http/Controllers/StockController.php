@@ -21,8 +21,11 @@ class StockController extends Controller
 
     function posIndex(Request $request)
     {
-        if (!$request->trno) {
-            return redirect('/control/pos?trno=' . rand(1111111, 999999999999));
+      
+
+
+        if (!$request->product || !$request->trno) {
+            return redirect('/control/pos?trno=' . rand(1111111, 999999999999).'&&product=1');
         }
 
 
@@ -31,7 +34,7 @@ class StockController extends Controller
         // $customers = Cus::get(['id', 'name', 'nick_name', 'company_name']);
 
 
-        $available_stock = Stock::where(['action' => 'import', 'product_id' => 1, ['bags', '>', 'bags_out']])->limit(100)->get();
+        $available_stock = Stock::whereColumn('bags', '>', 'bags_out')->where(['action' => 'import', 'product_id' => $request->product,])->orderby('id', 'desc')->limit(100)->get();
         return view('control.new_pos', compact(['customers', 'available_stock']));
     }
 
@@ -251,4 +254,87 @@ class StockController extends Controller
             'status' => true
         ]);
     }
+
+
+
+
+    // public function makeSales(Request $request)
+    // {
+    //     $customer_id = $request->customer_id;
+    //     $summary = SalesSummary::create([
+    //         'warehouse_id' => 1,
+    //         'user_id' => auth()->user()->id,
+    //         'customer_id' => $customer_id,
+    //         'total' => 0,
+    //         'amount_paid' => $request->advance ?? 0,
+    //         'lorry_number' => $request->lorry_number
+    //     ]);
+
+    //     $cart_total = 0;
+
+
+
+
+
+    //     $client = [
+    //         'id' => $customer_id,
+    //         'user_type' => 'normal'
+    //     ];
+
+    //     $this->addStockExpense($request->expenses, $summary->id, $client, $request->action);
+
+    //     $total_net_weight = 0;
+
+
+    //         foreach ($request->items as $item) {
+    //             $price = $item['price'];
+    //             $item_id = $item['id'];
+    //             $gross_weight = $item['gross_weight'];
+    //             $moisture_discount = $item['moisture_discount'];
+    //             $bags = $item['bags'];
+    //             $net_weight = $this->calculatePrice($item['gross_weight'], $moisture_discount, $bags, $item['type']);
+    //             $item_total = $net_weight * $price;
+    //             $total_net_weight += $net_weight;
+    //             $cart_total += $item_total;
+
+
+    //             $res = Sales::create([
+    //                 'summary_id' => $summary->id,
+    //                 'product_id' => $item_id,
+    //                 'net_weight' => $net_weight,
+    //                 'gross_weight' => $gross_weight,
+    //                 'bags' => $bags,
+    //                 'price' => $price,
+    //                 'moisture_discount' => $moisture_discount
+    //             ]);
+
+
+    //             $last_stock = Stock::create([
+    //                 'product_id' => $item_id,
+    //                 'warehouse_id' => 1,
+    //                 'net_weight' => -$net_weight,
+    //                 'gross_weight' => -$gross_weight,
+    //                 'customer_id' => $customer_id,
+    //                 'supplier_id' => 0,
+    //                 'summary_id' => $res->id,
+    //                 'price' => $price,
+    //                 'bags' => -$bags,
+    //                 'total' => $item_total,
+    //                 'action' => 'export',
+    //                 'user_id' => auth()->user()->id,
+    //                 'current_balance' => customerCredit($customer_id)
+    //             ]);
+    //         }
+        
+
+    //     $summary->update([
+    //         'total' => $cart_total,
+    //     ]);
+
+    //     return response([
+    //         'message' => $total_net_weight . ' (kg) has been exported',
+    //         'sales_id' => $summary->id,
+    //         'status' => true
+    //     ]);
+    // }
 }

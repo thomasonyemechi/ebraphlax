@@ -23,6 +23,33 @@
 
             <div class="row">
 
+
+                {{-- <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Total Credit</span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                200
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Total Credit</span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                200
+                            </h2>
+                        </div>
+                    </div>
+                </div> --}}
+
                 <div class="col-md-12">
                     <div class="card shadow">
 

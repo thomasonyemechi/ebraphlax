@@ -21,7 +21,7 @@
             <!-- sync-->
             <li class="dropdown notification-list list-inline-item d-md-inline-block">
                 <a class="btn btn-outline-primary ic-pos-button-header"
-                    href="#">
+                    href="/control/pos">
                     <i class="mdi mdi-cart-outline"></i> Acct
                 </a>
             </li>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\JuteBag;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Nette\Utils\Validators;
@@ -14,7 +16,23 @@ class JuteController extends Controller
     function juteIndex()
     {
         $bags = JuteBag::orderby('id', 'desc')->paginate(50);
-        return view('control.jutebags', compact(['bags']));
+        
+        $clients = Customer::get(['id', 'name', 'nick_name', 'company_name'])->toArray();
+        $suppliers = Supplier::get(['id',  'name', 'nick_name', 'company_name'])->toArray();
+
+
+
+        foreach($clients as $index => $client) {
+            $clients[$index]['role'] = 'customer';
+        }
+
+        foreach($suppliers as $index => $supplier) {
+            $suppliers[$index]['role'] = 'supplier';
+        }
+
+        $all_client = array_merge($clients, $suppliers);
+
+            return view('control.jutebags', compact(['bags', 'all_client']));
     }
 
 
@@ -28,7 +46,6 @@ class JuteController extends Controller
     function addJuteBags(Request $request)
     {
         Validator::make($request->all(), [
-            'name' => 'required|string|min:3',
             'action' => 'required|string|min:3',
             'bags' => 'required|integer'
         ])->validate();
@@ -39,8 +56,15 @@ class JuteController extends Controller
             $amount = abs($amount);
         }
 
+
+        $client = json_decode($request->name);
+
+
+        // return $client->id;
+
         $jute = JuteBag::create([
-            'name' => $request->name,
+            'client_id' => $client->id,
+            'client_type' => $client->role,
             'action' => $request->action,
             'amount' => $amount,
             'remark' => $request->remark,

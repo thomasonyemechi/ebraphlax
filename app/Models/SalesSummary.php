@@ -13,6 +13,12 @@ class SalesSummary extends Model
 
     function sales()
     {
-        return $this->hasMany(Sales::class, 'summary_id');
+        return $this->hasMany(Stock::class, 'summary_id')->where('action', 'export');
+    }
+
+
+    function client()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }

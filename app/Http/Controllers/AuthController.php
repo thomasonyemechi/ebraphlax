@@ -29,4 +29,12 @@ class AuthController extends Controller
         }
         return redirect('/control/dashboard')->with('success', 'Welcome back ' . auth()->user()->name);
     }
+
+
+    function logOut()
+    {
+        Auth::logout('user');
+
+        return redirect('/login')->with('success', 'Your session has ended, enter you credential to start a new one'); 
+    }
 }

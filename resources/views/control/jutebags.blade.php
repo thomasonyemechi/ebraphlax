@@ -36,8 +36,14 @@
                                     <div class="col-xl-6">
                                         <div class="mb-3">
                                             <label class="form-label ">Client Name<span class="required">*</span></label>
-                                            <input type="text" name="name" value="{{ old('name') }}"
-                                                class="form-control" placeholder="Please enter client name here">
+
+
+                                            <select id="" name="name" class="form-control">
+                                                @foreach ($all_client as $client)
+                                                    <option value="{{ json_encode($client) }}">{{ $client['name'] }} |
+                                                        {{ $client['nick_name'] }} | {{ $client['role'] }} </option>
+                                                @endforeach
+                                            </select>
                                             @error('name')
                                                 <i class="text-danger small"> {{ $message }} </i>
                                             @enderror
@@ -93,6 +99,65 @@
                     </div>
 
 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card shadow mt-3 border-2 ">
+                                <div class="card-body  ">
+                                    <div>
+                                        <span class="fs-6 text-uppercase small fw-semi-bold">Jute Bags In</span>
+                                    </div>
+                                    <h2 class="fw-bold mt-0 text-info mb-1">
+                                        {{ number_format(abs(App\Models\Jutebag::where(['action' => 'return'])->orwhere('action', 'purchased')->sum('amount'))) }}
+                                    </h2>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card shadow mt-3 border-2 ">
+                                <div class="card-body">
+                                    <div>
+                                        <span class="fs-6 text-uppercase small fw-semi-bold">Jute Bags Out</span>
+                                    </div>
+                                    <h2 class="fw-bold text-warning mt-0 mb-1">
+                                        {{ number_format(abs(App\Models\Jutebag::where(['action' => 'advance'])->orwhere('action', 'store use')->sum('amount'))) }}
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <div class="card shadow mt-3 border-2 ">
+                                <div class="card-body">
+                                    <div>
+                                        <span class="fs-6 text-uppercase small fw-semi-bold">Bag Balance</span>
+                                    </div>
+                                    @php
+                                        $balance =
+                                            abs(
+                                                App\Models\Jutebag::where(['action' => 'return'])
+                                                    ->orwhere('action', 'purchased')
+                                                    ->sum('amount'),
+                                            ) -
+                                            abs(
+                                                App\Models\Jutebag::where(['action' => 'advance'])
+                                                    ->orwhere('action', 'store use')
+                                                    ->sum('amount'),
+                                            );
+                                    @endphp
+
+                                    <h2 class="fw-bold {{ ($balance > 0)  ? 'text-success' : 'text-danger' }} mt-0 mb-1">
+
+                                        {{  number_format(abs($balance)) }}
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="card shadow">
                         <!-- Card header -->
                         <div class="card-header fw-bold border-bottom-0 fw-bold">
@@ -120,7 +185,10 @@
                                             <td class="align-middle">{{ date('j F Y', strtotime($bag->created_at)) }}
                                             </td>
                                             <td class="align-middle">
-                                                {{ $bag->name }}
+                                                <a href="/control/jute_ledger?id={{ $bag->client_id }}&&type={{ $bag->client_type }}"
+                                                    class="fw-bold">
+                                                    {{ $bag->client->name }} ({{ $bag->client_type }})
+                                                </a>
                                             </td>
                                             <td class="align-middle">
                                                 {{ $bag->action }}
@@ -154,10 +222,15 @@
                                                 {{ $bag->user->name }}
                                             </td>
                                             <td class="align-middle ">
-                                                <a href="/control/delete-bag/{{ $bag->id }}"
-                                                    onclick="return confirm('This transaction will be deleted')"
-                                                    class="mr-2 btn-danger shadow text-white px-2"> <i
-                                                        class="fa fa-trash"></i> </a>
+
+                                                @if (auth()->user()->id == $bag->added_by)
+                                                    <a href="/control/delete-bag/{{ $bag->id }}"
+                                                        onclick="return confirm('This transaction will be deleted')"
+                                                        class="mr-2 btn-danger shadow text-white px-2"> <i
+                                                            class="fa fa-trash"></i> </a>
+                                                @endif
+
+
                                             </td>
                                         </tr>
                                     @endforeach

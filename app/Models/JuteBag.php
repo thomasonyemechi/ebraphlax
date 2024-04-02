@@ -16,4 +16,16 @@ class JuteBag extends Model
     {
         return $this->belongsTo(User::class, 'added_by');
     }
+
+
+
+    public function client()
+    {
+        if($this->client_type == 'supplier') {
+            return $this->belongsTo(Supplier::class, 'client_id');
+        }else {
+            return $this->belongsTo(Customer::class, 'client_id');
+        }
+    }
+
 }

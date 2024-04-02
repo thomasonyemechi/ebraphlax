@@ -41,7 +41,12 @@ class SupplierController extends Controller
         $total_capital = Stock::where(['supplier_id' => $supplier->id, 'action' => 'capital'])->sum('total');
         $capitals = Stock::where(['supplier_id' => $supplier->id, 'action' => 'capital'])->orderby('id', 'desc')->limit(5)->get();
         $total_supplied = Stock::where(['supplier_id' => $supplier->id, 'action' => 'import'])->sum('total');
-        return view('control.supplier', compact(['supplier', 'capitals', 'total_capital', 'total_supplied', 'stocks']));
+
+        $total_paid =  Stock::where(['supplier_id' => $supplier->id, 'action' => 'import'])->sum('amount_paid');
+
+
+        $balance = $total_capital - $total_supplied + $total_paid;
+        return view('control.supplier', compact(['supplier', 'capitals', 'total_capital', 'total_supplied', 'stocks', 'balance']));
     }
 
 
@@ -51,7 +56,6 @@ class SupplierController extends Controller
             'name' => 'string|required',
             'company_name' => 'string',
             'nick_name' => 'string|required',
-            'email' => 'email|required',
             'phone' => 'required|unique:suppliers,phone',
             'address' => 'string'
         ])->validate();
@@ -76,6 +80,8 @@ class SupplierController extends Controller
         foreach($suppliers as $cus) {
             $cus->account_summary = $this->calculateSupply($cus->id);
         }
+
+        
         return view('control.supplier_balance', compact(['suppliers']));
     }
 
@@ -86,7 +92,7 @@ class SupplierController extends Controller
         $total_paid = Stock::where(['supplier_id' => $customer_id,  'action' => 'import'])->sum('amount_paid');
         $stocks = Stock::where(['supplier_id' => $customer_id])->get();
 
-        $total_capital = Stock::where(['supplier_id' => $customer_id, 'action' => 'capital'])->sum('amount');
+        $total_capital = Stock::where(['supplier_id' => $customer_id, 'action' => 'capital'])->sum('total');
         $total_net_weight = 0;
         foreach($stocks as $stocks) {
             $total_net_weight += $stocks->sum('net_weight');

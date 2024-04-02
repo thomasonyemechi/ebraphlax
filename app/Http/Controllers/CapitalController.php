@@ -13,14 +13,15 @@ class CapitalController extends Controller
     {
         Validator::make($request->all(), [
             'user_id' => 'required|integer',
-            'amount' => 'required|integer'
+            'amount' => 'required|integer',
+            'narration' => 'required|string'
         ])->validate();
 
        $capital = Stock::create([
             'user_id' => auth()->user()->id,
             'total' => $request->amount,
             'action' => 'capital',
-            'remark' => $request->action.' capital',
+            'remark' => $request->narration,
         ]);
 
 

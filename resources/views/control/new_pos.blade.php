@@ -57,7 +57,16 @@
                         Please always confirm you action and select the name of Customer you want export to
                     </div>
 
-                    <div class="card mt-z  all_content ">
+
+                    <div class="d-flex mb-3  justify-content-start">
+                        @foreach (\App\Models\Products::get() as $pro)
+                            <a href="/control/pos?trno={{ $_GET['trno'] }}&product={{ $pro->id }}"
+                                class="btn shadow {{ $_GET['product'] == $pro->id ? 'btn-info' : ' btn-secondary' }} mr-2">{{ $pro->name }}
+                            </a>
+                        @endforeach
+                    </div>
+
+                    <div class="card mt-z  all_content " style="display: none">
                         <div class="card-body p-3 ">
 
                             <div class="table-responsive">
@@ -80,6 +89,16 @@
                                     </thead>
                                     <tbody class="cart_list">
 
+                                        @if (count($available_stock) == 0)
+                                            <tr>
+                                                <td colspan="12">
+                                                    <div class="alert alert-warning mt-2 mb-2">
+                                                        The is no product in stock
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+
                                         @foreach ($available_stock as $stock)
                                             <tr class="row_{{ $stock->id }}">
                                                 <td>
@@ -99,8 +118,8 @@
                                                 <td><input type="number" class="bags form-control px-2 me-2 py-0 p-0"
                                                         min="1" max="{{ $stock->bags - $stock->bags_out }}"
                                                         step="any" name="bags_{{ $stock->id }}"
-                                                        value="{{ $stock->bags }}" data-index="{{ $stock->id }}"
-                                                        style="width:60px"></td>
+                                                        value="{{ $stock->bags - $stock->bags_out }}"
+                                                        data-index="{{ $stock->id }}" style="width:60px"></td>
                                                 <td><input type="number"
                                                         class="gross_weight form-control px-2 me-2 py-0 p-0" min="1"
                                                         max="{{ $stock->gross_weight }}"
@@ -122,13 +141,14 @@
                                                         data-index="{{ $stock->id }}" style="width:100px">
                                                 </td>
                                                 <td><input type="number" class="net_weight form-control px-2 me-2 py-0 p-0"
-                                                        min="1" max="{{ $stock->net_weight }}" step="any"
-                                                        value="{{ $stock->net_weight }}" data-index="{{ $stock->id }}"
+                                                        min="1" max="{{ $stock->net_weight - $stock->weight_out }}"
+                                                        step="any" value="{{ $stock->net_weight - $stock->weight_out }}"
+                                                        data-index="{{ $stock->id }}"
                                                         name="net_weight_{{ $stock->id }}" style="width:100px"></td>
                                                 <td><input type="number" class="cart_price form-control px-2 me-2 py-0 p-0"
                                                         name="price_{{ $stock->id }}" min="1"
-                                                        value="{{ $stock->price }}" readonly
-                                                        data-index="{{ $stock->id }}" style="width:80px">
+                                                        value="{{ $stock->price }}" data-index="{{ $stock->id }}"
+                                                        style="width:80px">
                                                 </td>
                                                 <td>
                                                     <span class="item_total_{{ $stock->id }}">
@@ -355,90 +375,114 @@
 
 @push('scripts')
     <script>
-        $(function() {
+        $(document).ready(function() {
 
-            function calculateNetWeight(gross_weight, discount, rate, tares, type = 1) {
+            $('.all_content').show()
 
-                if (type == 2) {
-                    net_weight = (gross_weight / rate) * 1000;
-                    console.log(net_weight);
-                    return net_weight;
-                } else {
-                    console.log('fucker');
-                    console.log(gross_weight, tares);
-                    return (gross_weight - discount) - tares
-                }
-            }
+            $(function() {
 
+                function calculateNetWeight(gross_weight, discount, rate, tares, type = 1) {
 
-
-            const money_format = (num) => {
-                var numb = new Intl.NumberFormat();
-                return '₦ ' + numb.format(num);
-            }
-
-
-
-            trno = `<?= $_GET['trno'] ?>`;
-
-            function getItems() {
-                items = (localStorage.getItem(trno) == null) ? [] : JSON.parse(localStorage.getItem(trno));
-                return items;
-            }
-
-            function setItem(trno, items) {
-                localStorage.setItem(trno, JSON.stringify(items));
-            }
-
-
-            // function calculateGain()
-            // {
-
-            // }
-
-
-
-            function dototals() {
-
-                inputs = $('.open_boot')
-
-                total_net_weight = total_price = 0
-
-                inputs.map(input => {
-                    input = inputs[input]
-                    if (input.checked) {
-
-
-                        indexx = $(input).data('index');
-
-                        row = $(`.row_${indexx}`)
-
-                        net_weight = parseInt(row.find(`input[name="net_weight_${indexx}"]`).val())
-
-                        total_net_weight += net_weight;
-                        total_price += parseInt(row.find(`input[name="price_${indexx}"]`).val()) *
-                            net_weight
+                    if (type == 2) {
+                        net_weight = (gross_weight / rate) * 1000;
+                        console.log(net_weight);
+                        return net_weight;
+                    } else {
+                        console.log('fucker');
+                        console.log(gross_weight, tares);
+                        return (gross_weight - discount) - tares
                     }
-                });
+                }
 
 
-                $('.total_price').html(money_format(total_price))
-                $('.cart_total').html(money_format(total_price))
-                $('.total_net_weight').html(money_format(total_net_weight))
-                $('.average_amount').html(money_format(total_price / total_net_weight))
-                $('#advance').attr('data-total', total_price)
-                
+
+                const money_format = (num) => {
+                    var numb = new Intl.NumberFormat();
+                    return '₦ ' + numb.format(num);
+                }
 
 
-                expenses = (localStorage.getItem(`expenses_${trno}`) == null) ? [] : JSON.parse(localStorage
-                    .getItem(`expenses_${trno}`));
-                console.log(expenses);
-                total_expenses = 0;
-                expense_body = $('#expense_body')
-                expense_body.html(``);
-                expenses.map((expense, index) => {
-                    total_expenses += parseInt(expense.amount);
-                    expense_body.append(`
+
+                trno = `<?= $_GET['trno'] ?>`;
+
+                function getItems() {
+                    items = (localStorage.getItem(trno) == null) ? [] : JSON.parse(localStorage.getItem(
+                        trno));
+                    return items;
+                }
+
+                function setItem(trno, items) {
+                    localStorage.setItem(trno, JSON.stringify(items));
+                }
+
+
+                // function calculateGain()
+                // {
+
+                // }
+
+
+
+
+
+
+                function dototals() {
+
+                    inputs = $('.open_boot')
+
+                    total_net_weight = total_price = 0
+
+                    cart = [];
+
+                    inputs.map(input => {
+                        input = inputs[input]
+                        if (input.checked) {
+
+
+                            indexx = $(input).data('index');
+
+                            row = $(`.row_${indexx}`)
+
+                            net_weight = parseInt(row.find(`input[name="net_weight_${indexx}"]`)
+                                .val())
+
+                            total_net_weight += net_weight;
+                            total_price += parseInt(row.find(`input[name="price_${indexx}"]`)
+                            .val()) *
+                                net_weight
+
+                            arr = {
+                                stock_id: indexx,
+                                bags: parseInt(row.find(`input[name="bags_${indexx}"]`).val()),
+                                price: parseInt(row.find(`input[name="price_${indexx}"]`)
+                                .val()),
+                                net_weight: parseInt(row.find(
+                                    `input[name="net_weight_${indexx}"]`).val()),
+                            }
+                            cart.push(arr);
+                        }
+                    });
+
+                    localStorage.setItem(trno, JSON.stringify(cart));
+
+                    $('.total_price').html(money_format(total_price))
+                    $('.cart_total').html(money_format(total_price))
+                    $('.total_net_weight').html(money_format(total_net_weight))
+                    $('.average_amount').html(money_format(total_price / total_net_weight))
+                    $('#advance').attr('data-total', total_price)
+
+
+
+                    expenses = (localStorage.getItem(`expenses_${trno}`) == null) ? [] : JSON.parse(
+                        localStorage
+                        .getItem(`expenses_${trno}`));
+                    console.log(expenses);
+                    total_expenses = 0;
+                    expense_body = $('#expense_body')
+                    expense_body.html(``);
+                    expenses.map((expense, index) => {
+                        total_expenses += parseInt(expense.amount);
+                        expense_body.append(`
                         <tr>
                             <td>${expense.title}</td>
                             <td>${money_format(expense.amount)}</td>
@@ -452,209 +496,314 @@
                         </tr>
                     
                     `)
+                    })
+
+                    $('.total_expense').html(money_format(total_expenses))
+
+                    $('.total_net_weight').attr('data-net_weight', total_net_weight)
+                    $('.total_net_weight').attr('data-expenses', total_expenses)
+
+
+                    average_cost_price = (total_price + total_expenses) / total_net_weight
+
+
+
+
+                    $('.average_cost_price').html(money_format(average_cost_price.toFixed(2)));
+
+
+
+                    return;
+                }
+
+
+                function makeDisplay(index) {
+
+
+
+                    product = $(`input[name="product_${index}"]`).val()
+                    product = JSON.parse(product)
+                    console.log(product);
+
+
+                    bags = $(`input[name="bags_${index}"]`).val();
+                    gross_weight = $(`input[name="gross_weight_${index}"]`).val();
+                    rate = $(`input[name="rate_${index}"]`).val();
+                    discount = $(`input[name="moisture_discount_${index}"]`).val()
+
+                    // net_weight = $('input[name="net_weight"]');
+
+                    tares = $(`input[name="tares_${index}"]`);
+                    tares_kg = tares.val();
+
+                    price = $(`input[name="price_${index}"]`).val();
+
+                    net_kg = calculateNetWeight(gross_weight, parseInt(discount), rate, tares_kg, product
+                        .type)
+                    console.log(net_kg, 'net_kg');
+                    $(`input[name="net_weight_${index}"]`).val(net_kg.toFixed(1));
+
+                    defd = $(`span[class="item_total_${index}"]`);
+
+                    total = (net_kg * price)
+                    defd.html(money_format(total))
+
+                    dototals();
+                }
+
+
+                function changeNetWeight(index) {
+
+                    price = $(`input[name="price_${index}"]`).val();
+                    net_kg = $(`input[name="net_weight_${index}"]`).val();
+                    defd = $(`span[class="item_total_${index}"]`);
+                    total = (net_kg * price)
+                    defd.html(money_format(total))
+
+                    dototals()
+                }
+
+
+                $('body').on('keyup', '#advance', function() {
+                    total = $(this).data('total');
+                    adv = $(this).val()
+                    console.log(total);
+                    balance = (total - parseInt(adv));
+                    balance = isNaN(balance) ? total : balance;
+                    $('.balance').val(money_format(balance))
                 })
 
-                $('.total_expense').html(money_format(total_expenses))
 
-                $('.total_net_weight').attr('data-net_weight', total_net_weight)
-                $('.total_net_weight').attr('data-expenses', total_expenses)
-
-
-                average_cost_price = (total_price + total_expenses) / total_net_weight
-
+                $('body').on('keyup', '.sales_price', function() {
+                    sales_perkg = parseInt($(this).val());
+                    cost_price = $('#advance').data('total');
+                    net_weight = $('.total_net_weight').data('net_weight')
+                    expenses = $('.total_net_weight').data('expenses')
 
 
+                    total_sales_price = (net_weight * sales_perkg)
 
-                $('.average_cost_price').html(money_format(average_cost_price.toFixed(2)));
+                    $('.total_sales_price').html(`${money_format(total_sales_price ?? 0)}`)
+
+                    total_gain = total_sales_price - cost_price - expenses
+
+                    gain = $('.total_gain');
+
+                    gain.html(`${ money_format(total_gain) }`)
+
+                    if (total_gain > 0) {
+                        gain.removeClass('text-danger')
+                        gain.addClass('text-success')
+                    } else {
+                        gain.removeClass('text-success')
+                        gain.addClass('text-danger')
+                    }
+
+
+                })
 
 
 
-                return;
-            }
+
+                $('.bags').on('change', function() {
+                    index = $(this).data('index');
+                    console.log(index);
+                    makeDisplay(index);
+                })
+
+                $('.net_weight').on('change', function() {
+                    index = $(this).data('index');
+                    changeNetWeight(index);
+                })
+
+                $('.tares').on('change', function() {
+                    index = $(this).data('index');
+                    makeDisplay(index);
+                })
+
+                $('.moisture_discount').on('change', function() {
+                    index = $(this).data('index');
+                    makeDisplay(index);
+                })
+
+                $('.price').on('change', function() {
+                    index = $(this).data('index');
+                    makeDisplay(index);
+                })
 
 
-            function makeDisplay(index) {
+
+                $('input[type="number"]').attr('disabled', 'disabled')
+                $('.expense_amount').removeAttr('disabled')
+                $('.ammount_paid').removeAttr('disabled')
+                $('.sales_price').removeAttr('disabled')
+
+                $('body').on('click', '.open_boot', function() {
+                    index = $(this).data('index');
+                    console.log(index);
+                    single_row = $(`.row_${index}`)
+
+                    check_box = single_row.find(`input[name="stock_${index}"]`);
+                    console.log(check_box.val());
+
+                    if (check_box.val() == 'on') {
+                        check_box.val('off');
+                        single_row.find(`input[type="number"]`).removeAttr('disabled');
+
+                    } else {
+                        check_box.val('on');
+                        single_row.find(`input[type="number"]`).attr('disabled', 'disabled');
+                    }
+
+                    dototals();
+                })
+
+
+                $('body').on('click', '.add_expense', function(e) {
+                    e.preventDefault();
+                    expense_title = $('.expense_title');
+                    expense_amount = $('.expense_amount');
+                    if (!expense_title.val() || !expense_amount.val()) {
+                        alert('All expense field are required');
+                        return
+                    }
+                    expenses = (localStorage.getItem(`expenses_${trno}`) == null) ? [] : JSON.parse(
+                        localStorage
+                        .getItem(`expenses_${trno}`));
+
+
+                    arr = {
+                        uuid: Math.floor(Math.random() * 1000),
+                        title: expense_title.val(),
+                        amount: expense_amount.val(),
+                    }
+                    expenses.push(arr);
+                    $('.expense_title').val(``);
+                    $('.expense_amount').val(``);
+                    localStorage.setItem(`expenses_${trno}`, JSON.stringify(expenses));
+
+                    dototals();
+                })
+
+
+                $('body').on('click', '.remove_expense', function() {
+                    uuid = $(this).data('uuid');
+                    expenses = (localStorage.getItem(`expenses_${trno}`) == null) ? [] : JSON.parse(
+                        localStorage
+                        .getItem(`expenses_${trno}`));
+                    const index = expenses.findIndex(object => {
+                        return object.uuid == uuid;
+                    });
+                    expenses.splice(index, 1);
+                    setItem(`expenses_${trno}`, expenses);
+                    dototals()
+                })
 
 
 
-                product = $(`input[name="product_${index}"]`).val()
-                product = JSON.parse(product)
-                console.log(product);
+
+                function checMeJusOut(btn, print = "") {
+                    action = $('#action').val();
+                    advance = $('#advance').val();
+                    lorry_number = $('#lorry_number').val() ?? '';
+
+                    user = $('#customer').val();
+
+                    if (lorry_number == '' || !lorry_number) {
+                        alert('Lorry number is required whan exporting goods');
+                        return;
+                    }
+
+                    if (!user) {
+                        alert('Please select the customer you are exporting to');
+                        return;
+                    }
 
 
-                bags = $(`input[name="bags_${index}"]`).val();
-                gross_weight = $(`input[name="gross_weight_${index}"]`).val();
-                rate = $(`input[name="rate_${index}"]`).val();
-                discount = $(`input[name="moisture_discount_${index}"]`).val()
+                    all_items = getItems();
 
-                // net_weight = $('input[name="net_weight"]');
+                    if (all_items.length <= 0) {
+                        alert('You have not added any product');
+                        return;
+                    }
 
-                tares = $(`input[name="tares_${index}"]`);
-                tares_kg = tares.val();
+                    console.log(all_items);
 
-                price = $(`input[name="price_${index}"]`).val();
+                    end_point = '/control/make_export'
+                    btn_html = btn.html();
 
-                net_kg = calculateNetWeight(gross_weight, parseInt(discount), rate, tares_kg, product.type)
-                console.log(net_kg, 'net_kg');
-                $(`input[name="net_weight_${index}"]`).val(net_kg.toFixed(1));
+                    total = $('#advance').data('total');
 
-                defd = $(`span[class="item_total_${index}"]`);
 
-                total = (net_kg * price)
-                defd.html(money_format(total))
+                    $.ajax({
+                        method: 'post',
+                        url: end_point,
+                        data: {
+                            '_token': `{{ csrf_token() }}`,
+                            items: all_items,
+                            expenses: (localStorage.getItem(`expenses_${trno}`) == null) ? [] : JSON
+                                .parse(localStorage
+                                    .getItem(`expenses_${trno}`)),
+                            customer_id: user,
+                            sales_id: trno,
+                            advance: advance,
+                            action: action,
+                            lorry_number: lorry_number,
+                            sales_price: $('.sales_price').val(),
+                            total
+                        },
+                        beforeSend: () => {
+                            btn.html(`
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saaving this consigment ...  
+                    `)
+                        }
+                    }).done(function(res) {
+
+
+
+                        localStorage.removeItem(trno)
+                        localStorage.removeItem(`expenses_${trno}`)
+
+
+                        console.log(res);
+
+                        Toastify({
+                            text: `${res.message}`,
+                            className: "bg-info",
+                            style: {
+                                background: "linear-gradient(to right, #00b09b, #96c93d)",
+                            }
+                        }).showToast();
+
+                        btn.html(`${btn_html}`);
+                        // $('.all_content').hide();
+
+                        setTimeout(() => {
+                            location.reload();
+                        }, 3000);
+
+
+                    }).fail(function(res) {
+                        console.log(res);
+                        btn.html(`${btn_html}`)
+
+                    })
+                }
+
+
+
+                $('.checkout').on('click', function(e) {
+                    e.preventDefault();
+                    console.log(trno);
+                    btn = $(this)
+                    checMeJusOut(btn);
+                })
+
+
+
 
                 dototals();
-            }
-
-
-            function changeNetWeight(index) {
-
-                price = $(`input[name="price_${index}"]`).val();
-                net_kg = $(`input[name="net_weight_${index}"]`).val();
-                defd = $(`span[class="item_total_${index}"]`);
-                total = (net_kg * price)
-                defd.html(money_format(total))
-
-                dototals()
-            }
-
-
-            $('body').on('keyup', '#advance', function() {
-                total = $(this).data('total');
-                adv = $(this).val()
-                console.log(total);
-                balance = (total - parseInt(adv));
-                balance = isNaN(balance) ? total : balance;
-                $('.balance').val(money_format(balance))
             })
-
-
-            $('body').on('keyup', '.sales_price', function() {
-                sales_perkg = parseInt($(this).val());
-                cost_price = $('#advance').data('total');
-                net_weight =  $('.total_net_weight').data('net_weight')
-                expenses =  $('.total_net_weight').data('expenses')
-
-
-                total_sales_price = (net_weight * sales_perkg)
-
-                $('.total_sales_price').html(`${money_format(total_sales_price ?? 0)}`)
-
-                total_gain = total_sales_price - cost_price - expenses
-
-                gain =   $('.total_gain');
-
-                gain.html(`${ money_format(total_gain) }`)
-
-                if(total_gain > 0) {
-                    gain.removeClass('text-danger')
-                    gain.addClass('text-success')
-                }else {
-                    gain.removeClass('text-success')
-                    gain.addClass('text-danger')
-                }
-
-         
-            })
-
-
-
-
-            $('.bags').on('change', function() {
-                index = $(this).data('index');
-                console.log(index);
-                makeDisplay(index);
-            })
-
-            $('.net_weight').on('change', function() {
-                index = $(this).data('index');
-                changeNetWeight(index);
-            })
-
-            $('.tares').on('change', function() {
-                index = $(this).data('index');
-                makeDisplay(index);
-            })
-
-            $('.moisture_discount').on('change', function() {
-                index = $(this).data('index');
-                makeDisplay(index);
-            })
-
-            $('.price').on('change', function() {
-                index = $(this).data('index');
-                makeDisplay(index);
-            })
-
-
-
-            $('input[type="number"]').attr('disabled', 'disabled')
-            $('.expense_amount').removeAttr('disabled')
-            $('.ammount_paid').removeAttr('disabled')
-            $('.sales_price').removeAttr('disabled')
-
-            $('body').on('click', '.open_boot', function() {
-                index = $(this).data('index');
-                console.log(index);
-                single_row = $(`.row_${index}`)
-
-                check_box = single_row.find(`input[name="stock_${index}"]`);
-                console.log(check_box.val());
-
-                if (check_box.val() == 'on') {
-                    check_box.val('off');
-                    single_row.find(`input[type="number"]`).removeAttr('disabled');
-
-                } else {
-                    check_box.val('on');
-                    single_row.find(`input[type="number"]`).attr('disabled', 'disabled');
-                }
-
-                dototals();
-            })
-
-
-            $('body').on('click', '.add_expense', function(e) {
-                e.preventDefault();
-                expense_title = $('.expense_title');
-                expense_amount = $('.expense_amount');
-                if (!expense_title.val() || !expense_amount.val()) {
-                    alert('All expense field are required');
-                    return
-                }
-                expenses = (localStorage.getItem(`expenses_${trno}`) == null) ? [] : JSON.parse(localStorage
-                    .getItem(`expenses_${trno}`));
-
-
-                arr = {
-                    uuid: Math.floor(Math.random() * 1000),
-                    title: expense_title.val(),
-                    amount: expense_amount.val(),
-                }
-                expenses.push(arr);
-                $('.expense_title').val(``);
-                $('.expense_amount').val(``);
-                localStorage.setItem(`expenses_${trno}`, JSON.stringify(expenses));
-
-                dototals();
-            })
-
-
-            $('body').on('click', '.remove_expense', function() {
-                uuid = $(this).data('uuid');
-                expenses = (localStorage.getItem(`expenses_${trno}`) == null) ? [] : JSON.parse(localStorage
-                    .getItem(`expenses_${trno}`));
-                const index = expenses.findIndex(object => {
-                    return object.uuid == uuid;
-                });
-                expenses.splice(index, 1);
-                setItem(`expenses_${trno}`, expenses);
-                dototals()
-            })
-
-
-
-            dototals();
-        })
+        });
     </script>
 @endpush

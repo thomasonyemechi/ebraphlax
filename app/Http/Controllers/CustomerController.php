@@ -18,7 +18,6 @@ class CustomerController extends Controller
             'name' => 'string|required',
             'company_name' => 'string', 
             'nick_name' => 'string|required', 
-            'email' => 'email|required', 
             'phone' => 'required|unique:customers,phone', 
             'address' => 'string'
         ])->validate();
@@ -47,8 +46,8 @@ class CustomerController extends Controller
     function customerListIndex(Request $request)
     {
         if ($request->customer) {
-            $customers = Customer::where('name', 'like', "%$request->customer%")->orwhere('nick_name', 'like', "%$request->customer%")
-                ->orwhere('company_name', 'like', "%$request->customer%")->orwhere('phone', 'like', "%$request->customer%")->orwhere('address', 'like', "%$request->customer%")->orderby('name', 'asc')->paginate(21);
+            $customers = Customer::where('id', 'like', "%$request->customer%")->orwhere('name', 'like', "%$request->customer%")->orwhere('nick_name', 'like', "%$request->customer%")
+                ->orwhere('company_name', 'like', "%$request->customer%")->orwhere('phone', 'like', "%$request->customer%")->orwhere('address', 'like', "%$request->customer%")->orderby('id', 'asc')->paginate(21);
         } else {
             $customers = Customer::orderby('id', 'desc')->paginate(27);
         }
@@ -61,16 +60,14 @@ class CustomerController extends Controller
     {
         $customer = Customer::findorfail($customer_id);
 
+        $stocks = Stock::where(['customer_id' => $customer->id])->orderby('id', 'desc')->paginate(50);
 
-        $customer = Customer::findorfail($customer_id);
+        // $stocks->groupBy('summary_id');
 
-        $stocks = Stock::where(['customer_id' => $customer->id, 'action' => 'export'])->orderby('id', 'desc')->paginate(50);
-
-        $total_capital = Capital::where(['user_id' => $customer->id, 'type' => 'export'])->sum('amount');
-        $capitals = Capital::where(['user_id' => $customer->id, 'type' => 'export'])->orderby('id', 'desc')->limit(5)->get();
+        $total_capital = Stock::where(['customer_id' => $customer->id, 'action' => 'capital'])->sum('total');
+        $capitals = Stock::where(['customer_id' => $customer->id, 'action' => 'capital'])->orderby('id', 'desc')->limit(5)->get();
         $total_supplied = Stock::where(['customer_id' => $customer->id, 'action' => 'export'])->sum('total');
-        
-        ;
+
         return view('control.customer', compact(['customer', 'capitals', 'total_capital', 'total_supplied', 'stocks']));
     }
 

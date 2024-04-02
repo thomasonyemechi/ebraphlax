@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\ExpenseCategory;
 use App\Models\Expenses;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,14 +22,34 @@ class ExpenseController extends Controller
     {
         $categories = ExpenseCategory::all();
         $expenses = Expenses::with(['category', 'user'])->orderby('id', 'desc')->paginate(25);
-        return view('control.expense', compact(['categories', 'expenses']) );
+
+
+
+        $clients = Customer::get(['id', 'name', 'nick_name', 'company_name'])->toArray();
+        $suppliers = Supplier::get(['id',  'name', 'nick_name', 'company_name'])->toArray();
+
+
+
+        foreach($clients as $index => $client) {
+            $clients[$index]['role'] = 'customer';
+        }
+
+        foreach($suppliers as $index => $supplier) {
+            $suppliers[$index]['role'] = 'supplier';
+        }
+
+        $all_client = array_merge($clients, $suppliers);
+
+
+
+        return view('control.expense', compact(['categories', 'expenses', 'all_client']) );
     }
 
 
     function addExpensesCategory(Request $request)
     {
         Validator::make($request->all(), [
-            'category_name' => 'required|string|min:3|unique:expenses_categories,title',
+            'category_name' => 'required|string|min:3|unique:expense_categories,title',
             'description' => 'string'
         ])->validate();
 
@@ -43,7 +65,7 @@ class ExpenseController extends Controller
     function createExpense(Request $request)
     {
         Validator::make($request->all(), [
-            'category_id' => 'required|exists:expenses_categories,id',
+            'category_id' => 'required|exists:expense_categories,id',
             'amount' => 'required|integer',
             'remark' => 'string'
         ])->validate();
