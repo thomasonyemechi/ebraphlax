@@ -181,10 +181,11 @@
                                         <th class="align-middle">Net<br>/wt (kg)</th>
 
                                         <th class="align-middle">Price (₦)</th>
-                                        <th class="align-middle">Ext Price</th>
-                                        <th class="align-middle">Ammount Paid</th>
-                                        <th class="align-middle">Debit</th>
+                                        {{-- <th class="align-middle">Ext Price</th>
+                                        <th class="align-middle">Ammount Paid</th> --}}
                                         <th class="align-middle">Credit </th>
+
+                                        <th class="align-middle">Debit</th>
                                         <th class="align-middle">Balance </th>
                                     </tr>
                                 </thead>
@@ -205,8 +206,6 @@
                                             <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
                                             <td> {{ number_format(abs($stock->net_weight)) }} </td>
                                             <td> {{ money($stock->price) }} </td>
-                                            <td> {{ money($stock->total) }} </td>
-                                            <td> {{ money($stock->amount_paid) }} </td>
                                             <td> {{ money($stock->current_balance - $stock->total + $stock->amount_paid) }} </td>
                                             <td></td>
                                             <td> {{ money($stock->current_balance) }} </td>
@@ -223,9 +222,7 @@
                                             <td> - </td>
                                             <td> - </td>
                                             <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> {{ money($stock->total) }} </td>
+                                            <td>-</td>
                                             <td>-</td>
                                             <td> {{ money($stock->total) }} </td>
                                             <td> {{ money($stock->current_balance + $stock->total) }} </td>

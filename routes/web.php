@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\JuteController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\SupplierController;
@@ -40,6 +41,7 @@ Route::get('/', function () {
 
 Route::get('/search', [StockController::class, 'searchItem']);
 Route::get('/faker_user', [TestController::class, 'fakerExport']);
+Route::get('/sendd', [Controller::class, 'seeeeend']);
 Route::get('/getcredit/{id}', function ($id) {
     return supplierCredit($id);
 } );
@@ -117,6 +119,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
 
     Route::get('/today/{id}', [StaffController::class, 'todayInfo']);
+    Route::get('/daily_report', [ReportController::class, 'DailyReport']);
 });
 
 

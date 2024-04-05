@@ -25,14 +25,6 @@ function itemQty($id)
 
 function customerCredit($user_id)
 {
-    $first_capital = Stock::where(['customer_id' => $user_id, 'action' => 'capital'])->first();
-
-    if(!$first_capital){
-        return 0;
-    }
-
-    // return $first_capital;
-    // get total capital used from first datte of first capital assigned
     $total_received = Stock::where(['customer_id' => $user_id, 'action' => 'export' , ])->sum('total');
     $amount_paid = Stock::where(['customer_id' => $user_id, 'action' => 'export' , ])->sum('amount_paid');
 
@@ -46,14 +38,6 @@ function customerCredit($user_id)
 
 function supplierCredit($supplier_id)
 {
-    $first_capital = Stock::where(['supplier_id' => $supplier_id, 'action' => 'capital'])->first();
-
-    if(!$first_capital){
-        return 0;
-    }
-
-    // return $first_capital;
-    // get total capital used from first datte of first capital assigned
     $total_received = Stock::where(['supplier_id' => $supplier_id, 'action' => 'import'])->sum('total');
 
     $amount_paid = Stock::where(['supplier_id' => $supplier_id, 'action' => 'import'])->sum('amount_paid');

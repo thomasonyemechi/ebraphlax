@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('page_title')
-    Today Sales
+    Daily Report
 @endsection
 
 @section('page_content')
@@ -11,10 +11,10 @@
             <div class="page-title-box">
                 <div class="row align-items-center">
                     <div class="col-sm-6">
-                        <h4 class="page-title">Sales Info</h4>
+                        <h4 class="page-title">Daily Report</h4>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#" class="ic-javascriptVoid">Control</a></li>
-                            <li class="breadcrumb-item active">Sales Info</li>
+                            <li class="breadcrumb-item active">Daily Report</li>
                         </ol>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                         <div class="card-body">
                             <form action="">
                                 <div class="form-group">
-                                    <label for="">Select Date</label>
+                                    <label for="">Select Day</label>
                                     <input type="date" name="date" class="form-control" onchange="submit()">
                                 </div>
                             </form>
@@ -43,7 +43,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div>
-                                <span class="fs-6 text-uppercase small fw-semi-bold">Stock</span>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Transactions</span>
                             </div>
                             <h2 class="fw-bold mt-0 mb-1">
                                 {{ $total_invoice }}
@@ -59,7 +59,7 @@
                                 <span class="fs-6 text-uppercase small fw-semi-bold">Export</span>
                             </div>
                             <h2 class="fw-bold mt-0 mb-1">
-                                {{ $export }}
+                                {{ $exports }}
                             </h2>
                         </div>
                     </div>
@@ -92,6 +92,110 @@
                 </div>
 
 
+
+
+
+
+                <div class="col-md-3">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold"> Capital Given </span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                {{ money($capital_given) }}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold"> Capital Received </span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                {{ money($capital_received) }}
+
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div class="d-flex  justify-content-between " style="width: 100%">
+                                <span class="fs-6 text-uppercase small fw-semi-bold"> Bags In </span>
+                                <span class="fs-6 text-uppercase small fw-semi-bold"> Bags Out </span>
+                            </div>
+                            <div class="d-flex  justify-content-between ">
+                                <h2 class="fw-bold mt-0 mb-1">
+                                    {{ number_format($bags_in) }}
+                                </h2>
+
+                                <h2 class="fw-bold mt-0 mb-1">
+                                    {{ number_format($bags_out) }}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div class="d-flex  justify-content-between " style="width: 100%">
+                                <span class="fs-6 text-uppercase small fw-semi-bold"> Weight In </span>
+                                <span class="fs-6 text-uppercase small fw-semi-bold"> Weight Out </span>
+                            </div>
+                            <div class="d-flex  justify-content-between ">
+                                <h2 class="fw-bold mt-0 mb-1">
+                                    {{ number_format($weight_in) }}
+                                </h2>
+
+                                <h2 class="fw-bold mt-0 mb-1">
+                                    {{ number_format($weight_out) }}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold"> Jute Bags Out </span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                {{ number_format(abs($jute_out)) }}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Jute Bags in </span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                {{ number_format($jute_in) }}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
 
 
@@ -106,29 +210,18 @@
                         <div class="card-body">
                             <h4 class="fw-bold mb-3 mt-0">All Exported Cosignment {{ $date }} </h4>
 
-                            @php
-                                $total_sales = $total_profit = $total_netweight = 0;
-                            @endphp
+
 
                             @foreach ($today_sales as $con)
-                                @php
-                                    $profit = $con->sales_price * $con->sales->sum('net_weight') - $con->total;
-                                    $total_sales += $con->total;
-                                    $total_profit += $profit;
-                                    $total_netweight += $con->sales->sum('net_weight');
-                                @endphp
                                 <div class="mb-3 shadow border-1 p-1">
 
                                     <div class="p-1 d-flex justify-content-between ">
                                         <h6> Client Name: {{ $con->client->name }} </h6>
-                                        <span>Total : <span class="text-warning">{{ money($con->total) }} </span> </span>
+                                        <span>Total : <span class="text-danger">{{ money($con->total) }} </span> </span>
                                         <span>Paid : {{ money($con->amount_paid) }} </span>
                                         <span>lorry number : <span class="text-info"> {{ $con->lorry_number }}</span>
                                         </span>
                                         <span>Sales Price : {{ money($con->sales_price) }} </span>
-                                        <span>Profit/Loss : <span
-                                                class=" {{ $profit > 0 ? 'text-success' : 'text-danger' }} ">
-                                                {{ money(abs($profit)) }} </span> </span>
                                     </div>
 
                                     <table class="table table-sm">
@@ -159,26 +252,17 @@
                                 </div>
                             @endforeach
 
-
-                            <div class="shadow p-2" style="border: 1px solid gray;">
-                                <div class="d-flex mt-1  justify-content-between ">
-                                    <h6> Total Sales: <span class="text-warning" > {{ money($total_sales) }} </span> </h6>
-                                    <h6> Total Net Weight: <span class="text-info" >  {{ number_format($total_netweight) }} kg </span> </h6>
-                                    <h6> Total Profit: <span class=" {{ $total_profit > 0 ? 'text-success' : 'text-danger' }} " > {{ money($total_profit) }} </span> </h6>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
                     <div class="card shadow">
 
                         <div class="card-body">
-                            <h4 class="fw-bold mt-0">Sales Ledger for {{ $date }} </h4>
+                            <h4 class="fw-bold mt-0">Transaction Ledger for {{ $date }} </h4>
 
 
                             <div class="table-responsive border-0 overflow-y-hidden">
                                 <table class="table mb-0 text-nowrap">
-                                    <table class="table table-bordered mt-2 p-0 ">
+                                    <table class="table table-sm table-bordered mt-2 p-0 ">
                                         <thead>
                                             <tr>
                                                 <th class="align-middle">Date</th>
@@ -200,16 +284,16 @@
                                         </thead>
                                         <tbody>
 
-                                            @foreach ($my_sales as $stock)
+                                            @foreach ($transactions as $stock)
                                                 @php
                                                     $amount_paid = getAmmountPaid($stock->summary_id);
                                                 @endphp
-                                                @if ($stock->action == 'export' || $stock->action == 'import')
+                                                @if ($stock->action == 'export')
                                                     <tr>
                                                         <td> {{ $stock->created_at }} </td>
                                                         <td> {{ $stock->action }} </td>
-                                                        <td> {{ $stock->client->name }} </td>
                                                         <td> {{ $stock->product->name }} </td>
+                                                        <td> {{ $stock->client->name }} </td>
                                                         <td> {{ number_format(abs($stock->bags)) }} </td>
                                                         <td> {{ number_format(abs($stock->gross_weight)) }} </td>
 
@@ -221,12 +305,31 @@
                                                         <td> {{ money($stock->amount_paid) }} </td>
 
                                                     </tr>
-                                                @elseif($stock->action == 'capital' || $stock->action == 'expenses')
+                                                @elseif($stock->action == 'capital')
                                                     <tr>
                                                         <td> {{ $stock->created_at }} </td>
                                                         <td> {{ $stock->action }} </td>
+                                                        <td> {{ $stock->remark ?? 'Capital Given' }} </td>
                                                         <td> {{ $stock->client->name }} </td>
-                                                        <td> {{ $stock->remark }} </td>
+
+                                                        <td> - </td>
+                                                        <td> - </td>
+                                                        <td> - </td>
+                                                        <td> - </td>
+                                                        <td> - </td>
+                                                        <td> - </td>
+                                                        <td> - </td>
+
+                                                        <td> {{ money($stock->total) }} </td>
+
+                                                    </tr>
+                                                @elseif($stock->action == 'expenses')
+                                                    <tr>
+                                                        <td> {{ $stock->created_at }} </td>
+                                                        <td> {{ $stock->action }} </td>
+                                                        <td> {{ $stock->remark ?? 'Capital Given' }} </td>
+                                                        <td> {{ $stock->client->name }} </td>
+
                                                         <td> - </td>
                                                         <td> - </td>
                                                         <td> - </td>

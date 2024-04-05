@@ -18,7 +18,7 @@ class CostAnalysisController extends Controller
 {
     function coostanalysisIndex()
     {
-        $products = Products::orderby('name', 'asc')->get();
+        $products = Products::orderby('id', 'asc')->get();
         foreach($products as $product) {
             $product->stock_weight = $this->productWeight($product->id);
             $product->stock_bag = $this->productBags($product->id);
@@ -107,6 +107,12 @@ class CostAnalysisController extends Controller
             'weight_balance' => $this->productWeight($request->product_id),
         ]);
 
+        $product = Products::find($request->product_id);
+
+        $body  = 'We have received a supply of '.$request->bags.' bags of '.$product->name .' ('.$request->net_weight.' kg) from you at '. money($request->price) .' per kg for total of '.(money($request->price * $request->net_weight)).' thanks' ;
+        $to = Supplier::find($request->supplier);
+        $to = $to->phone;
+        $this->sendSms($body, $to);
 
         return back()->with('success', 'Stock has been sucessfuly updated');
     }
@@ -143,12 +149,8 @@ class CostAnalysisController extends Controller
             'lorry_number' => $request->lorry_number,
             'sales_price' => $request->sales_price
         ]);
-
-
-    
-
   
-        $total_net_weight = 0;
+        $total_net_weight = 0; $bags_total = 0;
 
 
         foreach ($request->items as $item) {
@@ -157,6 +159,8 @@ class CostAnalysisController extends Controller
             $product_id = $intial_stock->product_id;
             $bags = $item['bags'];
             $net_weight = $item['net_weight'];
+
+            $bags_total += $bags;
             $item_total = $net_weight * $price;
             $total_net_weight += $net_weight;
 
@@ -207,6 +211,12 @@ class CostAnalysisController extends Controller
             }
         }
 
+        $customer = Customer::find($customer_id);
+
+        $body  = 'A supply of  '.$bags_total.' bags of '.$intial_stock->product->name .' ('.$total_net_weight.' kg) is been supplied to you at '.$request->sales_price.' per kg, LORRY NUMBER '.$request->lorry_number.' thanks' ;
+       
+        $this->sendSms($body, $customer->phone, );
+
 
         return response([
             'message' => $total_net_weight . ' (kg) has been exported',
@@ -240,7 +250,7 @@ class CostAnalysisController extends Controller
 
     function stockStock()
     {
-        $products = Products::orderby('name', 'asc')->get();
+        $products = Products::orderby('id', 'asc')->get();
         foreach($products as $product) {
             $product->stock_weight = $this->stockWeight($product->id);
             $product->stock_bag = $this->stockBags($product->id);

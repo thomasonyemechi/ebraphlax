@@ -48,7 +48,7 @@ class Controller extends BaseController
 
         $sms = Sms::create([
             'phone' => $to,
-            'body' => $body,
+            'message' => $body,
             'sent_by' => auth()->user()->id ?? 1 
         ]);
 
@@ -63,10 +63,12 @@ class Controller extends BaseController
 
         $res = json_decode($res);
 
-        if($res->data->status == 'success') {
+        if(isset($res->data->status)) {
+              if($res->data->status == 'success') {
             $sms->update([
                 'status' => $res->data->status ?? 'Message has been sucessgully sent'
             ]);
+              }
         }else {
             $sms->update([
                 'status' => $res->data->status ?? 'Message was not sent'
@@ -76,11 +78,6 @@ class Controller extends BaseController
     
         return $res;
     }
-
-
-
-
-
 
     
     function productBags($product_id)
@@ -95,5 +92,12 @@ class Controller extends BaseController
         return $total_bags;
     }
 
+
+
+    public function seeeeend()
+    {
+        $this->sendSms('Soem sms has been sent to you', 9038772366, 'Ralphlak Aco');
+        return 'done';
+    }
 
 }

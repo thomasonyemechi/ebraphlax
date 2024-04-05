@@ -73,7 +73,7 @@
 
                 @if ($mis->manage_stock)
                     <li class="">
-                        <a class="" href="/control/manage-stock" class="">
+                        <a class="" href="/control/stock" class="">
                             <i class="flaticon-bill"></i><span> Stock  </span>
                         </a>
                     </li>
@@ -195,6 +195,35 @@
                         </a>
                     </li>
                 @endif
+
+
+
+                <li>
+                    <a href="#" class=""><i class="flaticon-new-product"></i><span>
+                            Business Report
+                            <span class="float-right menu-arrow">
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline>
+                                    <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </span>
+                        </span></a>
+                    <ul class="submenu">
+                        <li class=""><a href="/control/daily_report">Daily Report</a>
+                        </li>
+                        <li class=""><a href="/control/wekly_report">Weekly Report </a>
+                        </li>
+                        <li class=""><a href="/control/wekly_report">Monthly Report </a>
+                        </li>
+                        <li class=""><a href="/control/wekly_report">Yearly Report </a>
+                        </li>
+                        <li class=""><a href="/control/wekly_report">Report accross Date </a>
+                        </li>
+                    </ul>
+                </li>
 
 
 
