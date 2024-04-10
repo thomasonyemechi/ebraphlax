@@ -28,8 +28,7 @@
                                     <div class="form-group col-sm-4">
                                         <label for="">Full Name <span class="error">*</span></label> 
                                         <input
-                                            type="text" name="name" value="{{ old('name') }}" required="required"
-                                            class="form-control">
+                                            type="text" name="name" value="{{ old('name') }}" required="required"                                            class="form-control">
 
                                         @error('name')
                                             <i class="text-danger small"> {{ $message }} </i>
@@ -37,15 +36,14 @@
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label for="">Company Name <span class="error">*</span></label>
-                                        <input type="text" name="company_name" value="{{ old('company_name') }}" required="required"
-                                            class="form-control">
+                                        <input type="text" name="company_name" value="{{ old('company_name') }}"                                            class="form-control">
                                         @error('company_name')
                                             <i class="text-danger small"> {{ $message }} </i>
                                         @enderror
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label for="">Nick Name <span class="error">*</span></label>
-                                        <input type="text" name="nick_name" value="{{ old('nick_name') }}" required="required"
+                                        <input type="text" name="nick_name" value="{{ old('nick_name') }}" 
                                             class="form-control">
                                             @error('nick_name')
                                             <i class="text-danger small" > {{$message}} </i>
@@ -53,7 +51,7 @@
                                     </div>
                                     <div class="form-group col-sm-6">
                                         <label for="">Email <span class="error">*</span></label>
-                                        <input type="email" name="email" value="{{ old('email') }}" required="required"
+                                        <input type="email" name="email" value="{{ old('email') }}" 
                                             class="form-control">
                                             @error('email')
                                             <i class="text-danger small" > {{$message}} </i>

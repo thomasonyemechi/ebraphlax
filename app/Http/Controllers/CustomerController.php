@@ -76,10 +76,27 @@ class CustomerController extends Controller
     function customerBalanceIndex()
     {
         $customers = Customer::orderby('name', 'asc')->paginate(100);
+        $total_credit = $total_debit = 0;
+
+        $all_cus = Customer::orderby('name', 'asc')->get(['id']);
+
+        foreach($all_cus as $cs){
+            $sup_bal = customerCredit($cs->id);
+
+            if($sup_bal > 0) {
+                $total_debit += $sup_bal;
+            }else {
+                $total_credit +=  $sup_bal;
+            }
+
+        }
+
+
         foreach($customers as $cus) {
+                       
             $cus->account_summary = $this->calculatePurchases($cus->id);
         }
-        return view('control.customer_balance', compact(['customers']));
+        return view('control.customer_balance', compact(['customers', 'total_credit', 'total_debit']));
     }
 
 

@@ -20,62 +20,42 @@
                 </div>
             </div>
 
-            {{-- 
-            <div class="row">
-                <div class="col-xl-3 col-lg-6 col-md-12 col-12">
-                    <!-- Card -->
-                    <div class="card shadow mb-4">
-                        <!-- Card body -->
-                        <div class="card-body">
-                            <div>
-                                <span class="fs-6 text-uppercase small fw-semi-bold">Total Stock</span>
-                            </div>
-                            <h2 class="fw-bold mt-0 mb-1">
-                                {{ number_format($total_stock) }} 
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-12 col-12">
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <div>
-                                <span class="fs-6 text-uppercase small fw-semi-bold">Bag Bal</span>
-                            </div>
-                            <h2 class="fw-bold mt-0 mb-1">
-                                {{ number_format($bag_balance) }} 
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-12 col-12">
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <div>
-                                <span class="fs-6 text-uppercase small fw-semi-bold">Weight Bal</span>
-                            </div>
-                            <h2 class="fw-bold mt-0 mb-1">
-                                {{ number_format($weight_balance) }} KG
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-12 col-12">
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <div>
-                                <span class="fs-6 text-uppercase small fw-semi-bold">Total In</span>
-                            </div>
-                            <h2 class="fw-bold mt-0 mb-1">
-                                {{ number_format($total_in) }} 
-                            </h2>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
 
             <div class="row">
+
+
+                
+
+                <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Expected Supply</span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                {{ money($total_debit) }}
+
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Total Owning </span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                               {{ money(abs($total_credit)) }}
+
+
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+
 
                 <div class="col-md-12">
                     <div class="card shadow">
