@@ -56,11 +56,33 @@
 
                 <li class="menu-title">Store Management</li>
 
-                <li class="">
-                    <a class="" href="/control/today/{{ auth()->user()->id }}" class="">
-                        <i class="flaticon-bill"></i><span> Today Info </span>
-                    </a>
+              
+
+
+                <li>
+                    <a href="#" class=""><i class="flaticon-expenses"></i><span>
+                            Today Info
+                            <span class="float-right menu-arrow">
+                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polyline points="10 15 15 20 20 15"></polyline>
+                                    <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                </svg>
+                            </span>
+                        </span></a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="/control/today/{{ auth()->user()->id }}">Overview </a>
+                        </li>
+                        <li>
+                            <a href="/control/today-export">Export</a>
+                        </li>
+                    </ul>
                 </li>
+
+
 
                 @if ($mis->manage_staff)
                     <li class="">

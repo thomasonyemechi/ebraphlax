@@ -81,86 +81,96 @@
                     <div class="card shadow">
 
                         <div class="table-responsive border-0 overflow-y-hidden">
-                            <table class="table mb-0 text-nowrap">
+                                                 <table class="table mb-0 text-nowrap">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="border-0">Date </th>
-                                        <th class="border-0">Customer Name </th>
+                                        <th class="border-0">Client </th>
                                         <th class="border-0">Commodity </th>
-                                        <th class="border-0">Bags In </th>
-                                        <th class="border-0">Weight In </th>
+                                        <th class="border-0">Bags in </th>
+                                        <th class="border-0">Weight in </th>
                                         <th class="border-0">Bags Out </th>
                                         <th class="border-0">Weight Out </th>
-                                        <th class="border-0">Bag Bal </th>
-                                        <th class="border-0">Weight Bal </th>
                                         <th class="border-0">Added By</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($stocks as $stock)
-                                        <tr class=" {{ $stock->bag > 0 ? 'text-success' : 'text-danger' }} ">
+                                        <tr class=" {{ $stock->bags > 0 ? 'text-success' : 'text-danger' }} ">
                                             <td class="align-middle">{{ date('j F Y', strtotime($stock->created_at)) }}
                                             </td>
                                             <td class="align-middle">
-                                                {{ $stock->client_name }}
+                                                {{ $stock->client->name }}
                                             </td>
                                             <td class="align-middle">
                                                 {{ $stock->product->name }}
                                             </td>
-                                            {{-- bags in --}}
+
                                             <td class="align-middle">
-                                                @if ($stock->bag > 0)
-                                                    <div class="badge badge-success">
-                                                        {{ abs($stock->bag) }}
+
+                                                @if ($stock->bags > 0)
+                                                    <div
+                                                        class="badge {{ $stock->bags > 0 ? ' badge-success' : 'badge-danger' }} badge-success">
+                                                        {{ number_format(abs($stock->bags)) }}
                                                     </div>
+                                                @else
+                                                    -
                                                 @endif
-                                            </td>
-                                            {{-- weight in --}}
-                                            <td class="align-middle">
-                                                @if ($stock->weight > 0)
-                                                    <div class="badge badge-info">
-                                                        {{ number_format(abs($stock->weight)) }} kg
-                                                    </div>
-                                                @endif
-                                            </td>
-                                            <td class="align-middle">
-                                                @if ($stock->bag < 0)
-                                                    <div class="badge badge-danger">
-                                                        {{ abs($stock->bag) }}
-                                                    </div>
-                                                @endif
+
                                             </td>
 
+                                            <td class="align-middle">
+                                                @if ($stock->weight > 0)
+                                                    <div
+                                                        class="badge {{ $stock->weight > 0 ? ' badge-success' : 'badge-danger' }} badge-success">
+                                                        {{ number_format(abs($stock->weight)) }}
+                                                    </div>
+                                                @else
+                                                    -
+                                                @endif
+
+                                            </td>
+
+
+                                            <td class="align-middle">
+
+                                                @if ($stock->bags < 0)
+                                                    <div
+                                                        class="badge {{ $stock->bags < 0 ? ' badge-info' : 'badge-warning' }}">
+                                                        {{ number_format(abs($stock->bags)) }}
+                                                    </div>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
 
                                             <td class="align-middle">
                                                 @if ($stock->weight < 0)
-                                                    <div class="badge badge-danger">
-                                                        {{ abs($stock->weight) }}
+                                                    <div
+                                                        class="badge {{ $stock->weight < 0 ? ' badge-info' : 'badge-warning' }}">
+                                                        {{ number_format(abs($stock->weight)) }} kg
                                                     </div>
+                                                @else
+                                                    -
                                                 @endif
                                             </td>
 
-                                            <td class="align-middle">
-                                                {{ number_format($stock->bag_balance) }}
-                                            </td>
-                                            <td class="align-middle">
-                                                {{ number_format($stock->weight_balance) }}
-                                            </td>
+
+
 
                                             <td class="align-middle">
                                                 {{ $stock->user->name }}
                                             </td>
                                             <td class="align-middle ">
-                                                <a href="/control/delete-stock/{{ $stock->id }}"
-                                                    onclick="return confirm('This transaction will be deleted')"
+                                                <a onclick="return confirm('This transaction will be deleted')"
                                                     class="mr-2 btn-danger shadow text-white px-2"> <i
                                                         class="fa fa-trash"></i> </a>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
+                            </table>r
                         </div>
                     </div>
 

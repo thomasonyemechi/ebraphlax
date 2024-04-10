@@ -76,13 +76,24 @@ class SupplierController extends Controller
 
     function supplierBalanceIndex()
     {
-        $suppliers = Supplier::orderby('name', 'asc')->paginate(100);
+        $suppliers = Supplier::orderby('name', 'asc')->paginate(1500);
+
+        $total_credit = $total_debit = 0;
+
         foreach($suppliers as $cus) {
+            $sup_bal = supplierCredit($cus->id);
+
+            if($sup_bal > 0) {
+                $total_debit += $sup_bal;
+            }else {
+                $total_credit +=  $sup_bal;
+            }
+
             $cus->account_summary = $this->calculateSupply($cus->id);
         }
 
         
-        return view('control.supplier_balance', compact(['suppliers']));
+        return view('control.supplier_balance', compact(['suppliers', 'total_debit', 'total_credit']));
     }
 
 

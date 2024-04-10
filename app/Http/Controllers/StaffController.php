@@ -170,6 +170,20 @@ class StaffController extends Controller
 
 
 
+    public function todayExport(Request $request)
+    {
+
+        $date = ($request->date) ? date('y-m-d' ,strtotime($request->date)) : date('y-m-d');
+
+        $export = Stock::where(['action' => 'export'])->whereDate('created_at', '=', $date)->count();
+        $total_sales = Stock::where(['action' => 'export'])->whereDate('created_at', '=', $date)->sum('total');
+        $today_sales = SalesSummary::with(['sales'])->whereDate('created_at', '=', $date)->get();
+
+        return view('control.today_export',compact(['export', 'total_sales', 'date', 'today_sales']));
+    }
+
+
+
     public function todayInfo(Request $request, $id)
     {
         $id = (auth()->user()->role == 'administrator') ? $id : auth()->user()->id;

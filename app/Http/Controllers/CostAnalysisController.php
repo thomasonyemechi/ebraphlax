@@ -38,7 +38,7 @@ class CostAnalysisController extends Controller
         $stocks = Cstock::where(['product_id' => $product_id])->orderby('id', 'desc')->paginate(100);
 
         $total_stock = Cstock::where(['product_id' => $product_id])->count();
-        $total_in = Cstock::where(['product_id' => $product_id, ['bag', '>', 0 ]])->count();
+        $total_in = Cstock::where(['product_id' => $product_id, ['bags', '>', 0 ]])->count();
         $bag_balance = $this->productBags($product->id);
         $weight_balance = $this->productWeight($product->id);
         return view('control.general_stock_legder', compact(['product', 'stocks', 'bag_balance', 'weight_balance', 'total_stock', 'total_in']));
@@ -99,12 +99,12 @@ class CostAnalysisController extends Controller
             'moisture_discount' => $request->moisture_discount ?? 0,
             'user_id' => auth()->user()->id,
             'amount_paid' => $request->amount_paid,
-            'current_balance' => supplierCredit($request->supplier_id)
         ]);
 
         $stock->update([
             'bag_balance' => $this->productBags($request->product_id),
             'weight_balance' => $this->productWeight($request->product_id),
+            'current_balance' => supplierCredit($request->supplier)
         ]);
 
         $product = Products::find($request->product_id);
@@ -158,6 +158,8 @@ class CostAnalysisController extends Controller
             $intial_stock = Stock::find($item['stock_id']);
             $product_id = $intial_stock->product_id;
             $bags = $item['bags'];
+            $tares = $item['tares'];
+            $moisture_discount = $item['moisture_discount'];
             $net_weight = $item['net_weight'];
 
             $bags_total += $bags;
@@ -176,16 +178,18 @@ class CostAnalysisController extends Controller
                 'price' => $price,
                 'bags' => $bags,
                 'total' => $item_total,
+                'tares' => $tares,
+                'moisture_discount' => $moisture_discount,
                 'action' => 'export',
                 'user_id' => auth()->user()->id,
                 'amount_paid' => $request->advance ?? 0,
-                'current_balance' => customerCredit($request->customer_id),
                 'remark' => $item['stock_id']
             ]);
     
             $stock->update([
                 'bag_balance' => $this->productBags($request->product_id),
                 'weight_balance' => $this->productWeight($request->product_id),
+                'current_balance' => customerCredit($request->customer_id),
             ]);
 
 

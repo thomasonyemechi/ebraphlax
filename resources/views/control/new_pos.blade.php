@@ -132,12 +132,12 @@
                                                         min="0" max="{{ $stock->moisture_discount }}" step="any"
                                                         name="moisture_discount_{{ $stock->id }}"
                                                         value="{{ $stock->moisture_discount }}"
-                                                        data-index="{{ $stock->id }}" readonly style="width:60px"></td>
+                                                        data-index="{{ $stock->id }}"  style="width:60px"></td>
                                                 <td>
                                                     <input type="number" class="tares form-control px-2 me-2 py-0 p-0"
                                                         min="1" max="{{ $stock->tares }}" step="any"
                                                         value="{{ $stock->tares }}" data-index="{{ $stock->index }}"
-                                                        name="tares_{{ $stock->id }}" readonly
+                                                        name="tares_{{ $stock->id }}"
                                                         data-index="{{ $stock->id }}" style="width:100px">
                                                 </td>
                                                 <td><input type="number" class="net_weight form-control px-2 me-2 py-0 p-0"
@@ -146,7 +146,7 @@
                                                         data-index="{{ $stock->id }}"
                                                         name="net_weight_{{ $stock->id }}" style="width:100px"></td>
                                                 <td><input type="number" class="cart_price form-control px-2 me-2 py-0 p-0"
-                                                        name="price_{{ $stock->id }}" min="1"
+                                                        name="price_{{ $stock->id }}" min="1" readonly
                                                         value="{{ $stock->price }}" data-index="{{ $stock->id }}"
                                                         style="width:80px">
                                                 </td>
@@ -454,6 +454,8 @@
                             arr = {
                                 stock_id: indexx,
                                 bags: parseInt(row.find(`input[name="bags_${indexx}"]`).val()),
+                                tares: parseInt(row.find(`input[name="tares_${indexx}"]`).val()),
+                                moisture_discount: parseInt(row.find(`input[name="moisture_discount_${indexx}"]`).val()),
                                 price: parseInt(row.find(`input[name="price_${indexx}"]`)
                                 .val()),
                                 net_weight: parseInt(row.find(

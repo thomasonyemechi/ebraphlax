@@ -24,7 +24,7 @@ class AuthController extends Controller
             'password' => 'required|min:4'
         ])->validate();
 
-        if (!Auth::attempt($val, 1)) {
+        if (!Auth::attempt($val)) {
             return back()->with('error', 'Invalid credentials, please try again');
         }
         return redirect('/control/dashboard')->with('success', 'Welcome back ' . auth()->user()->name);

@@ -109,7 +109,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
 
     Route::get('/manage-stock', [CostAnalysisController::class, 'coostanalysisIndex']);
-    Route::post('/add-stocks', [CostAnalysisController::class, 'addStocks']);
+    Route::post('/add-stocks', [CostAnalysisController::class, 'addStofcks']);
     Route::get('/delete-stock/{id}', [CostAnalysisController::class, 'deleteStock']);
     Route::get('/general-stock-legder/{id}', [CostAnalysisController::class, 'generalStockLedgerIndex']);
 
@@ -119,6 +119,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
 
     Route::get('/today/{id}', [StaffController::class, 'todayInfo']);
+    Route::get('/today-export', [StaffController::class, 'todayExport']);
     Route::get('/daily_report', [ReportController::class, 'DailyReport']);
 });
 
