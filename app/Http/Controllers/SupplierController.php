@@ -64,7 +64,11 @@ class SupplierController extends Controller
             'nick_name' => $request->nick_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'address' => $request->address
+            'address' => $request->address,
+            'bank' => $request->bank,
+            'bank_account' => $request->bank_account,
+            'account_name' => $request->account_name,
+
         ]);
 
         return back()->with('success', 'Importer profile has been created');
@@ -91,6 +95,18 @@ class SupplierController extends Controller
 
         
         return view('control.supplier_balance', compact(['suppliers', 'total_debit', 'total_credit']));
+    }
+
+
+
+    function supplierAccountIndex()
+    {
+        $suppliers = Supplier::orderby('name', 'asc')->paginate(150);
+
+
+      
+        
+        return view('control.supplier_account', compact(['suppliers']));
     }
 
 

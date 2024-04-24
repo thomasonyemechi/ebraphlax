@@ -75,6 +75,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/supplier/all', [SupplierController::class, 'supplierListIndex']);
     Route::get('/supplier/{supplier_id}', [SupplierController::class, 'supplierIndex']);
     Route::get('/suppliers/balance', [SupplierController::class, 'supplierBalanceIndex']);
+    Route::get('/suppliers/account', [SupplierController::class, 'supplierAccountIndex']);
     Route::post('/add_supplier', [SupplierController::class, 'addSupplier']);
 
 
@@ -98,6 +99,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     
     Route::get('/jute-bags', [JuteController::class, 'juteIndex']);
+    Route::get('/jute_ledger', [JuteController::class, 'juteledger']);
     Route::post('/add-jutebags', [JuteController::class, 'addJuteBags']);
     Route::get('/delete-bag/{id}', [JuteController::class, 'deleteBag']);
 

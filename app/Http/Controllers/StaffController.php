@@ -31,7 +31,10 @@ class StaffController extends Controller
             'role' => $request->role,
             'phone' => $request->phone,
             'password' => Hash::make($request->phone),
-            'address' => $request->address
+            'address' => $request->address,
+            'bank' => $request->bank,
+            'bank_account' => $request->bank_account,
+            'account_name' => $request->account_name,
         ]);
 
         $this->cper($user);

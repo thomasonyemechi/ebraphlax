@@ -31,6 +31,9 @@
                                                     class="required">*</span></label>
                                             <input type="text" name="name" value="{{ old('name') }}"
                                                 class="form-control" placeholder="James">
+                                                     @error('name')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
                                         </div>
 
                                         <div class="mb-3">
@@ -38,6 +41,9 @@
                                                     class="required">*</span></label>
                                             <input type="email" name="email" value="{{ old('email') }}"
                                                 class="form-control" placeholder="hello@example.com">
+                                                     @error('email')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
                                         </div>
 
 
@@ -53,6 +59,9 @@
                                                         <option>Administrator</option>
                                                         <option>Accountant</option>
                                                     </select>
+                                                         @error('role')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
                                                 </div>
 
                                             </div>
@@ -63,12 +72,54 @@
                                                 Number<span class="required">*</span></label>
                                             <input type="number" name="phone" value="{{ old('phone') }}"
                                                 class="form-control" placeholder="+123456789">
+                                                     @error('phone')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
                                         </div>
 
                                     </div>
+
+
+
+                                <div class="col-md-4" >
+                                    <label for="">Bank Name <span class="error">*</span></label>
+                                    <input type="text" name="bank" value="{{ old('bank') }}" required="required"
+                                    class="form-control">
+                                    @error('bank')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
+                                </div>
+
+
+                                <div class="col-md-4" >
+                                    <label for="">Account Number <span class="error">*</span></label>
+                                    <input type="text" name="bank_account" value="{{ old('bank_account') }}" required="required"
+                                    class="form-control">
+                                    @error('bank_account')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
+                                </div>
+
+
+                                <div class="col-md-4" >
+                                    <label for="">Account Name <span class="error">*</span></label>
+                                    <input type="text" name="account_name" value="{{ old('account_name') }}" required="required"
+                                    class="form-control">
+                                    @error('account_name')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
+                                </div>
+                                
+
+
+
+
                                     <div class="col-xl-12 col-sm-12">
                                         <label class="form-label text-primary">House Address<span class="required">*</span></label>
                                         <textarea name="address" class="form-control" rows="2"> {{ old('address') }} </textarea>
+                                             @error('address')
+                                    <i class="text-danger small" > {{$message}} </i>
+                                    @enderror
                                     </div>
                                     <div class="col-xl-12 col-sm-6">
                                         <div class="d-flex mt-3 justify-content-end ">

@@ -165,6 +165,8 @@
                             </li>
                             <li class=""><a href="/control/suppliers/balance">Suppliers Balance</a>
                             </li>
+                              <li class=""><a href="/control/suppliers/account">Bank Details</a>
+                            </li>
 
                             <li class=""><a href="javascript::">Inactive Supplier </a>
                             </li>

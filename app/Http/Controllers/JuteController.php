@@ -32,7 +32,26 @@ class JuteController extends Controller
 
         $all_client = array_merge($clients, $suppliers);
 
-            return view('control.jutebags', compact(['bags', 'all_client']));
+        return view('control.jutebags', compact(['bags', 'all_client']));
+    }
+
+
+    function juteledger(Request $request)
+    {
+
+        $bags = JuteBag::where(['client_type' => $request->type, 'client_id' => $request->id])->orderby('id', 'desc')->paginate(50);
+
+
+        if($request->type == 'customer') {
+            $client = Customer::find($request->id);
+        }else {
+            $client = Supplier::find($request->id);
+        }
+
+        $client_type = $request->type; $client_id = $request->id;
+
+        return view('control.juteledger', compact(['bags', 'client', 'client_type', 'client_id']));
+
     }
 
 
