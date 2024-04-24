@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('page_title')
-Exporters
+    Exporters
 @endsection
 
 @section('page_content')
@@ -57,7 +57,7 @@ Exporters
 
 
                     <div class="d-flex  justify-content-between">
-                        <button class="btn btn-primary "> Update Profile </button>
+                        <button class="btn btn-primary editProffile "> Update Profile </button>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -135,23 +135,23 @@ Exporters
 
 
                                         @foreach ($capitals as $capital)
-                                        <tr>
-                                            <td>{{ money($capital->total) }}</td>
-                                            <td>
-                                                <div class="badge py-1 badge-success">
-                                                    {{ date('j M, Y', strtotime($capital->created_at)) }}
-                                                </div>
-                                            </td>
-                                            <td>{{ $capital->user->name }}</td>
-                                            <td>
-                                                <a href="/control/delete_capital/{{ $capital->id }}"
-                                                    class="text-danger"
-                                                    onclick="return confirm('Capital will be removed from this account and will be accounted for')">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                            <tr>
+                                                <td>{{ money($capital->total) }}</td>
+                                                <td>
+                                                    <div class="badge py-1 badge-success">
+                                                        {{ date('j M, Y', strtotime($capital->created_at)) }}
+                                                    </div>
+                                                </td>
+                                                <td>{{ $capital->user->name }}</td>
+                                                <td>
+                                                    <a href="/control/delete_capital/{{ $capital->id }}"
+                                                        class="text-danger"
+                                                        onclick="return confirm('Capital will be removed from this account and will be accounted for')">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
 
                                     </tbody>
                                 </table>
@@ -182,7 +182,7 @@ Exporters
                                         <th class="align-middle">Net<br>/wt (kg)</th>
 
                                         <th class="align-middle">Price (₦)</th>
-                                        
+
                                         <th class="align-middle">Credit</th>
                                         <th class="align-middle">Debit</th>
                                         <th class="align-middle">Balance </th>
@@ -195,41 +195,39 @@ Exporters
                                             $amount_paid = getAmmountPaid($stock->summary_id);
                                         @endphp
                                         @if ($stock->action == 'export')
-                                        <tr>
-                                            <td> {{ $stock->created_at }} </td>
-                                            <td> {{ $stock->product->name }} </td>
-                                            <td> {{ number_format(abs($stock->bags)) }} </td>
-                                            <td> {{ number_format(abs($stock->gross_weight)) }} </td>
+                                            <tr>
+                                                <td> {{ $stock->created_at }} </td>
+                                                <td> {{ $stock->product->name }} </td>
+                                                <td> {{ number_format(abs($stock->bags)) }} </td>
+                                                <td> {{ number_format(abs($stock->gross_weight)) }} </td>
 
-                                            <td> {{ abs($stock->bags * 1.5) }} </td>
-                                            <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
-                                            <td> {{ number_format(abs($stock->net_weight)) }} </td>
-                                            <td> {{ money($stock->price) }} </td>
-                                            <td> {{ money($stock->total) }} </td>
-                                            <td></td>
-                                            <td> {{ money($stock->current_balance) }} </td>
+                                                <td> {{ abs($stock->bags * 1.5) }} </td>
+                                                <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
+                                                <td> {{ number_format(abs($stock->net_weight)) }} </td>
+                                                <td> {{ money($stock->price) }} </td>
+                                                <td> {{ money($stock->total) }} </td>
+                                                <td></td>
+                                                <td> {{ money($stock->current_balance) }} </td>
 
 
-                                        </tr>
-
+                                            </tr>
                                         @elseif($stock->action == 'capital')
-                                          <tr>
-                                            <td> {{ $stock->created_at }} </td>
-                                            <td> {{$stock->remark ?? 'Capital Given'}}  </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                       
-                                            <td> {{ money($stock->total) }} </td>
-                                            <td> {{ money($stock->current_balance + $stock->total) }} </td>
+                                            <tr>
+                                                <td> {{ $stock->created_at }} </td>
+                                                <td> {{ $stock->remark ?? 'Capital Given' }} </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
 
-                                        </tr>
+                                                <td> {{ money($stock->total) }} </td>
+                                                <td> {{ money($stock->current_balance + $stock->total) }} </td>
+
+                                            </tr>
                                         @endif
-                                      
                                     @endforeach
 
                                 </tbody>
@@ -275,7 +273,7 @@ Exporters
                             <input type="hidden" name="action" value="export">
                             <input type="hidden" name="user_id" value="{{ $customer->id }}">
 
-                            <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>                            
+                            <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>
                             <textarea name="narration" class="form-control" rows="2"></textarea>
 
 
@@ -291,6 +289,103 @@ Exporters
             </div>
         </div>
     </div>
+
+
+
+    <div class="modal fade" id="editProffile" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable  modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title m-0" id="exampleModalLongTitle"> Edit {{ $customer->name }} Profile
+                        Information </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="/control/edit_customer" method="POST" class="form-validate">@csrf
+
+                                <div class="row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="">Full Name <span class="error">*</span></label>
+                                        <input type="text" name="name" value="{{ $customer->name }}"
+                                            required="required" class="form-control">
+
+                                        <input type="hidden" name="customer_id" value="{{ $customer->id }}">
+
+                                        @error('name')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label for="">Company Name <span class="error">*</span></label>
+                                        <input type="text" name="company_name" value="{{ $customer->company_name }}"
+                                            class="form-control">
+                                        @error('company_name')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label for="">Nick Name <span class="error">*</span></label>
+                                        <input type="text" name="nick_name" value="{{ $customer->nick_name }}"
+                                            class="form-control">
+                                        @error('nick_name')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="">Email <span class="error">*</span></label>
+                                        <input type="email" name="email" value="{{ $customer->email }}"
+                                            class="form-control">
+                                        @error('email')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-6"><label for="">Phone <span
+                                                class="error">*</span></label>
+                                        <input type="tel" name="phone" value="{{ $customer->phone }}"
+                                            required="required" class="form-control">
+                                        @error('phone')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+
+
+                                    <div class="col-sm-12"><label for="" class="text-muted">Address</label>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12"><label for="short_address">Short
+                                                    address <small>(if you are not fill up this above address then you
+                                                        can fill this short address)</small></label>
+                                                <textarea name="address" id="short_address" placeholder="Short address" class="form-control">{{ $customer->address }}</textarea>
+                                                @error('address')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="d-flex  justify-content-end">
+                                        <button type="submit"
+                                            class="btn btn-primary btn-lg waves-effect waves-lightml-2">
+                                            <i class="fa fa-save"></i> <span>Submit</span></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
 @endsection
 
 
@@ -299,6 +394,11 @@ Exporters
         $(function() {
             $('.add_capital').on('click', function() {
                 $('#add_capital').modal('show')
+            })
+
+
+            $('.editProffile').on('click', function() {
+                $('#editProffile').modal('show');
             })
         })
     </script>

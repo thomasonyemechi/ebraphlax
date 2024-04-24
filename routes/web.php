@@ -82,6 +82,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     Route::get('/add_customer', [CustomerController::class, 'addCustomerIndex']);
     Route::post('/add_customer', [CustomerController::class, 'addCustomer']);
+    Route::post('/edit_customer', [CustomerController::class, 'editCustomer']);
     Route::get('/customers', [CustomerController::class, 'customerListIndex']);
     Route::get('/customer/{customer_id}', [CustomerController::class, 'customerIndex']);
     Route::get('/customers/balance', [CustomerController::class, 'customerBalanceIndex']);

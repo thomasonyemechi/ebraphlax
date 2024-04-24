@@ -12,6 +12,29 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
+
+    function editCustomer(Request $request)
+    {
+        Validator::make($request->all(), [
+            'name' => 'string|required',
+            'company_name' => 'string', 
+            'nick_name' => 'string|required', 
+        ])->validate();
+
+
+        Customer::where('id', $request->customer_id)->update([
+            'name' => $request->name,
+            'company_name' => $request->company_name,
+            'nick_name' => $request->nick_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address
+        ]);
+
+        return back()->with('success', 'Customer profile was sucessfully updated');
+    }
+
+
     function addCustomer(Request $request)
     {
         Validator::make($request->all(), [
