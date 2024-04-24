@@ -77,6 +77,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/suppliers/balance', [SupplierController::class, 'supplierBalanceIndex']);
     Route::get('/suppliers/account', [SupplierController::class, 'supplierAccountIndex']);
     Route::post('/add_supplier', [SupplierController::class, 'addSupplier']);
+    Route::post('/edit_supplier', [SupplierController::class, 'editSupplier']);
 
 
     Route::get('/add_customer', [CustomerController::class, 'addCustomerIndex']);

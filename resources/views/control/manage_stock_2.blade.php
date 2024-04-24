@@ -208,7 +208,7 @@ Manage Stock
                                                             @if ($stock->bags > 0)
                                                             <div
                                                             class="badge {{ $stock->bags > 0 ? ' badge-success' : 'badge-danger' }} badge-success">
-                                                            {{ number_format(abs($stock->bags)) }}
+                                                            {{ number_format(abs($stock->bags), 1) }}
                                                         </div>
                                                         @else
                                                         -

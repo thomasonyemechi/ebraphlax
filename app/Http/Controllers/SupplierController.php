@@ -49,6 +49,29 @@ class SupplierController extends Controller
         return view('control.supplier', compact(['supplier', 'capitals', 'total_capital', 'total_supplied', 'stocks', 'balance']));
     }
 
+    function editSupplier(Request $request)
+    {
+        Validator::make($request->all(), [
+            'name' => 'string|required',
+            'phone' => 'required',
+        ])->validate();
+
+
+
+        Supplier::where('id', $request->supplier_id)->update([
+            'name' => $request->name,
+            'company_name' => $request->company_name,
+            'nick_name' => $request->nick_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'bank' => $request->bank,
+            'bank_account' => $request->bank_account,
+            'account_name' => $request->account_name,
+        ]);
+
+        return back()->with('success', 'Importer profile has been sucessfuly updated');
+    }
 
     function addSupplier(Request $request)
     {

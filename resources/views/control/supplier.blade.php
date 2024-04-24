@@ -70,7 +70,7 @@
 
 
                     <div class="d-flex mb-3  justify-content-between">
-                        <button class="btn btn-primary "> Update Profile </button>
+                        <button class="btn btn-primary editProffile "> Update Profile </button>
                         {{-- <button class="btn btn-info "> View Ledger </button> --}}
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between border-bottom py-2">
                                     <span>Balance</span>
-                             
+
                                     <span class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} ">
                                         {{ $balance > 0 ? 'To Supply' : 'owing' }}
                                         <br>
@@ -197,42 +197,40 @@
                                             $amount_paid = getAmmountPaid($stock->summary_id);
                                         @endphp
                                         @if ($stock->action == 'import')
-                                        <tr>
-                                            <td> {{ $stock->created_at }} </td>
-                                            <td> {{ $stock->product->name }} Import </td>
-                                            <td> {{ number_format(abs($stock->bags)) }} </td>
-                                            <td> {{ number_format(abs($stock->gross_weight)) }} </td>
+                                            <tr>
+                                                <td> {{ $stock->created_at }} </td>
+                                                <td> {{ $stock->product->name }} Import </td>
+                                                <td> {{ number_format(abs($stock->bags)) }} </td>
+                                                <td> {{ number_format(abs($stock->gross_weight)) }} </td>
 
-                                            <td> {{ abs($stock->bags * 1.5) }} </td>
-                                            <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
-                                            <td> {{ number_format(abs($stock->net_weight)) }} </td>
-                                            <td> {{ money($stock->price) }} </td>
-                                            <td>-</td>
+                                                <td> {{ abs($stock->bags * 1.5) }} </td>
+                                                <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
+                                                <td> {{ number_format(abs($stock->net_weight)) }} </td>
+                                                <td> {{ money($stock->price) }} </td>
+                                                <td>-</td>
 
-                                            <td> {{ money($stock->total) }} </td>
-                                            <td> {{ money($stock->current_balance) }} </td>
+                                                <td> {{ money($stock->total) }} </td>
+                                                <td> {{ money($stock->current_balance) }} </td>
 
 
-                                        </tr>
-
+                                            </tr>
                                         @elseif($stock->action == 'capital')
-                                          <tr>
-                                            <td> {{ $stock->created_at }} </td>
-                                            <td> {{$stock->remark ?? 'Capital Given'}}  </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td> - </td>
-                                            <td>-</td>
-                                            <td> {{ money($stock->total) }} </td>
+                                            <tr>
+                                                <td> {{ $stock->created_at }} </td>
+                                                <td> {{ $stock->remark ?? 'Capital Given' }} </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td> - </td>
+                                                <td>-</td>
+                                                <td> {{ money($stock->total) }} </td>
 
-                                            <td>-</td>
-                                            <td> {{ money($stock->current_balance + $stock->total) }} </td>
+                                                <td>-</td>
+                                                <td> {{ money($stock->current_balance + $stock->total) }} </td>
 
-                                        </tr>
+                                            </tr>
                                         @endif
-                                      
                                     @endforeach
 
                                 </tbody>
@@ -271,7 +269,7 @@
                             <input type="hidden" name="action" value="import">
                             <input type="hidden" name="user_id" value="{{ $supplier->id }}">
 
-                            <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>                            
+                            <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>
                             <textarea name="narration" class="form-control" rows="2"></textarea>
 
                             <div class="d-flex mt-3 justify-content-end">
@@ -286,6 +284,132 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="editProffile" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable  modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title m-0" id="exampleModalLongTitle"> Edit {{ $supplier->name }} Profile
+                        Information </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="/control/edit_supplier" method="POST" class="form-validate">@csrf
+
+                                <div class="row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="">Full Name <span class="error">*</span></label>
+                                        <input type="text" name="name" value="{{ $supplier->name }}"
+                                            required="required" class="form-control">
+
+                                        <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
+
+                                        @error('name')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label for="">Company Name <span class="error">*</span></label>
+                                        <input type="text" name="company_name" value="{{ $supplier->company_name }}"
+                                            class="form-control">
+                                        @error('company_name')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label for="">Nick Name <span class="error">*</span></label>
+                                        <input type="text" name="nick_name" value="{{ $supplier->nick_name }}"
+                                            class="form-control">
+                                        @error('nick_name')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label for="">Email <span class="error">*</span></label>
+                                        <input type="email" name="email" value="{{ $supplier->email }}"
+                                            class="form-control">
+                                        @error('email')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group col-sm-6"><label for="">Phone <span
+                                                class="error">*</span></label>
+                                        <input type="tel" name="phone" value="{{ $supplier->phone }}"
+                                            required="required" class="form-control">
+                                        @error('phone')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="">Bank Name <span class="error">*</span></label>
+                                        <input type="text" name="bank" value="{{ $supplier->bank }}"
+                                            required="required" class="form-control">
+                                        @error('bank')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <label for="">Account Number <span class="error">*</span></label>
+                                        <input type="text" name="bank_account" value="{{ $supplier->bank_account }}"
+                                            required="required" class="form-control">
+                                        @error('bank_account')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <label for="">Account Name <span class="error">*</span></label>
+                                        <input type="text" name="account_name" value="{{ $supplier->account_name }}"
+                                            required="required" class="form-control">
+                                        @error('account_name')
+                                            <i class="text-danger small"> {{ $message }} </i>
+                                        @enderror
+                                    </div>
+
+
+                                    <div class="col-sm-12"><label for="" class="text-muted">Address</label>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12"><label for="short_address">Short
+                                                    address <small>(if you are not fill up this above address then you
+                                                        can fill this short address)</small></label>
+                                                <textarea name="address" id="short_address" placeholder="Short address" class="form-control">{{ $supplier->address }}</textarea>
+                                                @error('address')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="d-flex  justify-content-end">
+                                        <button type="submit"
+                                            class="btn btn-primary btn-lg waves-effect waves-lightml-2">
+                                            <i class="fa fa-save"></i> <span>Submit</span></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    </div>
 @endsection
 
 
@@ -294,6 +418,10 @@
         $(function() {
             $('.add_capital').on('click', function() {
                 $('#add_capital').modal('show')
+            })
+
+            $('.editProffile').on('click', function() {
+                $('#editProffile').modal('show');
             })
         })
     </script>

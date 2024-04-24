@@ -274,7 +274,7 @@ class CostAnalysisController extends Controller
         Validator::make($request->all(), [
             'action' => 'required|string', 
             'product_id' => 'required|exists:products,id',
-            'bags' => 'required|integer', 
+            'bags' => 'required', 
             'weight' => 'required'
         ])->validate();
 
@@ -315,7 +315,7 @@ class CostAnalysisController extends Controller
             'bag_balance' => $this->stockBags($request->product_id), 
             'weight_balance' => $this->stockWeight($request->product_id)
         ]);
-        return back()->with(['success', 'Stock has been recorded']);
+        return back()->with('success', 'Stock has been recorded');
     }
 
 

@@ -34,7 +34,7 @@
                                         <span class="fs-6 text-uppercase small fw-semi-bold">Jute Bags In</span>
                                     </div>
                                     <h2 class="fw-bold mt-0 text-info mb-1">
-                                        {{ number_format(abs(App\Models\Jutebag::where(['client_type' => $client_type, 'client_id' => $client_id, 'action' => 'return'])->sum('amount'))) }}
+                                        {{ number_format(abs(App\Models\Jutebag::where(['client_type' => $client_type, 'client_id' => $client_id,  ['amount', '>', '0']])->sum('amount'))) }}
                                     </h2>
                                 </div>
 
@@ -48,7 +48,7 @@
                                         <span class="fs-6 text-uppercase small fw-semi-bold">Jute Bags Out</span>
                                     </div>
                                     <h2 class="fw-bold text-warning mt-0 mb-1">
-                                        {{ number_format(abs(App\Models\Jutebag::where(['client_type' => $client_type, 'client_id' => $client_id, 'action' => 'advance'])->sum('amount'))) }}
+                                        {{ number_format(abs(App\Models\Jutebag::where(['client_type' => $client_type, 'client_id' => $client_id, ['amount', '<', '0']])->sum('amount'))) }}
                                     </h2>
                                 </div>
                             </div>
@@ -62,15 +62,7 @@
                                         <span class="fs-6 text-uppercase small fw-semi-bold">Bag Balance</span>
                                     </div>
                                     @php
-                                        $balance =
-                                            abs(
-                                                App\Models\Jutebag::where(['client_type' => $client_type, 'client_id' => $client_id, 'action' => 'return'])
-                                                    ->sum('amount'),
-                                            ) -
-                                            abs(
-                                                App\Models\Jutebag::where(['client_type' => $client_type, 'client_id' => $client_id, 'action' => 'advance'])
-                                                    ->sum('amount'),
-                                            );
+                                        $balance = App\Models\Jutebag::where(['client_type' => $client_type, 'client_id' => $client_id])->sum('amount');
                                     @endphp
 
                                     <h2 class="fw-bold {{ ($balance > 0)  ? 'text-success' : 'text-danger' }} mt-0 mb-1">
