@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CostAnalysisController extends Controller
 {
-    function coostanalysisIndex()
+    function coostanalysisIndex(Request $request)
     {
         $products = Products::orderby('id', 'asc')->get();
         foreach($products as $product) {
@@ -24,9 +24,16 @@ class CostAnalysisController extends Controller
             $product->stock_bag = $this->productBags($product->id);
         }
 
+
+        $selected_stock = 0;
+        if($request->edit) {
+            $selected_stock = Stock::find($request->edit);
+        }
+
+
         $clients = Supplier::orderby('name','asc')->get(['id', 'name', 'nick_name']);
-        $stocks = Stock::where('action', 'import')->orWhere('action', 'export')->orderby('id', 'desc')->paginate(100);
-        return view('control.manage_stock', compact(['products', 'stocks', 'clients']));
+        $stocks = Stock::where('action', 'import')->orderby('id', 'desc')->paginate(100);
+        return view('control.manage_stock', compact(['products', 'stocks', 'clients', 'selected_stock']));
     }
 
 
@@ -118,6 +125,73 @@ class CostAnalysisController extends Controller
     }
 
 
+
+    function editStockTransaction (Request $request)
+    {
+        
+        Validator::make($request->all(), [
+            'stock_id' => 'required|exists:stocks,id',
+            'product_id' => 'required|exists:products,id',
+            'supplier' => 'required|string|exists:suppliers,id', 
+            'bags' => 'required',
+            'net_weight' => 'required',
+            'gross_weight' => 'required',
+            'price' => 'required',
+            'rate' => 'required',
+            'tares' => 'required',
+        ])->validate();
+
+        $stock = Stock::find($request->stock_id);
+
+        
+        $res = Restock::where('id', $stock->summary_id)->update([
+            'product_id' => $request->product_id,
+            'net_weight' => $request->net_weight,
+            'gross_weight' => $request->gross_weight,
+            'bags' => $request->bags,
+            'tares' => $request->tares,
+            'rate' => $request->rate,
+            'price' => $request->price,
+            'moisture_discount' => $request->moisture_discount ?? 0,
+            'supplier_id' => $request->supplier,
+            'amount_paid' => $request->amount_paid,
+            'total' => ($request->price * $request->net_weight),
+        ]);
+
+
+        $stock->update([
+            'product_id' => $request->product_id,
+            'warehouse_id' => 1,
+            'net_weight' => $request->net_weight,
+            'gross_weight' => $request->gross_weight,
+            'customer_id' => 0,
+            'supplier_id' => $request->supplier,
+            'price' => $request->price,
+            'bags' => $request->bags,
+            'tares' => $request->tares,
+            'total' => ($request->price * $request->net_weight),
+            'action' => 'import',
+            'moisture_discount' => $request->moisture_discount ?? 0,
+            'user_id' => auth()->user()->id,
+            'amount_paid' => $request->amount_paid,
+        ]);
+
+        $stock->update([
+            'bag_balance' => $this->productBags($request->product_id),
+            'weight_balance' => $this->productWeight($request->product_id),
+            'current_balance' => supplierCredit($request->supplier)
+        ]);
+
+        $product = Products::find($request->product_id);
+
+        // $body  = 'We have received a supply of '.$request->bags.' bags of '.$product->name .' ('.$request->net_weight.' kg) from you at '. money($request->price) .' per kg for total of '.(money($request->price * $request->net_weight)).' thanks' ;
+        // $to = Supplier::find($request->supplier);
+        // $to = $to->phone;
+        // $this->sendSms($body, $to);
+
+        return redirect('/control/manage-stock')->with('success', 'Stock transaction has been sucessfuly updated');
+    }
+
     function deleteStock($id)
     {
         Cstock::where('id', $id)->delete();
@@ -165,9 +239,6 @@ class CostAnalysisController extends Controller
             $bags_total += $bags;
             $item_total = $net_weight * $price;
             $total_net_weight += $net_weight;
-
-
-
 
             $stock = Stock::create([
                 'product_id' => $product_id,
@@ -318,6 +389,16 @@ class CostAnalysisController extends Controller
         return back()->with('success', 'Stock has been recorded');
     }
 
+
+    function deleteStockeStoreKeeper($id)
+    {
+        $stock = Cstock::find($id);
+        if($stock->user_id == auth()->user()->id) {
+            $stock->delete();
+            return back()->with('success', 'Stock record has been deleted sucessfully');
+        }
+        return back()->with('error', 'You cannot delete this transaction');
+    }
 
     
 

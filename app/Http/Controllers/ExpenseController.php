@@ -22,9 +22,7 @@ class ExpenseController extends Controller
     {
         $categories = ExpenseCategory::all();
         $expenses = Expenses::with(['category', 'user'])->orderby('id', 'desc')->paginate(25);
-
-
-
+        
         $clients = Customer::get(['id', 'name', 'nick_name', 'company_name'])->toArray();
         $suppliers = Supplier::get(['id',  'name', 'nick_name', 'company_name'])->toArray();
 

@@ -35,5 +35,13 @@ class Stock extends Model
         }
     }
 
+
+    public function restock()
+    {
+        if($this->action == 'import') {
+            return $this->belongsTo(Restock::class, 'summary_id');
+        }
+    }
+
     
 }

@@ -109,11 +109,13 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/stock', [CostAnalysisController::class, 'stockStock']);
     Route::post('/add_store_stock', [CostAnalysisController::class, 'addToStockeStoreKeeper']);
     Route::get('/stock/{id}', [CostAnalysisController::class, 'generalStockLedgerIndex2']);
+    Route::get('/delete_store_stock/{id}', [CostAnalysisController::class, 'deleteStockeStoreKeeper']);
 
 
 
     Route::get('/manage-stock', [CostAnalysisController::class, 'coostanalysisIndex']);
     Route::post('/add-stocks', [CostAnalysisController::class, 'addStocks']);
+    Route::post('/edit_stock_transaction', [CostAnalysisController::class, 'editStockTransaction']);
     Route::get('/delete-stock/{id}', [CostAnalysisController::class, 'deleteStock']);
     Route::get('/general-stock-legder/{id}', [CostAnalysisController::class, 'generalStockLedgerIndex']);
 

@@ -25,188 +25,394 @@
 
                 <div class="col-md-12">
 
-                    <div class="card mb-3 shadow">
-                        <div class="card-body">
-                            <div class="d-flex mb-3 justify-content-between">
-                                <h4 class="fw-bold card-title">Add To Stock</h4>
-                            </div>
-                            <form action="/control/add-stocks" method="post"> @csrf
-                                <div class="row">
 
-
-                                    <div class="col-xl-2">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Select Product<span class="required">*</span></label>
-                                            <select name="product" id="product" class="form-control">
-                                                @foreach ($products as $product)
-                                                    <option value="{{ json_encode($product) }}"> {{ $product->name }} |
-                                                        {{ money($product->price) }} </option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" name="product_id" id="product_id"
-                                                class="form-control mt-2">
-                                            @error('product_id')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
+                    @isset($_GET['edit'])
+                        <div class="card mb-3 shadow" style="border: 1px solid green !important">
+                            <div class="card-body">
+                                <div class="d-flex mb-3 justify-content-between">
+                                    <h4 class="fw-bold card-title" style="font-size: 20px"> <i
+                                            class="fa fa-edit text-success "></i> Edit Transaction</h4>
+                                    <div>
+                                        <span class="badge fw-bold bg-warning text-white "> {{ $selected_stock->bags }} bags of
+                                            {{ $selected_stock->product->name }} </span>
+                                        <span class="badge fw-bold bg-success text-white ">
+                                            {{ number_format($selected_stock->net_weight, 1) }} kg,
+                                            {{ money($selected_stock->price) }} </span>
                                     </div>
+                                </div>
+                                <form action="/control/edit_stock_transaction" method="post"> @csrf
+                                    <div class="row">
 
-                                    <div class="col-xl-2">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Select Client<span class="required">*</span></label>
-                                            <select name="supplier" class="form-control" id="">
-                                                @foreach ($clients as $client)
-                                                    <option value="{{ $client->id }}"> {{ $client->name }} |
-                                                        {{ $client->name }} </option>
-                                                @endforeach
-                                            </select>
-                                            @error('supplier')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Select Product<span class="required">*</span></label>
+                                                <select name="product" id="product" class="form-control">
+                                                    @foreach ($products as $product)
+                                                        <option value="{{ json_encode($product) }}"
+                                                            {{ $product->id == $selected_stock->product_id ? 'selected' : '' }}>
+                                                            {{ $product->name }} |
+                                                            {{ money($product->price) }} </option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="hidden" name="product_id" id="product_id"
+                                                    class="form-control mt-2">
+
+                                                <input type="hidden" name="stock_id" value="{{ $selected_stock->id }}">
+                                                @error('product_id')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
                                         </div>
-                                    </div>
 
-
-
-
-                                    <div class="col-xl-1">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Bags<span class="required">*</span></label>
-                                            <input type="number" step="any" name="bags" value="{{ old('bag') }}"
-                                                class="form-control" placeholder="Total Bags">
-                                            @error('bags')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-xl-2">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Gross Weight<span class="required">*</span></label>
-                                            <input type="number" step="any" name="gross_weight"
-                                                value="{{ old('gross_weight') }}" class="form-control"
-                                                placeholder="Gross weight ">
-                                            @error('gross-weight')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="col-xl-1">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Tares<span class="required">*</span></label>
-                                            <input type="number" step="any" name="tares" value="{{ old('tares') }}"
-                                                class="form-control">
-                                            @error('tares')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-xl-1">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Mois/Dis<span class="required">*</span></label>
-                                            <input type="number" step="any" min="0" name="moisture_discount"
-                                                value="0" class="form-control">
-                                            @error('moisture_discount')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-xl-2">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Net Weight<span class="required">*</span></label>
-                                            <input type="number" step="any" name="net_weight"
-                                                value="{{ old('net_weight') }}" class="form-control" placeholder=""
-                                                readonly>
-                                            @error('net_weight')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="col-xl-1">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Price<span class="required">*</span></label>
-                                            <input type="number" step="any" name="price"
-                                                value="{{ old('price') }}" class="form-control" placeholder="Price">
-                                            @error('price')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-xl-2">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Rate<span class="required">*</span></label>
-                                            <input type="number" step="any" name="rate"
-                                                value="{{ old('rate') ?? 1027 }}" class="form-control"
-                                                placeholder="rate">
-                                            @error('rate')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-md-4 mt-3">
-
-                                        <div class="row  ">
-                                            <div class="col-md-6 offset-6">
-                                                <div class="row">
-                                                    <div class="col d-flex justify-content-end">
-                                                        <p class="mb-0" style="white-space: nowrap">Final Weight:</p>
-                                                    </div>
-                                                    <div class="col d-flex justify-content-end">
-                                                        <p class="mb-0 final_weight"> 0.00</p>
-                                                    </div>
-                                                </div>
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Select Client<span class="required">*</span></label>
+                                                <select name="supplier" class="form-control" id="">
+                                                    @foreach ($clients as $client)
+                                                        <option value="{{ $client->id }}"
+                                                            {{ $client->id == $selected_stock->supplier_id ? 'selected' : '' }}>
+                                                            {{ $client->name }} |
+                                                            {{ $client->name }} </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('supplier')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
                                             </div>
                                         </div>
 
 
-                                        <h2 class="fw-bold mt-0 text-danger d-flex justify-content-end"
-                                            style="font-size: 25px">
-                                            Amount Due:
-                                            <span class="stock_total ml-4">0.00</span>
-                                        </h2>
-                                    </div>
 
 
-                                    
-                                    <div class="col-xl-2">
-                                        <div class="mb-3">
-                                            <label class="form-label ">Amount Paid<span class="required">*</span></label>
-                                            <input type="number" step="any" name="amount_paid"
-                                                value="{{ old('amount_paid') ?? 0 }}" class="form-control"
-                                                placeholder="Amount paid">
-                                            @error('amount_paid')
-                                                <i class="text-danger small"> {{ $message }} </i>
-                                            @enderror
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Bags<span class="required">*</span></label>
+                                                <input type="number" step="any" name="bags"
+                                                    value="{{ $selected_stock->bags }}" class="form-control"
+                                                    placeholder="Total Bags">
+                                                @error('bags')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Gross Weight<span class="required">*</span></label>
+                                                <input type="number" step="any" name="gross_weight"
+                                                    value="{{ $selected_stock->gross_weight }}" class="form-control"
+                                                    placeholder="Gross weight ">
+                                                @error('gross-weight')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Tares<span class="required">*</span></label>
+                                                <input type="number" step="any" name="tares"
+                                                    value="{{ $selected_stock->tares }}" class="form-control">
+                                                @error('tares')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Mois/Dis<span class="required">*</span></label>
+                                                <input type="number" step="any" min="0" name="moisture_discount"
+                                                    value="{{ $selected_stock->moisture_discount }}" class="form-control">
+                                                @error('moisture_discount')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Net Weight<span class="required">*</span></label>
+                                                <input type="number" step="any" name="net_weight"
+                                                    value="{{ old('net_weight') }}" class="form-control" placeholder=""
+                                                    readonly>
+                                                @error('net_weight')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Price<span class="required">*</span></label>
+                                                <input type="number" step="any" name="price"
+                                                    value="{{ $selected_stock->price }}" class="form-control"
+                                                    placeholder="Price">
+                                                @error('price')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Rate<span class="required">*</span></label>
+                                                <input type="number" step="any" name="rate"
+                                                    value="{{ $selected_stock->restock->rate }}" class="form-control"
+                                                    placeholder="rate">
+                                                @error('rate')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-4 mt-3">
+
+                                            <div class="row  ">
+                                                <div class="col-md-6 offset-6">
+                                                    <div class="row">
+                                                        <div class="col d-flex justify-content-end">
+                                                            <p class="mb-0" style="white-space: nowrap">Final Weight:</p>
+                                                        </div>
+                                                        <div class="col d-flex justify-content-end">
+                                                            <p class="mb-0 final_weight"> 0.00</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <h2 class="fw-bold mt-0 text-danger d-flex justify-content-end"
+                                                style="font-size: 25px">
+                                                Amount Due:
+                                                <span class="stock_total ml-4">0.00</span>
+                                            </h2>
+                                        </div>
+
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Amount Paid<span class="required">*</span></label>
+                                                <input type="number" step="any" name="amount_paid"
+                                                    value="{{ $selected_stock->amount_paid }}" class="form-control"
+                                                    placeholder="Amount paid">
+                                                @error('amount_paid')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+
+
+                                        <div class="col-md-4 ">
+                                            <div class="d-flex justify-content-end mt-4 pt-2 ">
+                                                <button class="btn btn-block  btn-info">Update Stock Transaction </button>
+                                            </div>
                                         </div>
                                     </div>
-
-
-
-
-                                    <div class="col-md-4 ">
-                                        <div class="d-flex justify-content-end mt-4 pt-2 ">
-                                            <button class="btn btn-block  btn-primary">Submit Stock Transaction </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="card mb-3 shadow">
+                            <div class="card-body">
+                                <div class="d-flex mb-3 justify-content-between">
+                                    <h4 class="fw-bold card-title">Add To Stock</h4>
+                                </div>
+                                <form action="/control/add-stocks" method="post"> @csrf
+                                    <div class="row">
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Select Product<span
+                                                        class="required">*</span></label>
+                                                <select name="product" id="product" class="form-control">
+                                                    @foreach ($products as $product)
+                                                        <option value="{{ json_encode($product) }}"> {{ $product->name }} |
+                                                            {{ money($product->price) }} </option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="hidden" name="product_id" id="product_id"
+                                                    class="form-control mt-2">
+                                                @error('product_id')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Select Client<span
+                                                        class="required">*</span></label>
+                                                <select name="supplier" class="form-control" id="">
+                                                    @foreach ($clients as $client)
+                                                        <option value="{{ $client->id }}"> {{ $client->name }} |
+                                                            {{ $client->name }} </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('supplier')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+
+
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Bags<span class="required">*</span></label>
+                                                <input type="number" step="any" name="bags"
+                                                    value="{{ old('bag') }}" class="form-control"
+                                                    placeholder="Total Bags">
+                                                @error('bags')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Gross Weight<span class="required">*</span></label>
+                                                <input type="number" step="any" name="gross_weight"
+                                                    value="{{ old('gross_weight') }}" class="form-control"
+                                                    placeholder="Gross weight ">
+                                                @error('gross-weight')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Tares<span class="required">*</span></label>
+                                                <input type="number" step="any" name="tares"
+                                                    value="{{ old('tares') }}" class="form-control">
+                                                @error('tares')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Mois/Dis<span class="required">*</span></label>
+                                                <input type="number" step="any" min="0" name="moisture_discount"
+                                                    value="0" class="form-control">
+                                                @error('moisture_discount')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Net Weight<span class="required">*</span></label>
+                                                <input type="number" step="any" name="net_weight"
+                                                    value="{{ old('net_weight') }}" class="form-control" placeholder=""
+                                                    readonly>
+                                                @error('net_weight')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-xl-1">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Price<span class="required">*</span></label>
+                                                <input type="number" step="any" name="price"
+                                                    value="{{ old('price') }}" class="form-control" placeholder="Price">
+                                                @error('price')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Rate<span class="required">*</span></label>
+                                                <input type="number" step="any" name="rate"
+                                                    value="{{ old('rate') ?? 1027 }}" class="form-control"
+                                                    placeholder="rate">
+                                                @error('rate')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-4 mt-3">
+
+                                            <div class="row  ">
+                                                <div class="col-md-6 offset-6">
+                                                    <div class="row">
+                                                        <div class="col d-flex justify-content-end">
+                                                            <p class="mb-0" style="white-space: nowrap">Final Weight:</p>
+                                                        </div>
+                                                        <div class="col d-flex justify-content-end">
+                                                            <p class="mb-0 final_weight"> 0.00</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <h2 class="fw-bold mt-0 text-danger d-flex justify-content-end"
+                                                style="font-size: 25px">
+                                                Amount Due:
+                                                <span class="stock_total ml-4">0.00</span>
+                                            </h2>
+                                        </div>
+
+
+
+                                        <div class="col-xl-2">
+                                            <div class="mb-3">
+                                                <label class="form-label ">Amount Paid<span class="required">*</span></label>
+                                                <input type="number" step="any" name="amount_paid"
+                                                    value="{{ old('amount_paid') ?? 0 }}" class="form-control"
+                                                    placeholder="Amount paid">
+                                                @error('amount_paid')
+                                                    <i class="text-danger small"> {{ $message }} </i>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+
+
+                                        <div class="col-md-4 ">
+                                            <div class="d-flex justify-content-end mt-4 pt-2 ">
+                                                <button class="btn btn-block  btn-primary">Submit Stock Transaction </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    @endisset
+
 
 
 
@@ -311,7 +517,8 @@
                                                 {{ money($stock->price) }}
                                             </td>
                                             <td class="align-middle">
-                                                <span class="fw-semi-bold" style="font-weight: 600"  >{{ money($stock->total) }}</span>
+                                                <span class="fw-semi-bold"
+                                                    style="font-weight: 600">{{ money($stock->total) }}</span>
                                             </td>
 
                                             <td class="align-middle">
@@ -322,9 +529,16 @@
                                                 {{ $stock->user->name }}
                                             </td>
                                             <td class="align-middle ">
-                                                <a onclick="return confirm('This transaction will be deleted')"
-                                                    class="mr-2 btn-danger shadow text-white px-2"> <i
-                                                        class="fa fa-trash"></i> </a>
+                                                <div class="d-flex  justify-content-end">
+
+                                                    @if ($stock->bags_out == 0)
+                                                        <a href="/control/manage-stock?edit={{ $stock->id }}&&action=edit"
+                                                            style="border-radius: 4px; font-size : 20px "
+                                                            class="fw-bold text-info mr-2"> <i class="fa fa-edit"></i>
+                                                        </a>
+                                                    @endif
+
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
