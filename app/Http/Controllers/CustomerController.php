@@ -95,6 +95,16 @@ class CustomerController extends Controller
     }
 
 
+    function customerLedgerIndex($customer_id)
+    {
+        $customer = Customer::findorfail($customer_id);
+        $stocks = Stock::where(['customer_id' => $customer->id])->orderby('id', 'desc')->paginate(50);
+        $total_capital = Stock::where(['customer_id' => $customer->id, 'action' => 'capital'])->sum('total');
+        $total_supplied = Stock::where(['customer_id' => $customer->id, 'action' => 'export'])->sum('total');
+        return view('control.print_exporters_ledger', compact(['customer', 'stocks', 'total_capital', 'total_supplied']));
+    }
+
+
 
     function customerBalanceIndex()
     {

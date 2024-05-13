@@ -14,6 +14,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\VisitorController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -85,6 +86,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::post('/edit_customer', [CustomerController::class, 'editCustomer']);
     Route::get('/customers', [CustomerController::class, 'customerListIndex']);
     Route::get('/customer/{customer_id}', [CustomerController::class, 'customerIndex']);
+    Route::get('/customer/ledger/{customer_id}', [CustomerController::class, 'customerLedgerIndex']);
     Route::get('/customers/balance', [CustomerController::class, 'customerBalanceIndex']);
 
 
@@ -115,7 +117,9 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     Route::get('/manage-stock', [CostAnalysisController::class, 'coostanalysisIndex']);
     Route::post('/add-stocks', [CostAnalysisController::class, 'addStocks']);
+    Route::post('/adjustment', [CostAnalysisController::class, 'adjustment']);
     Route::post('/edit_stock_transaction', [CostAnalysisController::class, 'editStockTransaction']);
+    Route::get('/delete_stock_act/{id}', [CostAnalysisController::class, 'deleteStockAccount']);
     Route::get('/delete-stock/{id}', [CostAnalysisController::class, 'deleteStock']);
     Route::get('/general-stock-legder/{id}', [CostAnalysisController::class, 'generalStockLedgerIndex']);
 
@@ -126,11 +130,16 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     Route::get('/today/{id}', [StaffController::class, 'todayInfo']);
     Route::get('/today-export', [StaffController::class, 'todayExport']);
+    Route::get('/all-exported', [StaffController::class, 'allExportIndex']);
     Route::get('/daily_report', [ReportController::class, 'DailyReport']);
 });
 
 
 Route::get('/login', [AuthController::class, 'loginIndex'])->name('login');
+Route::get('/logout', function () {
+    Auth::logout();
+    return redirect('/login')->with('success', 'You have been logged out');
+});
 Route::post('/user_login', [AuthController::class, 'userLogin']);
 
 

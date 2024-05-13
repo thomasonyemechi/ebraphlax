@@ -94,7 +94,6 @@
                                         <th class="border-0">Bag Bal </th>
                                         <th class="border-0">Weight Bal </th>
                                         <th class="border-0">Added By</th>
-                                        <th></th>
                                     </tr>           
                                 </thead>
                                 <tbody>
@@ -158,17 +157,18 @@
                                                 @endif
                                             </td>
 
-
+                                            <td class="align-middle">
+                                                {{ number_format($stock->bag_balance) }}
+                                            </td>
+                                            <td class="align-middle">
+                                                {{ number_format($stock->weight_balance) }}
+                                            </td>
 
 
                                             <td class="align-middle">
                                                 {{ $stock->user->name }}
                                             </td>
-                                            <td class="align-middle ">
-                                                <a onclick="return confirm('This transaction will be deleted')"
-                                                    class="mr-2 btn-danger shadow text-white px-2"> <i
-                                                        class="fa fa-trash"></i> </a>
-                                            </td>
+                                  
                                         </tr>
                                     @endforeach
                                 </tbody>

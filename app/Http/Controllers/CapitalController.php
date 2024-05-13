@@ -14,7 +14,7 @@ class CapitalController extends Controller
         Validator::make($request->all(), [
             'user_id' => 'required|integer',
             'amount' => 'required|integer',
-            'narration' => 'required|string'
+            'narration' => 'string'
         ])->validate();
 
        $capital = Stock::create([
@@ -22,6 +22,9 @@ class CapitalController extends Controller
             'total' => $request->amount,
             'action' => 'capital',
             'remark' => $request->narration,
+            'type' => $request->type,
+            'vocher_number' => $request->vocher_number,
+            'bank' => $request->bank,
         ]);
 
 
@@ -47,7 +50,7 @@ class CapitalController extends Controller
 
     function removeCapital($capital_id)
     {
-        Capital::where('id', $capital_id)->delete();
+        Stock::where('id', $capital_id)->delete();
         return back()->with('success', 'Capital has been removed from this account');
     }
 }

@@ -62,3 +62,9 @@ function getAmmountPaid($sales_id)
 
     return $sales_sumary->amount_paid;
 }
+
+
+
+function forceLedger($transaction)
+{
+}

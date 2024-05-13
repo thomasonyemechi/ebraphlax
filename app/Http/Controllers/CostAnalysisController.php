@@ -42,10 +42,10 @@ class CostAnalysisController extends Controller
     function generalStockLedgerIndex($product_id)
     {
         $product = Products::findorfail($product_id);
-        $stocks = Cstock::where(['product_id' => $product_id])->orderby('id', 'desc')->paginate(100);
+        $stocks = Stock::where(['product_id' => $product_id,])->orderby('id', 'desc')->paginate(100);
 
-        $total_stock = Cstock::where(['product_id' => $product_id])->count();
-        $total_in = Cstock::where(['product_id' => $product_id, ['bags', '>', 0 ]])->count();
+        $total_stock = Stock::where(['product_id' => $product_id])->count();
+        $total_in = Stock::where(['product_id' => $product_id, ['bags', '>', 0 ]])->count();
         $bag_balance = $this->productBags($product->id);
         $weight_balance = $this->productWeight($product->id);
         return view('control.general_stock_legder', compact(['product', 'stocks', 'bag_balance', 'weight_balance', 'total_stock', 'total_in']));
@@ -53,7 +53,54 @@ class CostAnalysisController extends Controller
 
 
 
+    function adjustment(Request $request)
+    {
+        
+        Validator::make($request->all(), [
+            'adjustment' => 'required',
+            'change_value' => 'required', 
+        ])->validate();
 
+
+        $ex_stock = Stock::find($request->stock_id);
+
+
+
+
+
+        $stock = Stock::create([
+            'product_id' => $ex_stock->product_id,
+            'warehouse_id' => 1,
+            'supplier_id' => $ex_stock->supplier_id,
+            'summary_id' => $ex_stock->id,
+            'price' => $ex_stock->price,
+            'total' => $request->adjustment_total,
+            'action' => 'adjustment',
+            'user_id' => auth()->user()->id,
+        ]);
+
+        if($request->adjustment == 'mositure')
+        {
+            $stock->update([
+                'action' => 'moisture adjustment',
+                'moisture_discount' => $request->change_value,
+            ]);
+        }elseif($request->adjustment == 'price')
+        {
+            $stock->update([
+                'action' => 'price adjustment',
+                'price' => $request->change_value,
+            ]);
+        }
+
+
+        $stock->update([
+            'current_balance' => supplierCredit($request->supplier)
+        ]);
+
+
+        return back()->with('success', 'Adjustment has been succesfuly submited'); 
+    }
 
 
 
@@ -74,7 +121,6 @@ class CostAnalysisController extends Controller
 
         
         $res = Restock::create([
-            
             'product_id' => $request->product_id,
             'net_weight' => $request->net_weight,
             'gross_weight' => $request->gross_weight,
@@ -195,6 +241,13 @@ class CostAnalysisController extends Controller
     function deleteStock($id)
     {
         Cstock::where('id', $id)->delete();
+        return back()->with('success', 'Stock has been sucessfuly deleted');
+    }
+
+
+    function deleteStockAccount($id)
+    {
+        Stock::where('id', $id)->delete();
         return back()->with('success', 'Stock has been sucessfuly deleted');
     }
 

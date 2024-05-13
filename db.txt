@@ -1,0 +1,10 @@
+ALTER TABLE `stocks` ADD `type` VARCHAR(225) NULL AFTER `lorry_number`, ADD `vocher_number` VARCHAR(255) NULL AFTER `type`;
+
+
+ALTER TABLE `stocks` ADD `date` VARCHAR(50) NULL AFTER `summary_id`;
+
+
+ALTER TABLE `stocks` ADD `bank` VARCHAR(100) NULL AFTER `vocher_number`;
+
+
+ALTER TABLE `capitals` ADD `bank` VARCHAR(225) NULL AFTER `type`, ADD `vocher_number` VARCHAR(255) NULL AFTER `bank`, ADD `transfer_type` VARCHAR(255) NULL AFTER `vocher_number`;

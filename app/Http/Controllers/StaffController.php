@@ -186,6 +186,15 @@ class StaffController extends Controller
     }
 
 
+    public function allExportIndex()
+    {
+
+        $exports =SalesSummary::with(['sales'])->orderby('id', 'desc')->paginate(25);
+
+        return view('control.all-exported',compact(['exports']));
+    }
+
+
 
     public function todayInfo(Request $request, $id)
     {

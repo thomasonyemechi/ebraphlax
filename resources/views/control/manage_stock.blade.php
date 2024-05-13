@@ -475,7 +475,6 @@
                                         <th class="border-0">Net/<br>weight </th>
                                         <th class="border-0">Price </th>
                                         <th class="border-0">Total</th>
-                                        <th class="border-0">Paid</th>
                                         <th class="border-0">Added By</th>
                                         <th></th>
                                     </tr>
@@ -521,9 +520,6 @@
                                                     style="font-weight: 600">{{ money($stock->total) }}</span>
                                             </td>
 
-                                            <td class="align-middle">
-                                                {{ money($stock->amount_paid) }}
-                                            </td>
 
                                             <td class="align-middle">
                                                 {{ $stock->user->name }}
@@ -531,12 +527,30 @@
                                             <td class="align-middle ">
                                                 <div class="d-flex  justify-content-end">
 
+
+
+
                                                     @if ($stock->bags_out == 0)
                                                         <a href="/control/manage-stock?edit={{ $stock->id }}&&action=edit"
                                                             style="border-radius: 4px; font-size : 20px "
                                                             class="fw-bold text-info mr-2"> <i class="fa fa-edit"></i>
                                                         </a>
+
+
+                                                        <a href="/control/delete_stock_act/{{ $stock->id }}"
+                                                            style="border-radius: 4px; font-size : 20px "
+                                                            onclick="return confirm('This transaction will be totally removed from database ')"
+                                                            class="fw-bold text-danger"> <i class="fa fa-trash"></i>
+                                                        </a>
                                                     @endif
+
+                                                    <a href="javascript:;" style="border-radius: 4px; font-size : 20px "
+                                                        class="fw-bold text-success ml-2 adjustment "
+                                                        data-data=" {{ json_encode($stock) }} "> <i
+                                                            class="fa fa-pen"></i>
+                                                    </a>
+
+
 
                                                 </div>
                                             </td>
@@ -557,6 +571,68 @@
             </div>
         </div>
     </div>
+
+
+
+    <div class="modal fade" id="make_adjustment" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title m-0" id="exampleModalLongTitle">Make Adjustment </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <form method="POST" class="row" action="/control/adjustment">
+                        @csrf
+
+                        <div class="col-lg-12 mb-2 ">
+                            <div class="dis-text text-white mb-2">
+
+
+                            </div>
+                            <label for="">Adjustment Type</label>
+                            <select name="adjustment" class="form-control" id="">
+                                <option>mositure</option>
+                                <option>price</option>
+                                <option>tares</option>
+                            </select>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Change Value<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="change_value">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Amounted Price <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" readonly name="adjustment_total">
+                                    <input type="hidden" class="form-control" name="change_net_weight">
+                                    <input type="hidden" class="form-control" name="change_price">
+                                    <input type="hidden" class="form-control" name="stock_id">
+
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex mt-3 justify-content-end">
+                                <button type="submit" class="btn py-2 btn-primary">Submit Adjustment </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 @endsection
 
 
@@ -667,6 +743,62 @@
             })
 
             makeDisplay();
+        })
+    </script>
+
+    <script>
+        $(function() {
+            $('body').on('click', '.adjustment', function() {
+                data = $(this).data('data');
+                data = JSON.parse(data);
+                console.log(data);
+                modal = $('#make_adjustment');
+
+                modal.modal('show');
+
+                modal.find('.dis-text').html(`
+                    <div class="d-flex justify-between " >
+                            <span class="badge mr-1 bg-info" >Net Weight : ${data.net_weight} </span>
+                            <span class="badge mr-1 bg-success" >Tares : ${data.tares} </span>
+                            <span class="badge mr-1 bg-warning" >Pirce : ${data.price} </span>
+                            <span class="badge mr-1 bg-danger" >Moisture Dis : ${data.moisture_discount} </span>
+                    </div>
+                `)
+
+                modal.find('input[name="change_net_weight"]').val(data.net_weight);
+                modal.find('input[name="change_price"]').val(data.price);
+                modal.find('input[name="stock_id"]').val(data.id);
+            })
+
+
+            $('input[name="change_value"]').on('keyup', function() {
+                calculateTotal();
+            })
+
+            $('select[name="adjustment"]').on('keyup', function() {
+                calculateTotal();
+            })
+
+
+            function calculateTotal() {
+                action = $('select[name="adjustment"]').val();
+                change_value = $('input[name="change_value"]').val();
+                net_weight = $('input[name="change_net_weight"]').val();
+                price = $('input[name="change_price"]').val();
+                total = $('input[name="adjustment_total"]');
+                console.log(action, change_value, net_weight);
+                if(action == 'price') {
+                    total.val(net_weight * change_value);
+                }
+
+                if(action == 'mositure') {
+                    total.val(price * change_value);
+                }
+
+                if(action == 'tares') {
+                    total.val(price * change_value);
+                }
+            }
         })
     </script>
 @endpush

@@ -29,7 +29,7 @@
             <div class="row">
 
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="card ">
                         <div class="card-body">
                             <div class="text-center">
@@ -74,7 +74,7 @@
                         {{-- <button class="btn btn-info "> View Ledger </button> --}}
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
                             <h5 class=" fw-bold ">Account Summary </h5>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex  justify-content-between ">
@@ -123,12 +123,14 @@
 
 
 
-                            <div>
+                            <div class="table-responsive">
                                 <table class="table table-sm mt-2 p-0 ">
                                     <thead>
                                         <tr>
                                             <th>Amount</th>
-                                            <th>Status</th>
+                                            <th>Type</th>
+                                            <th>Vocher <br> Number </th>
+                                            <th>Date</th>
                                             <th>added by</th>
                                             <th></th>
                                         </tr>
@@ -138,6 +140,9 @@
                                         @foreach ($capitals as $capital)
                                             <tr>
                                                 <td>{{ money($capital->total) }}</td>
+                                                <td>{{ $capital->type }}</td>
+                                                <td>{{ $capital->vocher_number }}</td>
+
                                                 <td>
                                                     <div class="badge py-1 badge-success">
                                                         {{ date('j M, Y', strtotime($capital->created_at)) }}
@@ -167,74 +172,10 @@
                             <div class="d-flex  justify-content-between ">
                                 <h5 class="fw-bold">Ledger</h5>
                             </div>
-                            <table class="table table-bordered mt-2 p-0 ">
-                                <thead>
-                                    <tr>
-                                        <th class="align-middle">Date</th>
-                                        <th class="align-middle">Commodity</th>
-                                        <th class="align-middle">Bags</th>
 
-                                        <th class="align-middle">Gross <br>/wt (kg)</th>
-                                        <th class="align-middle">Tares</th>
-                                        <th class="align-middle">Moisture <br>/dis</th>
-
-                                        <th class="align-middle">Net<br>/wt (kg)</th>
-
-                                        <th class="align-middle">Price (₦)</th>
-                                        {{-- <th class="align-middle">Ext Price</th>
-                                        <th class="align-middle">Ammount Paid</th> --}}
-                                        <th class="align-middle">Debit</th>
-
-                                        <th class="align-middle">Credit </th>
-
-                                        <th class="align-middle">Balance </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    @foreach ($stocks as $stock)
-                                        @php
-                                            $amount_paid = getAmmountPaid($stock->summary_id);
-                                        @endphp
-                                        @if ($stock->action == 'import')
-                                            <tr>
-                                                <td> {{ $stock->created_at }} </td>
-                                                <td> {{ $stock->product->name }} Import </td>
-                                                <td> {{ number_format(abs($stock->bags)) }} </td>
-                                                <td> {{ number_format(abs($stock->gross_weight)) }} </td>
-
-                                                <td> {{ abs($stock->bags * 1.5) }} </td>
-                                                <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
-                                                <td> {{ number_format(abs($stock->net_weight)) }} </td>
-                                                <td> {{ money($stock->price) }} </td>
-                                                <td>-</td>
-
-                                                <td> {{ money($stock->total) }} </td>
-                                                <td> {{ money($stock->current_balance) }} </td>
-
-
-                                            </tr>
-                                        @elseif($stock->action == 'capital')
-                                            <tr>
-                                                <td> {{ $stock->created_at }} </td>
-                                                <td> {{ $stock->remark ?? 'Capital Given' }} </td>
-                                                <td> - </td>
-                                                <td> - </td>
-                                                <td> - </td>
-                                                <td> - </td>
-                                                <td> - </td>
-                                                <td>-</td>
-                                                <td> {{ money($stock->total) }} </td>
-
-                                                <td>-</td>
-                                                <td> {{ money($stock->current_balance + $stock->total) }} </td>
-
-                                            </tr>
-                                        @endif
-                                    @endforeach
-
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                @include('control.ledger')
+                            </div>
                         </div>
                     </div>
 
@@ -264,15 +205,33 @@
                     <form method="POST" class="row" action="/control/add_capital">
                         @csrf
                         <div class="col-lg-12 mb-2 ">
-                            <label class="form-label">Capital Amount<span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" name="amount">
                             <input type="hidden" name="action" value="import">
                             <input type="hidden" name="user_id" value="{{ $supplier->id }}">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Capital Amount<span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="amount">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Type<span class="text-danger">*</span></label>
+                                    <select name="type" class="form-control" id="">
+                                        <option>Cash</option>
+                                        <option>Transfer</option>
+                                        <option>Cheque</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>
                             <textarea name="narration" class="form-control" rows="2"></textarea>
 
+
                             <div class="d-flex mt-3 justify-content-end">
+                                <input type="text" class="form-control mr-3" name="bank"
+                                    style="width: 110px; !important" placeholder="Bank">
+                                <input type="text" class="form-control mr-3" name="vocher_number"
+                                    style="width: 200px; !important" placeholder="Vocher Number">
                                 <button type="submit" class="btn py-2 btn-primary">Add Capital</button>
                             </div>
                         </div>

@@ -56,31 +56,40 @@
 
                 <li class="menu-title">Store Management</li>
 
-              
 
 
-                <li>
-                    <a href="#" class=""><i class="flaticon-expenses"></i><span>
-                            Today Info
-                            <span class="float-right menu-arrow">
-                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <polyline points="10 15 15 20 20 15"></polyline>
-                                    <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                </svg>
-                            </span>
-                        </span></a>
-                    <ul class="submenu">
-                        <li>
-                            <a href="/control/today/{{ auth()->user()->id }}">Overview </a>
-                        </li>
-                        <li>
-                            <a href="/control/today-export">Export</a>
-                        </li>
-                    </ul>
-                </li>
+                @if ($mis->cost_analysis)
+                    <li>
+                        <a href="#" class=""><i class="flaticon-expenses"></i><span>
+                                Today Info
+                                <span class="float-right menu-arrow">
+                                    <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="10 15 15 20 20 15"></polyline>
+                                        <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                    </svg>
+                                </span>
+                            </span></a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="/control/today/{{ auth()->user()->id }}">Overview </a>
+                            </li>
+
+                            <li>
+                                <a href="/control/today-export">Export</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="">
+                        <a class="" href="/control/all-exported" class="">
+                            <i class="flaticon-bill"></i><span>All Cosignment </span>
+                        </a>
+                    </li>
+
+                @endif
 
 
 
@@ -96,7 +105,7 @@
                 @if ($mis->manage_stock)
                     <li class="">
                         <a class="" href="/control/stock" class="">
-                            <i class="flaticon-bill"></i><span> Stock  </span>
+                            <i class="flaticon-bill"></i><span> Stock </span>
                         </a>
                     </li>
                 @endif
@@ -143,7 +152,7 @@
                     </li>
                 @endif
 
-                
+
                 @if ($mis->manage_customer)
                     <li>
                         <a href="#" class=""><i class="flaticon-new-product"></i><span>
@@ -165,7 +174,7 @@
                             </li>
                             <li class=""><a href="/control/suppliers/balance">Suppliers Balance</a>
                             </li>
-                              <li class=""><a href="/control/suppliers/account">Bank Details</a>
+                            <li class=""><a href="/control/suppliers/account">Bank Details</a>
                             </li>
 
                             <li class=""><a href="javascript::">Inactive Supplier </a>

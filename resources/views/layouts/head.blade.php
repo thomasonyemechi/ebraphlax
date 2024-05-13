@@ -1,8 +1,8 @@
 <div class="topbar">
     <!-- LOGO -->
     <div class="topbar-left">
-        <div class="logo" style="display: inline"  >
-            <h4 class="fw-bold ml-3 fs-5" style="display: inline !important" > {{ env('APP_NAME') }} </h4>
+        <div class="logo" style="display: inline">
+            <h4 class="fw-bold ml-3 fs-5" style="display: inline !important"> {{ env('APP_NAME') }} </h4>
         </div>
         <div class="float-right">
             <button class="button-menu-mobile ic-collapsed-btn mobile-device-arrow open-left">
@@ -20,8 +20,7 @@
             <!-- language-->
             <!-- sync-->
             <li class="dropdown notification-list list-inline-item d-md-inline-block">
-                <a class="btn btn-outline-primary ic-pos-button-header"
-                    href="/control/pos">
+                <a class="btn btn-outline-primary ic-pos-button-header" href="/control/pos">
                     <i class="mdi mdi-cart-outline"></i> Acct
                 </a>
             </li>
@@ -43,21 +42,21 @@
                 <div class="dropdown notification-list nav-pro-img">
                     <a class="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#"
                         role="button" aria-haspopup="false" aria-expanded="false">
-                            <img alt="avatar" src="{{ Avatar::create(auth()->user()->name)->toBase64() }}"
+                        <img alt="avatar" src="{{ Avatar::create(auth()->user()->name)->toBase64() }}"
                             class="rounded-circle" />
                     </a>
                     <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
 
-                        <a href="#" class="dropdown-item">
-                             {{auth()->user()->name}} <br>
-                            <small> {{auth()->user()->email}} </small>
+                        <a href="" class="dropdown-item">
+                            {{ auth()->user()->name }} <br>
+                            <small> {{ auth()->user()->email }} </small>
                         </a>
 
-                        <a class="dropdown-item logout-btn" href="#">
+                        <a class="dropdown-item" href="/logout">
                             <i class="mdi mdi-power text-danger"></i>
                             logout</a>
 
-                  
+
                     </div>
                 </div>
             </li>

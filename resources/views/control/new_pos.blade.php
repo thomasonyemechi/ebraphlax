@@ -132,17 +132,18 @@
                                                         min="0" max="{{ $stock->moisture_discount }}" step="any"
                                                         name="moisture_discount_{{ $stock->id }}"
                                                         value="{{ $stock->moisture_discount }}"
-                                                        data-index="{{ $stock->id }}"  style="width:60px"></td>
+                                                        data-index="{{ $stock->id }}" style="width:60px"></td>
                                                 <td>
                                                     <input type="number" class="tares form-control px-2 me-2 py-0 p-0"
                                                         min="1" max="{{ $stock->tares }}" step="any"
                                                         value="{{ $stock->tares }}" data-index="{{ $stock->index }}"
-                                                        name="tares_{{ $stock->id }}"
-                                                        data-index="{{ $stock->id }}" style="width:100px">
+                                                        name="tares_{{ $stock->id }}" data-index="{{ $stock->id }}"
+                                                        style="width:100px">
                                                 </td>
                                                 <td><input type="number" class="net_weight form-control px-2 me-2 py-0 p-0"
                                                         min="1" max="{{ $stock->net_weight - $stock->weight_out }}"
-                                                        step="any" value="{{ $stock->net_weight - $stock->weight_out }}"
+                                                        step="any"
+                                                        value="{{ $stock->net_weight - $stock->weight_out }}"
                                                         data-index="{{ $stock->id }}"
                                                         name="net_weight_{{ $stock->id }}" style="width:100px"></td>
                                                 <td><input type="number" class="cart_price form-control px-2 me-2 py-0 p-0"
@@ -403,6 +404,14 @@
 
 
 
+                const number_format = (num) => {
+                    var numb = new Intl.NumberFormat();
+                    return numb.format(num);
+                }
+
+
+
+
                 trno = `<?= $_GET['trno'] ?>`;
 
                 function getItems() {
@@ -448,16 +457,18 @@
 
                             total_net_weight += net_weight;
                             total_price += parseInt(row.find(`input[name="price_${indexx}"]`)
-                            .val()) *
+                                    .val()) *
                                 net_weight
 
                             arr = {
                                 stock_id: indexx,
                                 bags: parseInt(row.find(`input[name="bags_${indexx}"]`).val()),
-                                tares: parseInt(row.find(`input[name="tares_${indexx}"]`).val()),
-                                moisture_discount: parseInt(row.find(`input[name="moisture_discount_${indexx}"]`).val()),
-                                price: parseInt(row.find(`input[name="price_${indexx}"]`)
+                                tares: parseInt(row.find(`input[name="tares_${indexx}"]`)
                                 .val()),
+                                moisture_discount: parseInt(row.find(
+                                    `input[name="moisture_discount_${indexx}"]`).val()),
+                                price: parseInt(row.find(`input[name="price_${indexx}"]`)
+                                    .val()),
                                 net_weight: parseInt(row.find(
                                     `input[name="net_weight_${indexx}"]`).val()),
                             }
@@ -469,7 +480,7 @@
 
                     $('.total_price').html(money_format(total_price))
                     $('.cart_total').html(money_format(total_price))
-                    $('.total_net_weight').html(money_format(total_net_weight))
+                    $('.total_net_weight').html(`${number_format(total_net_weight)} kg`)
                     $('.average_amount').html(money_format(total_price / total_net_weight))
                     $('#advance').attr('data-total', total_price)
 
