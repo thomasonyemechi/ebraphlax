@@ -55,9 +55,7 @@
             <div class="card-body m-0 p-2">
                 <div class="d-flex justify-content-between py-2">
                     <span>Balance</span>
-                    @php
-                        $balance = customerCredit($customer->id);
-                    @endphp
+               ]
                     <span class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} ">
                         {{ $balance > 0 ? 'To Supply' : 'owing' }}
 

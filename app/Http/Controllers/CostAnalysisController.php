@@ -52,52 +52,46 @@ class CostAnalysisController extends Controller
     }
 
 
+    function enter_sumary(Request $request)
+    {
+        SalesSummary::where('id', $request->summary_id)->update([
+            'gross_weight' => $request->gross_weight,
+            'net_weight' => $request->net_weight,
+            'tares' => $request->tares,
+            'bags' => $request->bags,
+            'moisture_discount' => $request->moisture_discount,
+        ]);
+        return back()->with('success', 'Exported goods summary has been sucessfuly updated');
+    }
+
+
 
     function adjustment(Request $request)
     {
         
         Validator::make($request->all(), [
             'adjustment' => 'required',
-            'change_value' => 'required', 
+            'change_value' => 'required',
+            'adjustment_total' => 'required'
         ])->validate();
 
-
-        $ex_stock = Stock::find($request->stock_id);
-
-
-
-
+        // $ex_stock = Stock::find($request->stock_id);
 
         $stock = Stock::create([
-            'product_id' => $ex_stock->product_id,
+            'product_id' => $request->product_id,
             'warehouse_id' => 1,
-            'supplier_id' => $ex_stock->supplier_id,
-            'summary_id' => $ex_stock->id,
-            'price' => $ex_stock->price,
+            'supplier_id' => $request->supplier_id,
+            'price' => $request->change_price,
             'total' => $request->adjustment_total,
-            'action' => 'adjustment',
+            'action' => $request->adjustment,
             'user_id' => auth()->user()->id,
+            'remark' => $request->remark,
+            'net_weight' => $request->change_value
         ]);
-
-        if($request->adjustment == 'mositure')
-        {
-            $stock->update([
-                'action' => 'moisture adjustment',
-                'moisture_discount' => $request->change_value,
-            ]);
-        }elseif($request->adjustment == 'price')
-        {
-            $stock->update([
-                'action' => 'price adjustment',
-                'price' => $request->change_value,
-            ]);
-        }
-
 
         $stock->update([
-            'current_balance' => supplierCredit($request->supplier)
+            'current_balance' => supplierCredit($request->supplier_id)
         ]);
-
 
         return back()->with('success', 'Adjustment has been succesfuly submited'); 
     }
@@ -222,12 +216,7 @@ class CostAnalysisController extends Controller
             'amount_paid' => $request->amount_paid,
         ]);
 
-        $stock->update([
-            'bag_balance' => $this->productBags($request->product_id),
-            'weight_balance' => $this->productWeight($request->product_id),
-            'current_balance' => supplierCredit($request->supplier)
-        ]);
-
+  
         $product = Products::find($request->product_id);
 
         // $body  = 'We have received a supply of '.$request->bags.' bags of '.$product->name .' ('.$request->net_weight.' kg) from you at '. money($request->price) .' per kg for total of '.(money($request->price * $request->net_weight)).' thanks' ;

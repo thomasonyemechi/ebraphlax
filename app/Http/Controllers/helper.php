@@ -26,11 +26,9 @@ function itemQty($id)
 function customerCredit($user_id)
 {
     $total_received = Stock::where(['customer_id' => $user_id, 'action' => 'export' , ])->sum('total');
-    $amount_paid = Stock::where(['customer_id' => $user_id, 'action' => 'export' , ])->sum('amount_paid');
-
     $total_capital = Stock::where(['customer_id' => $user_id, 'action' => 'capital'])->sum('total');
 
-    return ($total_capital + $amount_paid) - $total_received;
+    return ($total_capital ) - $total_received;
     
 }
 
@@ -39,12 +37,11 @@ function customerCredit($user_id)
 function supplierCredit($supplier_id)
 {
     $total_received = Stock::where(['supplier_id' => $supplier_id, 'action' => 'import'])->sum('total');
-
-    $amount_paid = Stock::where(['supplier_id' => $supplier_id, 'action' => 'import'])->sum('amount_paid');
-
+    $adjustment_1 = Stock::where([ 'supplier_id' => $supplier_id, ['action',  'like', "%adjustment%"]])->sum('total');
+    $adjustment = $adjustment_1;
     $total_capital = Stock::where(['supplier_id' => $supplier_id, 'action' => 'capital'])->sum('total');
 
-    return ($total_capital + $amount_paid) - $total_received;
+    return ($total_capital - $total_received) - $adjustment;
 }
 
 
@@ -67,4 +64,25 @@ function getAmmountPaid($sales_id)
 
 function forceLedger($transaction)
 {
+}
+
+
+
+function touchBalance($stock_id, $client_id , $action="supplier")
+{
+    if($action == 'supplier') {
+        $total_received = Stock::where([['id', '<=', $stock_id], 'supplier_id' => $client_id, 'action' => 'import'])->sum('total');
+        $adjustment_1 = Stock::where([['id', '<=', $stock_id], 'supplier_id' => $client_id, ['action',  'like', "%adjustment%"]])->sum('total');
+        $adjustment = $adjustment_1;
+        $total_capital = Stock::where([['id', '<=', $stock_id], 'supplier_id' => $client_id, 'action' => 'capital'])->sum('total');
+    
+        return ($total_capital - $total_received) - $adjustment;
+    }else {
+        $total_received = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, 'action' => 'export' , ])->sum('total');
+    
+        $total_capital = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, 'action' => 'capital'])->sum('total');
+    
+        return ($total_capital ) - $total_received;
+    }
+
 }

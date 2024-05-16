@@ -220,18 +220,11 @@
 
 
                             <div class="row" >
-                                <div class="col-md-6" >
+                                <div class="col-md-12" >
                                     <label class="form-label">Capital Amount<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" name="amount">
                                 </div>
-                                <div class="col-md-6" >
-                                    <label class="form-label">Type<span class="text-danger">*</span></label>
-                                    <select name="type" class="form-control" id="">
-                                        <option>Cash</option>
-                                        <option>Transfer</option>
-                                        <option>Cheque</option>
-                                    </select>
-                                </div>
+                       
                             </div>
 
                             <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>
@@ -239,8 +232,7 @@
 
 
                             <div class="d-flex mt-3 justify-content-end">
-                                <input type="text" class="form-control mr-3" name="bank" style="width: 110px; !important" placeholder="Bank" >
-                                <input type="text" class="form-control mr-3" name="vocher_number" style="width: 200px; !important" placeholder="Vocher Number" >
+                                <input type="text" class="form-control mr-3" name="bank" style="width: 200px; !important" placeholder="Bank" >
                                 <button type="submit" class="btn py-2 btn-primary">Add Capital</button>
                             </div>
                         </div>

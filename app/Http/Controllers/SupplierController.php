@@ -45,7 +45,7 @@ class SupplierController extends Controller
         $total_paid =  Stock::where(['supplier_id' => $supplier->id, 'action' => 'import'])->sum('amount_paid');
 
 
-        $balance = $total_capital - $total_supplied + $total_paid;
+        $balance = supplierCredit($supplier->id);
         return view('control.supplier', compact(['supplier', 'capitals', 'total_capital', 'total_supplied', 'stocks', 'balance']));
     }
 

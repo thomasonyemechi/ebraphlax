@@ -43,5 +43,12 @@ class Stock extends Model
         }
     }
 
+
+
+    public function sales_sum()
+    {
+        return $this->belongsTo(SalesSummary::class, 'summary_id');
+    }
+
     
 }

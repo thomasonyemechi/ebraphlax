@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Sales;
 use App\Models\SalesSummary;
 use App\Models\Stock;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -101,9 +102,20 @@ class CustomerController extends Controller
         $stocks = Stock::where(['customer_id' => $customer->id])->orderby('id', 'desc')->paginate(50);
         $total_capital = Stock::where(['customer_id' => $customer->id, 'action' => 'capital'])->sum('total');
         $total_supplied = Stock::where(['customer_id' => $customer->id, 'action' => 'export'])->sum('total');
-        return view('control.print_exporters_ledger', compact(['customer', 'stocks', 'total_capital', 'total_supplied']));
+        $balance = customerCredit($customer_id);
+
+        return view('control.print_exporters_ledger', compact(['customer', 'stocks', 'total_capital', 'total_supplied', 'balance']));
     }
 
+    function supplierLedgerIndex($customer_id)
+    {
+        $customer = Supplier::findorfail($customer_id);
+        $stocks = Stock::where(['supplier_id' => $customer->id])->orderby('id', 'desc')->paginate(50);
+        $total_capital = Stock::where(['supplier_id' => $customer->id, 'action' => 'capital'])->sum('total');
+        $total_supplied = Stock::where(['supplier_id' => $customer->id, 'action' => 'import'])->sum('total');
+        $balance = supplierCredit($customer_id);
+        return view('control.print_exporters_ledger', compact(['customer', 'stocks', 'total_capital', 'total_supplied', 'balance']));
+    }
 
 
     function customerBalanceIndex()

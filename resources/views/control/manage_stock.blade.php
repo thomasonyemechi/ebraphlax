@@ -17,6 +17,12 @@
                             <li class="breadcrumb-item active">Manage Stock Flow</li>
                         </ol>
                     </div>
+
+                    <div class="col-sm-6">
+                  <div class="d-flex justify-content-end" >
+                    <button class="btn btn-primary make_adjust" >Make Adjustment</button>
+                  </div>
+                    </div>
                 </div>
             </div>
 
@@ -544,11 +550,11 @@
                                                         </a>
                                                     @endif
 
-                                                    <a href="javascript:;" style="border-radius: 4px; font-size : 20px "
+                                                    {{-- <a href="javascript:;" style="border-radius: 4px; font-size : 20px "
                                                         class="fw-bold text-success ml-2 adjustment "
                                                         data-data=" {{ json_encode($stock) }} "> <i
                                                             class="fa fa-pen"></i>
-                                                    </a>
+                                                    </a> --}}
 
 
 
@@ -576,7 +582,7 @@
 
     <div class="modal fade" id="make_adjustment" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable ">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title m-0" id="exampleModalLongTitle">Make Adjustment </h5>
@@ -590,39 +596,83 @@
                     <form method="POST" class="row" action="/control/adjustment">
                         @csrf
 
-                        <div class="col-lg-12 mb-2 ">
-                            <div class="dis-text text-white mb-2">
 
-
+                        <div class="col-lg-5">
+                            <div class="mb-3">
+                                <label class="form-label ">Select Client<span class="required">*</span></label>
+                                <select name="supplier_id" class="form-control" id="">
+                                    @foreach ($clients as $client)
+                                        <option value="{{ $client->id }}"> {{ $client->name }} |
+                                            {{ $client->name }} </option>
+                                    @endforeach
+                                </select>
+                                @error('supplier')
+                                    <i class="text-danger small"> {{ $message }} </i>
+                                @enderror
                             </div>
-                            <label for="">Adjustment Type</label>
-                            <select name="adjustment" class="form-control" id="">
-                                <option>mositure</option>
-                                <option>price</option>
-                                <option>tares</option>
-                            </select>
+                        </div>
 
-                            <div class="row mt-3">
+                        <div class="col-lg-7 mb-2 ">
+                            <div class="row">
                                 <div class="col-md-6">
-                                    <label class="form-label">Change Value<span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" name="change_value">
+                                    <div class="mb-3">
+                                        <label for="">Adjustment Type</label>
+                                        <select name="adjustment" class="form-control" id="">
+                                            <option>mositure adjustment</option>
+                                            <option>price adjustment</option>
+                                            <option>tares adjustment</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Amounted Price <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" readonly name="adjustment_total">
-                                    <input type="hidden" class="form-control" name="change_net_weight">
-                                    <input type="hidden" class="form-control" name="change_price">
-                                    <input type="hidden" class="form-control" name="stock_id">
+                                    <div class="mb-3">
+                                        <label for="">Commodity</label>
+                                        <select name="product_id" class="form-control">
+                                            @foreach ($products as $product)
+                                                <option value="{{$product->id}}">
+                                                    {{ $product->name }} </option>
+                                            @endforeach
+                                        </select>
 
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
 
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Kilogram (KG)</label>
+                                <input type="number" class="form-control" step="any" name="change_value">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Price </label>
+                                <input type="number" step="any" class="form-control" name="change_price">
                             </div>
 
+                            {{-- <input type="hidden" class="form-control" name="change_net_weight">
+                            <input type="hidden" class="form-control" name="change_price">
+                            <input type="hidden" class="form-control" name="stock_id"> --}}
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Adjustment Total <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control" name="adjustment_total">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <div class="mb-3 mt-2">
+                                <label for="">Narration</label>
+                                <textarea name="remark" class="form-control" id=""></textarea>
+                            </div>
                             <div class="d-flex mt-3 justify-content-end">
                                 <button type="submit" class="btn py-2 btn-primary">Submit Adjustment </button>
                             </div>
                         </div>
-
                     </form>
 
 
@@ -748,26 +798,27 @@
 
     <script>
         $(function() {
-            $('body').on('click', '.adjustment', function() {
-                data = $(this).data('data');
-                data = JSON.parse(data);
-                console.log(data);
+      
+            $('body').on('click', '.make_adjust', function() {
+                // data = $(this).data('data');
+                // data = JSON.parse(data);
+                // console.log(data);
                 modal = $('#make_adjustment');
 
                 modal.modal('show');
 
-                modal.find('.dis-text').html(`
-                    <div class="d-flex justify-between " >
-                            <span class="badge mr-1 bg-info" >Net Weight : ${data.net_weight} </span>
-                            <span class="badge mr-1 bg-success" >Tares : ${data.tares} </span>
-                            <span class="badge mr-1 bg-warning" >Pirce : ${data.price} </span>
-                            <span class="badge mr-1 bg-danger" >Moisture Dis : ${data.moisture_discount} </span>
-                    </div>
-                `)
+                // modal.find('.dis-text').html(`
+                //     <div class="d-flex justify-between " >
+                //             <span class="badge mr-1 bg-info" >Net Weight : ${data.net_weight} </span>
+                //             <span class="badge mr-1 bg-success" >Tares : ${data.tares} </span>
+                //             <span class="badge mr-1 bg-warning" >Pirce : ${data.price} </span>
+                //             <span class="badge mr-1 bg-danger" >Moisture Dis : ${data.moisture_discount} </span>
+                //     </div>
+                // `)
 
-                modal.find('input[name="change_net_weight"]').val(data.net_weight);
-                modal.find('input[name="change_price"]').val(data.price);
-                modal.find('input[name="stock_id"]').val(data.id);
+                // modal.find('input[name="change_net_weight"]').val(data.net_weight);
+                // modal.find('input[name="change_price"]').val(data.price);
+                // modal.find('input[name="stock_id"]').val(data.id);
             })
 
 
@@ -787,15 +838,15 @@
                 price = $('input[name="change_price"]').val();
                 total = $('input[name="adjustment_total"]');
                 console.log(action, change_value, net_weight);
-                if(action == 'price') {
+                if (action == 'price') {
                     total.val(net_weight * change_value);
                 }
 
-                if(action == 'mositure') {
+                if (action == 'mositure') {
                     total.val(price * change_value);
                 }
 
-                if(action == 'tares') {
+                if (action == 'tares') {
                     total.val(price * change_value);
                 }
             }

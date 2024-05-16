@@ -87,6 +87,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/customers', [CustomerController::class, 'customerListIndex']);
     Route::get('/customer/{customer_id}', [CustomerController::class, 'customerIndex']);
     Route::get('/customer/ledger/{customer_id}', [CustomerController::class, 'customerLedgerIndex']);
+    Route::get('/supplier/ledger/{customer_id}', [CustomerController::class, 'supplierLedgerIndex']);
     Route::get('/customers/balance', [CustomerController::class, 'customerBalanceIndex']);
 
 
@@ -118,6 +119,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/manage-stock', [CostAnalysisController::class, 'coostanalysisIndex']);
     Route::post('/add-stocks', [CostAnalysisController::class, 'addStocks']);
     Route::post('/adjustment', [CostAnalysisController::class, 'adjustment']);
+    Route::post('/enter_sumary', [CostAnalysisController::class, 'enter_sumary']);
     Route::post('/edit_stock_transaction', [CostAnalysisController::class, 'editStockTransaction']);
     Route::get('/delete_stock_act/{id}', [CostAnalysisController::class, 'deleteStockAccount']);
     Route::get('/delete-stock/{id}', [CostAnalysisController::class, 'deleteStock']);

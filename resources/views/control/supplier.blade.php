@@ -71,7 +71,8 @@
 
                     <div class="d-flex mb-3  justify-content-between">
                         <button class="btn btn-primary editProffile "> Update Profile </button>
-                        {{-- <button class="btn btn-info "> View Ledger </button> --}}
+                        <a href="/control/supplier/ledger/{{ $supplier->id }}" target="_blank" class="btn btn-info  "> Print
+                            Ledger </a>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -97,7 +98,7 @@
                                     <span class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} ">
                                         {{ $balance > 0 ? 'To Supply' : 'owing' }}
                                         <br>
-                                        {{ money($balance) }}
+                                        {{ money( $balance ) }}
                                     </span>
                                 </div>
                             @else
@@ -209,18 +210,11 @@
                             <input type="hidden" name="user_id" value="{{ $supplier->id }}">
 
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label class="form-label">Capital Amount<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" name="amount">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Type<span class="text-danger">*</span></label>
-                                    <select name="type" class="form-control" id="">
-                                        <option>Cash</option>
-                                        <option>Transfer</option>
-                                        <option>Cheque</option>
-                                    </select>
-                                </div>
+                        
                             </div>
 
                             <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>
@@ -229,9 +223,7 @@
 
                             <div class="d-flex mt-3 justify-content-end">
                                 <input type="text" class="form-control mr-3" name="bank"
-                                    style="width: 110px; !important" placeholder="Bank">
-                                <input type="text" class="form-control mr-3" name="vocher_number"
-                                    style="width: 200px; !important" placeholder="Vocher Number">
+                                    style="width: 200px; !important" placeholder="Bank">
                                 <button type="submit" class="btn py-2 btn-primary">Add Capital</button>
                             </div>
                         </div>

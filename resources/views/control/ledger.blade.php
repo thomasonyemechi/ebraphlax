@@ -4,7 +4,7 @@
             <th class="align-middle">Date</th>
             <th class="align-middle">Detail</th>
             <th class="align-middle">A/Received</th>
-            <th class="align-middle">Vorc No</th>
+            <th class="align-middle">Bank</th>
             <th class="align-middle">Commodity</th>
             <th class="align-middle">Bags</th>
 
@@ -16,53 +16,56 @@
 
             <th class="align-middle">Price (₦)</th>
 
-            <th class="align-middle">Amount</th>
+            {{-- <th class="align-middle">Amount</th>
             <th class="align-middle">B/Debit</th>
-            <th class="align-middle">B/Credit</th>
+            <th class="align-middle">B/Credit</th> --}}
+            <th class="align-middle">Debit</th>
+
+            <th class="align-middle">Credit</th>
+            <th class="align-middle">Balance </th>
         </tr>
     </thead>
     <tbody>
+        @php
+            $export_array = [];
+        @endphp
 
         @foreach ($stocks as $stock)
             @php
                 $amount_paid = getAmmountPaid($stock->summary_id);
+                $role_in = isset($stock->supplier_id) ? 'supplier' : 'exporter';
             @endphp
 
-            @php
-                $str =
-                    $stock->current_balance > 0
-                        ? '<td> - </td>
-                        <td>' .
-                            money($stock->current_balance) .
-                            ' </td>'
-                        : '<td>' .
-                            money($stock->current_balance) .
-                            '</td>
-                        <td> - </td>';
-            @endphp
 
             @if ($stock->action == 'export')
-                <tr>
-                    <td> {{ $stock->created_at }} </td>
-                    <td> Exported </td>
-                    <td> - </td>
-                    <td> - </td>
-                    <td>{{ $stock->product->name }} </td>
-                    <td> {{ number_format(abs($stock->bags)) }} </td>
-                    <td> {{ number_format(abs($stock->gross_weight)) }} </td>
+                @if (!in_array($stock->summary_id, $export_array))
+                    <tr>
+                        <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>
+                        <td> Exported </td>
+                        <td> - </td>
+                        <td> - </td>
+                        <td>{{ $stock->product->name }} </td>
+                        <td> {{ number_format(abs($stock->sales_sum->bags ?? $stock->sales_sum->sales->sum('bags'))) }} </td>
 
-                    <td> {{ abs($stock->tares) }} </td>
-                    <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
-                    <td> {{ number_format(abs($stock->net_weight)) }} </td>
-                    <td> {{ money($stock->price) }} </td>
-                    <td> {{ money($stock->total) }} </td>
+                        <td> {{ number_format(abs($stock->sales_sum->gross_weight ?? $stock->sales_sum->sales->sum('gross_weight'))) }} </td>
 
-                    {!! $str !!}
+                        <td> {{ abs($stock->tares) }} </td>
+                        <td> {{ number_format(abs($stock->sales_sum->moisture_discount ?? $stock->moisture_discount)) }} </td>
+                        <td> {{ number_format(abs($stock->sales_sum->net_weight ?? $stock->sales_sum->sales->sum('net_weight'))) }} </td>
+                        <td> {{ money($stock->sales_sum->sales_price) }} </td>
+                        <td> {{ money($stock->sales_sum->total) }} </td>
+                        <td> - </td>
 
-                </tr>
+                        <td> {{ money(touchBalance( $stock->sales_sum->sales->last()->id, $stock->customer_id, $role_in)) }}</td>
+
+                    </tr>
+                    @php
+                        $export_array[] = $stock->summary_id;
+                    @endphp
+                @endif
             @elseif ($stock->action == 'import')
                 <tr>
-                    <td> {{ $stock->created_at }} </td>
+                    <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>
                     <td> Supplied </td>
                     <td> - </td>
                     <td> - </td>
@@ -74,17 +77,17 @@
                     <td> {{ number_format(abs($stock->moisture_discount)) }} </td>
                     <td> {{ number_format(abs($stock->net_weight)) }} </td>
                     <td> {{ money($stock->price) }} </td>
+                    <td>-</td>
                     <td> {{ money($stock->total) }} </td>
-                    {!! $str !!}
-
+                    <td> {{ money(touchBalance($stock->id, $stock->supplier_id, $role_in)) }} </td>
                 </tr>
             @elseif($stock->action == 'capital')
                 <tr>
-                    <td> {{ $stock->created_at }} </td>
-                    <td> {{ $stock->bank }} Capital </td>
+                    <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>
+                    <td> {{ $stock->remark }} </td>
 
                     <td> {{ money($stock->total) }} </td>
-                    <td> {{ $stock->vocher_number ?? '-' }} </td>
+                    <td> {{ $stock->bank ?? '-' }} </td>
                     <td>-</td>
                     <td> - </td>
                     <td> - </td>
@@ -92,21 +95,24 @@
                     <td> - </td>
                     <td> - </td>
                     <td> - </td>
-                    <td> - </td>
+                    @if ($stock->supplier_id)
+                        <td> {{ money($stock->total) }} </td>
+                        <td> - </td>
+                    @else
+                        <td> - </td>
+                        <td> {{ money($stock->total) }} </td>
+                    @endif
 
-                    {!! $str !!}
+                    <td>
+                        {{ money(touchBalance($stock->id, $stock->supplier_id ?? $stock->customer_id, $role_in)) }}
+                    </td>
+
 
                 </tr>
-            @elseif(
-                $stock->action == 'moisture adjustment' ||
-                    $stock->action == 'price adjustment' ||
-                    $stock->action == 'tares adjustment')
-                @php
-                    $action_array = explode(' ', $stock->action);
-                    print_r($action_array);
-                @endphp
+            @elseif($stock->action == 'expenses')
+            @else
                 <tr>
-                    <td> {{ $stock->created_at }} </td>
+                    <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>
                     <td> {{ $stock->action }} </td>
 
                     <td>-</td>
@@ -115,12 +121,16 @@
                     <td> - </td>
                     <td> - </td>
                     <td> - </td>
-                    <td> {{ $stock->moisture_discount ?? '-' }} </td>
                     <td> - </td>
-                    <td> {{ $stock->price ?? '-' }} </td>
+                    <td> {{ $stock->net_weight }} </td>
+                    <td> {{ $stock->price }} </td>
+
+                    <td> - </td>
+
                     <td> {{ money($stock->total) }} </td>
 
-                    {!! $str !!}
+
+                    <td> {{ money(touchBalance($stock->id, $stock->supplier_id, $role_in)) }} </td>
 
                 </tr>
             @endif

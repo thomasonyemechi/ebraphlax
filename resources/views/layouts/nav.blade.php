@@ -14,8 +14,7 @@
             <ul class="metismenu" id="side-menu">
                 <li class="menu-title">Main</li>
                 <li>
-                    <a href="/control/dashboard" class="">
-                        <i class="flaticon-dashboard"></i><span> Dashboard </span>
+                    <a href="/control/dashboard" class=""><span> Dashboard </span>
                     </a>
                 </li>
 
@@ -25,7 +24,7 @@
 
                 @if ($role == 'administrator')
                     <li>
-                        <a href="#" class=""><i class="flaticon-new-product"></i><span>
+                        <a href="#" class=""><span>
                                 Product
                                 <span class="float-right menu-arrow">
                                     <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
@@ -45,8 +44,8 @@
 
 
                     <li class="">
-                        <a class="" href="/control/manage-permission" class="">
-                            <i class="flaticon-bill"></i><span>Manage Permisions </span>
+                        <a class="" href="/control/manage-permission" class=""><span>Manage Permisions
+                            </span>
                         </a>
                     </li>
                 @endif
@@ -60,7 +59,7 @@
 
                 @if ($mis->cost_analysis)
                     <li>
-                        <a href="#" class=""><i class="flaticon-expenses"></i><span>
+                        <a href="#" class=""><span>
                                 Today Info
                                 <span class="float-right menu-arrow">
                                     <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
@@ -85,10 +84,9 @@
 
                     <li class="">
                         <a class="" href="/control/all-exported" class="">
-                            <i class="flaticon-bill"></i><span>All Cosignment </span>
+                            <span>All Exported Goods </span>
                         </a>
                     </li>
-
                 @endif
 
 
@@ -96,7 +94,7 @@
                 @if ($mis->manage_staff)
                     <li class="">
                         <a class="" href="/control/staffs" class="">
-                            <i class="flaticon-bill"></i><span> Manage Staff </span>
+                            <span> Manage Staff </span>
                         </a>
                     </li>
                 @endif
@@ -105,7 +103,7 @@
                 @if ($mis->manage_stock)
                     <li class="">
                         <a class="" href="/control/stock" class="">
-                            <i class="flaticon-bill"></i><span> Stock </span>
+                            <span> Stock </span>
                         </a>
                     </li>
                 @endif
@@ -115,21 +113,22 @@
                 @if ($mis->cost_analysis)
                     <li class="">
                         <a class="" href="/control/manage-stock" class="">
-                            <i class="flaticon-bill"></i><span> Manage Stock </span>
+                            <span> Manage Stock </span>
                         </a>
                     </li>
 
 
                     <li class="">
                         <a class="" href="/control/pos" class="">
-                            <i class="flaticon-bill"></i><span> Cost Analysis </span>
+                            <span> Cost Analysis </span>
                         </a>
                     </li>
 
 
 
                     <li>
-                        <a href="#" class=""><i class="flaticon-expenses"></i><span>
+                        <a href="#" class="">
+                            <span>
                                 Expenses
                                 <span class="float-right menu-arrow">
                                     <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
@@ -155,7 +154,7 @@
 
                 @if ($mis->manage_customer)
                     <li>
-                        <a href="#" class=""><i class="flaticon-new-product"></i><span>
+                        <a href="#" class=""><span>
                                 Manage Importers
                                 <span class="float-right menu-arrow">
                                     <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
@@ -186,7 +185,7 @@
 
                 @if ($mis->manage_customer)
                     <li>
-                        <a href="#" class=""><i class="flaticon-new-product"></i><span>
+                        <a href="#" class=""><span>
                                 Exporters
                                 <span class="float-right menu-arrow">
                                     <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
@@ -215,7 +214,7 @@
                 @if ($mis->jute_bag)
                     <li class="">
                         <a class="" href="/control/jute-bags" class="">
-                            <i class="flaticon-bill"></i><span> Jute Bags </span>
+                         <span> Jute Bags </span>
                         </a>
                     </li>
                 @endif
@@ -224,7 +223,7 @@
                 @if ($mis->visit_log)
                     <li class="">
                         <a class="" href="/control/visitors" class="">
-                            <i class="flaticon-bill"></i><span> Visitor's Log </span>
+                       <span> Visitor's Log </span>
                         </a>
                     </li>
                 @endif
@@ -232,7 +231,7 @@
 
 
                 <li>
-                    <a href="#" class=""><i class="flaticon-new-product"></i><span>
+                    <a href="#" class=""><span>
                             Business Report
                             <span class="float-right menu-arrow">
                                 <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
