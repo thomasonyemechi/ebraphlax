@@ -7,6 +7,10 @@
     <title>Print Ledger | {{ $customer->name }} </title>
     <link href="{{ asset('assets/css/bootstrap.min.css ') }}" rel="stylesheet" type="text/css" />
 
+    <style>
+        @page {size: landscape;}
+
+    </style>
 </head>
 
 <body>

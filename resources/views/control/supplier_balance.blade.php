@@ -62,10 +62,9 @@
                                     <tr>
                                         <th class="border-0">Name </th>
                                         <th class="border-0">Nick Name</th>
-                                        <th class="border-0">Netw Weight </th>
+                                        <th class="border-0">Net Weight </th>
 
                                         <th class="border-0">Amount Supplied </th>
-                                        <th class="border-0">Paid </th>
                                         <th class="border-0">Capital </th>
                                         <th class="border-0">Balance </th>
                                     </tr>
@@ -94,9 +93,7 @@
                                             <td class="align-middle">
                                                 {{ money($supplier->account_summary['total_purcahsed']) }}
                                             </td>
-                                            <td class="align-middle">
-                                                {{ money($supplier->account_summary['total_paid']) }}
-                                            </td>
+                                      
                                             <td class="align-middle">
                                                 {{ money($supplier->account_summary['total_capital']) }}
                                             </td>

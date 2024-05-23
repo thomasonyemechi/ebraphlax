@@ -31,10 +31,10 @@
         <div class="container">
             <div class="row justify-content-center p-0 m-0 ">
                 <div class=" col-md-5 ">
-                    <div class="ic_main_form_inner" style="width: 100% !important" >
+                    <div class="ic_main_form_inner" style="width: 100% !important">
                         <div class="form_box">
-                                <h2>Login</h2>
-                                <p>Enter your login credentials to Manage {{ ucwords(env('APP_NAME'))}} </p>
+                            <h2>Login</h2>
+                            <p>Enter your login credentials to Manage {{ ucwords(env('APP_NAME')) }} </p>
 
 
 
@@ -60,15 +60,23 @@
                                     <i class="fa fa-unlock-alt" aria-hidden="true"></i>
 
                                 </div>
-                                
+
                                 @error('password')
                                     <div class="form-group col-lg-12" style="padding-left: 0px">
                                         <i class="text-danger small "
                                             style="padding-left: 0px !important; margin-left: 0px !mportant">
                                             {{ $message }} </i>
+
+
                                     </div>
                                 @enderror
 
+
+                                <div class="col-md-12">
+                                    <div class="d-flex justify-content-end ">
+                                        <a href="/reset-order">Reset Password</a>
+                                    </div>
+                                </div>
                                 <div class="form-group col-lg-12">
                                     <button type="submit" value="submit"
                                         class="btn submit_btn form-control">Login</button>

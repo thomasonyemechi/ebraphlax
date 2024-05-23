@@ -32,7 +32,7 @@ class CostAnalysisController extends Controller
 
 
         $clients = Supplier::orderby('name','asc')->get(['id', 'name', 'nick_name']);
-        $stocks = Stock::where('action', 'import')->orderby('id', 'desc')->paginate(100);
+        $stocks = Stock::where('action', 'import')->orwhere('action', 'like', '%adjustment%')->orderby('id', 'desc')->paginate(100);
         return view('control.manage_stock', compact(['products', 'stocks', 'clients', 'selected_stock']));
     }
 
@@ -70,8 +70,6 @@ class CostAnalysisController extends Controller
     {
         
         Validator::make($request->all(), [
-            'adjustment' => 'required',
-            'change_value' => 'required',
             'adjustment_total' => 'required'
         ])->validate();
 
@@ -368,14 +366,15 @@ class CostAnalysisController extends Controller
     function stockStock()
     {
         $products = Products::orderby('id', 'asc')->get();
+        $warehouse = auth()->user()->warehouse_id;
         foreach($products as $product) {
-            $product->stock_weight = $this->stockWeight($product->id);
-            $product->stock_bag = $this->stockBags($product->id);
+            $product->stock_weight = $this->stockWeight($product->id, $warehouse);
+            $product->stock_bag = $this->stockBags($product->id, $warehouse);
         }
 
         $suppliers = Supplier::orderby('name','asc')->get(['id', 'name', 'nick_name', 'phone']);
         $customers = Customer::orderby('name','asc')->get(['id', 'name', 'nick_name', 'phone']);
-        $stocks = Cstock::orderby('id', 'desc')->paginate(100);
+        $stocks = Cstock::where(['warehouse_id' => $warehouse ])->orderby('id', 'desc',)->paginate(100);
         return view('control.manage_stock_2', compact(['products', 'stocks', 'suppliers', 'customers']));   
     }
 
@@ -414,7 +413,7 @@ class CostAnalysisController extends Controller
         }
 
         $stock = Cstock::create([
-            'warehouse_id' => 1,
+            'warehouse_id' => auth()->user()->warehouse_id,
             'product_id' => $request->product_id,
             'client_id' => $client_id,
             'action' => $request->action, 
@@ -446,13 +445,14 @@ class CostAnalysisController extends Controller
 
     function generalStockLedgerIndex2($product_id)
     {
+        $warehouse = auth()->user()->warehouse_id;
         $product = Products::findorfail($product_id);
-        $stocks = Cstock::where(['product_id' => $product_id])->orderby('id', 'desc')->paginate(100);
+        $stocks = Cstock::where(['product_id' => $product_id, 'warehouse_id' => $warehouse ])->orderby('id', 'desc')->paginate(100);
 
-        $total_stock = Cstock::where(['product_id' => $product_id])->count();
-        $total_in = Cstock::where(['product_id' => $product_id, ['bags', '>', 0 ]])->count();
-        $bag_balance = $this->StockBags($product->id);
-        $weight_balance = $this->StockWeight($product->id);
+        $total_stock = Cstock::where(['product_id' => $product_id, 'warehouse_id' => $warehouse ])->count();
+        $total_in = Cstock::where(['product_id' => $product_id, ['bags', '>', 0 ], 'warehouse_id' => $warehouse ])->count();
+        $bag_balance = $this->StockBags($product->id, $warehouse);
+        $weight_balance = $this->StockWeight($product->id, $warehouse);
         return view('control.manage_stock_ledger', compact(['product', 'stocks', 'bag_balance', 'weight_balance', 'total_stock', 'total_in']));
     }
 
@@ -461,15 +461,15 @@ class CostAnalysisController extends Controller
 
 
         
-    function stockBags($product_id)
+    function stockBags($product_id,  $warehouse=1)
     {
-        $total_bags = Cstock::where(['product_id' => $product_id])->sum('bags');
+        $total_bags = Cstock::where(['product_id' => $product_id, 'warehouse_id' => $warehouse])->sum('bags');
         return $total_bags;
     }
 
-    function stockWeight($product_id)
+    function stockWeight($product_id, $warehouse=1)
     {
-        $total_bags = Cstock::where(['product_id' => $product_id])->sum('weight');
+        $total_bags = Cstock::where(['product_id' => $product_id, 'warehouse_id' => $warehouse])->sum('weight');
         return $total_bags;
     }
 

@@ -84,7 +84,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::findorfail($customer_id);
 
-        $stocks = Stock::where(['customer_id' => $customer->id])->orderby('id', 'desc')->paginate(50);
+        $stocks = Stock::where(['customer_id' => $customer->id])->orderby('id', 'desc')->paginate(200);
 
         // $stocks->groupBy('summary_id');
 
@@ -99,7 +99,7 @@ class CustomerController extends Controller
     function customerLedgerIndex($customer_id)
     {
         $customer = Customer::findorfail($customer_id);
-        $stocks = Stock::where(['customer_id' => $customer->id])->orderby('id', 'desc')->paginate(50);
+        $stocks = Stock::where(['customer_id' => $customer->id])->orderby('id', 'desc')->paginate(200);
         $total_capital = Stock::where(['customer_id' => $customer->id, 'action' => 'capital'])->sum('total');
         $total_supplied = Stock::where(['customer_id' => $customer->id, 'action' => 'export'])->sum('total');
         $balance = customerCredit($customer_id);
@@ -110,7 +110,7 @@ class CustomerController extends Controller
     function supplierLedgerIndex($customer_id)
     {
         $customer = Supplier::findorfail($customer_id);
-        $stocks = Stock::where(['supplier_id' => $customer->id])->orderby('id', 'desc')->paginate(50);
+        $stocks = Stock::where(['supplier_id' => $customer->id])->orderby('id', 'desc')->paginate(200);
         $total_capital = Stock::where(['supplier_id' => $customer->id, 'action' => 'capital'])->sum('total');
         $total_supplied = Stock::where(['supplier_id' => $customer->id, 'action' => 'import'])->sum('total');
         $balance = supplierCredit($customer_id);

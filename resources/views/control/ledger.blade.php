@@ -113,7 +113,7 @@
             @else
                 <tr>
                     <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>
-                    <td> {{ $stock->action }} </td>
+                    <td> {{ $stock->remark ?? $stock->action }} </td>
 
                     <td>-</td>
                     <td>-</td>

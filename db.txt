@@ -2,3 +2,6 @@ ALTER TABLE `stocks` CHANGE `net_weight` `net_weight` DOUBLE(20,2) NULL DEFAULT 
 
 
 ALTER TABLE `sales_summaries` ADD `gross_weight` DOUBLE(20,2) NULL AFTER `sales_price`, ADD `net_weight` DOUBLE(20,2) NULL AFTER `gross_weight`, ADD `moisture_discount` DOUBLE(20,2) NULL AFTER `net_weight`, ADD `bags` DOUBLE(20,2) NULL AFTER `moisture_discount`, ADD `tares` DOUBLE(20,2) NULL AFTER `bags`;
+
+
+INSERT INTO `ware_houses` (`id`, `name`, `nick_name`, `phone`, `alt_phone`, `address`, `created_at`, `updated_at`) VALUES (NULL, 'New warehouse', NULL, NULL, NULL, 'No 63/65, sabo college road, ondo', NULL, NULL), (NULL, 'Old Warehouse', NULL, NULL, NULL, NULL, NULL, NULL);

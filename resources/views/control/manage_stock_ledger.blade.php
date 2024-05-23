@@ -170,7 +170,7 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table>r
+                            </table>
                         </div>
                     </div>
 

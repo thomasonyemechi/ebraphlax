@@ -138,6 +138,9 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
 
 Route::get('/login', [AuthController::class, 'loginIndex'])->name('login');
+Route::get('/reset-order', [AuthController::class, 'resetIndex']);
+Route::post('/get_reset_code', [AuthController::class, 'doResetP']);
+Route::post('/reset_password', [AuthController::class, 'resetPassword']);
 Route::get('/logout', function () {
     Auth::logout();
     return redirect('/login')->with('success', 'You have been logged out');

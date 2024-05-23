@@ -19,9 +19,9 @@
                     </div>
 
                     <div class="col-sm-6">
-                  <div class="d-flex justify-content-end" >
-                    <button class="btn btn-primary make_adjust" >Make Adjustment</button>
-                  </div>
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary make_adjust">Make Adjustment</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,7 +31,12 @@
 
                 <div class="col-md-12">
 
-
+                    <div class="d-flex mb-3 justify-content-end ">
+                        <button class="btn change_calculation use_tares btn-outline-primary mr-2" data-value="1">Use
+                            Tares</button>
+                        <input type="hidden" name="calculation_value" id="" value="1">
+                        <button class="btn change_calculation use_rate btn-outline-primary" data-value="2">Use Rate</button>
+                    </div>
                     @isset($_GET['edit'])
                         <div class="card mb-3 shadow" style="border: 1px solid green !important">
                             <div class="card-body">
@@ -182,7 +187,7 @@
                                         </div>
 
 
-                                        <div class="col-md-4 mt-3">
+                                        <div class="col-md-6 mt-3">
 
                                             <div class="row  ">
                                                 <div class="col-md-6 offset-6">
@@ -207,7 +212,7 @@
 
 
 
-                                        <div class="col-xl-2">
+                                        {{-- <div class="col-xl-2">
                                             <div class="mb-3">
                                                 <label class="form-label ">Amount Paid<span class="required">*</span></label>
                                                 <input type="number" step="any" name="amount_paid"
@@ -217,7 +222,7 @@
                                                     <i class="text-danger small"> {{ $message }} </i>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> --}}
 
 
 
@@ -368,7 +373,7 @@
                                         </div>
 
 
-                                        <div class="col-md-4 mt-3">
+                                        <div class="col-md-6 mt-3">
 
                                             <div class="row  ">
                                                 <div class="col-md-6 offset-6">
@@ -392,7 +397,7 @@
                                         </div>
 
 
-
+                                        {{-- 
                                         <div class="col-xl-2">
                                             <div class="mb-3">
                                                 <label class="form-label ">Amount Paid<span class="required">*</span></label>
@@ -405,7 +410,7 @@
                                             </div>
                                         </div>
 
-
+ --}}
 
 
                                         <div class="col-md-4 ">
@@ -487,60 +492,131 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($stocks as $stock)
-                                        <tr class=" {{ $stock->bags > 0 ? 'text-success' : 'text-danger' }} ">
-                                            <td class="align-middle">{{ date('j F Y', strtotime($stock->created_at)) }}
-                                            </td>
-                                            <td class="align-middle">
-                                                {{ $stock->client->name }}
-                                            </td>
-                                            <td class="align-middle">
-                                                {{ $stock->product->name }}
-                                            </td>
+                                        @if ($stock->action == 'import')
+                                            <tr class=" {{ $stock->bags > 0 ? 'text-success' : 'text-danger' }} ">
+                                                <td class="align-middle">
+                                                    {{ date('j F Y', strtotime($stock->created_at)) }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    {{ $stock->client->name }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    {{ $stock->product->name }}
+                                                </td>
 
-                                            <td class="align-middle">{{ number_format($stock->gross_weight) }}</td>
-                                            <td class="align-middle">
-                                                <div
-                                                    class="badge {{ $stock->bags > 0 ? ' badge-success' : 'badge-danger' }} badge-success">
-                                                    {{ abs($stock->bags) }}
-                                                </div>
-                                            </td>
+                                                <td class="align-middle">{{ number_format($stock->gross_weight) }}</td>
+                                                <td class="align-middle">
+                                                    <div
+                                                        class="badge {{ $stock->bags > 0 ? ' badge-success' : 'badge-danger' }} badge-success">
+                                                        {{ abs($stock->bags) }}
+                                                    </div>
+                                                </td>
 
-                                            <td class="align-middle">{{ number_format($stock->tares) }}</td>
-                                            <td class="align-middle">{{ number_format($stock->moisture_discount) }}</td>
-                                            <td class="align-middle">{{ number_format($stock->rate) }}</td>
-
-
-                                            <td class="align-middle">
-                                                <div
-                                                    class="badge {{ $stock->net_weight > 0 ? ' badge-info' : 'badge-warning' }}">
-                                                    {{ number_format(abs($stock->net_weight)) }} kg
-                                                </div>
-                                            </td>
+                                                <td class="align-middle">{{ number_format($stock->tares) }}</td>
+                                                <td class="align-middle">{{ number_format($stock->moisture_discount) }}
+                                                </td>
+                                                <td class="align-middle">{{ number_format($stock->rate) }}</td>
 
 
-                                            <td class="align-middle">
-                                                {{ money($stock->price) }}
-                                            </td>
-                                            <td class="align-middle">
-                                                <span class="fw-semi-bold"
-                                                    style="font-weight: 600">{{ money($stock->total) }}</span>
-                                            </td>
+                                                <td class="align-middle">
+                                                    <div
+                                                        class="badge {{ $stock->net_weight > 0 ? ' badge-info' : 'badge-warning' }}">
+                                                        {{ number_format(abs($stock->net_weight)) }} kg
+                                                    </div>
+                                                </td>
 
 
-                                            <td class="align-middle">
-                                                {{ $stock->user->name }}
-                                            </td>
-                                            <td class="align-middle ">
-                                                <div class="d-flex  justify-content-end">
+                                                <td class="align-middle">
+                                                    {{ money($stock->price) }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span class="fw-semi-bold"
+                                                        style="font-weight: 600">{{ money($stock->total) }}</span>
+                                                </td>
+
+
+                                                <td class="align-middle">
+                                                    {{ $stock->user->name }}
+                                                </td>
+                                                <td class="align-middle ">
+                                                    <div class="d-flex  justify-content-end">
 
 
 
 
-                                                    @if ($stock->bags_out == 0)
-                                                        <a href="/control/manage-stock?edit={{ $stock->id }}&&action=edit"
+                                                        @if ($stock->bags_out == 0)
+                                                            <a href="/control/manage-stock?edit={{ $stock->id }}&&action=edit"
+                                                                style="border-radius: 4px; font-size : 20px "
+                                                                class="fw-bold text-info mr-2"> <i class="fa fa-edit"></i>
+                                                            </a>
+
+
+                                                            <a href="/control/delete_stock_act/{{ $stock->id }}"
+                                                                style="border-radius: 4px; font-size : 20px "
+                                                                onclick="return confirm('This transaction will be totally removed from database ')"
+                                                                class="fw-bold text-danger"> <i class="fa fa-trash"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        {{-- <a href="javascript:;" style="border-radius: 4px; font-size : 20px "
+                                                    class="fw-bold text-success ml-2 adjustment "
+                                                    data-data=" {{ json_encode($stock) }} "> <i
+                                                        class="fa fa-pen"></i>
+                                                </a> --}}
+
+
+
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @else
+                                            <tr class="text-warning ">
+                                                <td class="align-middle">
+                                                    {{ date('j F Y', strtotime($stock->created_at)) }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    {{ $stock->client->name }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    {{ $stock->product->name }}
+                                                </td>
+
+                                                <td class="align-middle">-</td>
+                                                <td class="align-middle">
+                                                  -
+                                                </td>
+
+                                                <td class="align-middle">-</td>
+                                                <td class="align-middle">-</td>
+                                                <td class="align-middle">-</td>
+                                                <td class="align-middle">
+                                                    <div
+                                                        class="badge badge-warning">
+                                                        {{ number_format(abs($stock->net_weight)) }} kg
+                                                    </div>
+                                                </td>
+
+
+                                                <td class="align-middle">
+                                                    {{ money($stock->price) }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span class="fw-semi-bold"
+                                                        style="font-weight: 600">{{ money($stock->total) }}</span>
+                                                </td>
+
+
+                                                <td class="align-middle">
+                                                    {{ $stock->user->name }}
+                                                </td>
+                                                <td class="align-middle ">
+                                                    <div class="d-flex  justify-content-end">
+
+
+                                                        {{-- <a href="#"
                                                             style="border-radius: 4px; font-size : 20px "
                                                             class="fw-bold text-info mr-2"> <i class="fa fa-edit"></i>
-                                                        </a>
+                                                        </a> --}}
 
 
                                                         <a href="/control/delete_stock_act/{{ $stock->id }}"
@@ -548,19 +624,11 @@
                                                             onclick="return confirm('This transaction will be totally removed from database ')"
                                                             class="fw-bold text-danger"> <i class="fa fa-trash"></i>
                                                         </a>
-                                                    @endif
 
-                                                    {{-- <a href="javascript:;" style="border-radius: 4px; font-size : 20px "
-                                                        class="fw-bold text-success ml-2 adjustment "
-                                                        data-data=" {{ json_encode($stock) }} "> <i
-                                                            class="fa fa-pen"></i>
-                                                    </a> --}}
-
-
-
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -629,7 +697,7 @@
                                         <label for="">Commodity</label>
                                         <select name="product_id" class="form-control">
                                             @foreach ($products as $product)
-                                                <option value="{{$product->id}}">
+                                                <option value="{{ $product->id }}">
                                                     {{ $product->name }} </option>
                                             @endforeach
                                         </select>
@@ -714,6 +782,28 @@
             }
 
 
+            function useCal(type) {
+
+                if (type == 1) {
+                    $('.use_tares').html('Using Tares');
+                    $('.use_tares').removeClass('btn-outline-primary');
+                    $('.use_tares').addClass('btn-outline-success');
+
+                    $('.use_rate').removeClass('btn-outline-success');
+                    $('.use_rate').addClass('btn-outline-primary');
+                } else {
+                    $('.use_rate').html('Using Rate');
+                    $('.use_rate').removeClass('btn-outline-primary');
+                    $('.use_rate').addClass('btn-outline-success');
+
+
+                    $('.use_tares').removeClass('btn-outline-success');
+                    $('.use_tares').addClass('btn-outline-primary');
+
+                }
+            }
+
+
 
             function makeDisplay() {
 
@@ -747,10 +837,10 @@
                     price.val(product.price);
                 }
 
+                calculation_value = $('input[name="calculation_value"]').val();
+                useCal(calculation_value);
 
-
-
-                net_kg = calculateNetWeight(gross_weight, parseInt(discount), rate, tares_kg, product.type)
+                net_kg = calculateNetWeight(gross_weight, parseInt(discount), rate, tares_kg, calculation_value)
                 console.log(net_kg);
                 $('input[name="net_weight"]').val(net_kg.toFixed(3));
 
@@ -792,13 +882,24 @@
                 makeDisplay();
             })
 
+
+            $('body').on('click', '.change_calculation', function() {
+                type = $(this).data('value');
+                $('input[name="calculation_value"]').val(type);
+                makeDisplay();
+            })
+
+
+
+
+
             makeDisplay();
         })
     </script>
 
     <script>
         $(function() {
-      
+
             $('body').on('click', '.make_adjust', function() {
                 // data = $(this).data('data');
                 // data = JSON.parse(data);
@@ -808,13 +909,13 @@
                 modal.modal('show');
 
                 // modal.find('.dis-text').html(`
-                //     <div class="d-flex justify-between " >
-                //             <span class="badge mr-1 bg-info" >Net Weight : ${data.net_weight} </span>
-                //             <span class="badge mr-1 bg-success" >Tares : ${data.tares} </span>
-                //             <span class="badge mr-1 bg-warning" >Pirce : ${data.price} </span>
-                //             <span class="badge mr-1 bg-danger" >Moisture Dis : ${data.moisture_discount} </span>
-                //     </div>
-                // `)
+            //     <div class="d-flex justify-between " >
+            //             <span class="badge mr-1 bg-info" >Net Weight : ${data.net_weight} </span>
+            //             <span class="badge mr-1 bg-success" >Tares : ${data.tares} </span>
+            //             <span class="badge mr-1 bg-warning" >Pirce : ${data.price} </span>
+            //             <span class="badge mr-1 bg-danger" >Moisture Dis : ${data.moisture_discount} </span>
+            //     </div>
+            // `)
 
                 // modal.find('input[name="change_net_weight"]').val(data.net_weight);
                 // modal.find('input[name="change_price"]').val(data.price);

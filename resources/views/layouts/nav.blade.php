@@ -12,17 +12,20 @@
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
             <ul class="metismenu" id="side-menu">
-                <li class="menu-title">Main</li>
-                <li>
-                    <a href="/control/dashboard" class=""><span> Dashboard </span>
-                    </a>
-                </li>
 
-                <li class="menu-title">Admin Functions</li>
-
+                @if (auth()->user()->warehouse_id == 1)
+                    <li class="menu-title">Main</li>
+                    <li>
+                        <a href="/control/dashboard" class=""><span> Dashboard </span>
+                        </a>
+                    </li>
+                @endif
 
 
                 @if ($role == 'administrator')
+                    <li class="menu-title">Admin Functions</li>
+
+
                     <li>
                         <a href="#" class=""><span>
                                 Product
@@ -214,7 +217,7 @@
                 @if ($mis->jute_bag)
                     <li class="">
                         <a class="" href="/control/jute-bags" class="">
-                         <span> Jute Bags </span>
+                            <span> Jute Bags </span>
                         </a>
                     </li>
                 @endif
@@ -223,40 +226,41 @@
                 @if ($mis->visit_log)
                     <li class="">
                         <a class="" href="/control/visitors" class="">
-                       <span> Visitor's Log </span>
+                            <span> Visitor's Log </span>
                         </a>
                     </li>
                 @endif
 
 
 
-                <li>
-                    <a href="#" class=""><span>
-                            Business Report
-                            <span class="float-right menu-arrow">
-                                <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <polyline points="10 15 15 20 20 15"></polyline>
-                                    <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
-                                </svg>
-                            </span>
-                        </span></a>
-                    <ul class="submenu">
-                        <li class=""><a href="/control/daily_report">Daily Report</a>
-                        </li>
-                        <li class=""><a href="/control/wekly_report">Weekly Report </a>
-                        </li>
-                        <li class=""><a href="/control/wekly_report">Monthly Report </a>
-                        </li>
-                        <li class=""><a href="/control/wekly_report">Yearly Report </a>
-                        </li>
-                        <li class=""><a href="/control/wekly_report">Report accross Date </a>
-                        </li>
-                    </ul>
-                </li>
-
+                @if ($role == 'administrator')
+                    <li>
+                        <a href="#" class=""><span>
+                                Business Report
+                                <span class="float-right menu-arrow">
+                                    <svg class="svg-icon iq-arrow-right arrow-active" width="20" height="20"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="10 15 15 20 20 15"></polyline>
+                                        <path d="M4 4h7a4 4 0 0 1 4 4v12"></path>
+                                    </svg>
+                                </span>
+                            </span></a>
+                        <ul class="submenu">
+                            <li class=""><a href="/control/daily_report">Daily Report</a>
+                            </li>
+                            <li class=""><a href="/control/wekly_report">Weekly Report </a>
+                            </li>
+                            <li class=""><a href="/control/wekly_report">Monthly Report </a>
+                            </li>
+                            <li class=""><a href="/control/wekly_report">Yearly Report </a>
+                            </li>
+                            <li class=""><a href="/control/wekly_report">Report accross Date </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
 
 
 
@@ -267,6 +271,5 @@
         <div class="clearfix"></div>
 
     </div>
-    <!-- Sidebar -left -->
 
 </div>

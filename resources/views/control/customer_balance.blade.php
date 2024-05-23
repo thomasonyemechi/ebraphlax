@@ -24,7 +24,7 @@
             <div class="row">
 
 
-                
+
 
                 <div class="col-md-6">
                     <div class="card shadow mb-4">
@@ -47,7 +47,7 @@
                                 <span class="fs-6 text-uppercase small fw-semi-bold">Total Owning </span>
                             </div>
                             <h2 class="fw-bold mt-0 mb-1">
-                               {{ money(abs($total_credit)) }}
+                                {{ money(abs($total_credit)) }}
 
 
                             </h2>
@@ -66,21 +66,13 @@
                                     <tr>
                                         <th class="border-0">Name </th>
                                         <th class="border-0">Nick Name</th>
-                                        <th class="border-0">Netweight </th>
-
-                                        <th class="border-0">Purchased </th>
-                                        <th class="border-0">Paid </th>
-                                        <th class="border-0">Capital </th>
                                         <th class="border-0">Balance </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($customers as $customer)
                                         @php
-                                            $ground_balance =
-                                                $customer->account_summary['total_capital'] +
-                                                $customer->account_summary['total_paid'] -
-                                                $customer->account_summary['total_purcahsed'];
+                                            $balance = customerCredit($customer->id);
                                         @endphp
                                         <tr>
                                             <td class="align-middle">
@@ -92,27 +84,13 @@
                                                 {{ $customer->nick_name }}
                                             </td>
 
-                                            <td class="align-middle">
-                                                {{ number_format($customer->account_summary['total_net_weight']) }} kg
-                                            </td>
-                                            <td class="align-middle">
-                                                {{ money($customer->account_summary['total_purcahsed']) }}
-                                            </td>
-                                            <td class="align-middle">
-                                                {{ money($customer->account_summary['total_paid']) }}
-                                            </td>
-                                            <td class="align-middle">
-                                                {{ money($customer->account_summary['total_capital']) }}
-                                            </td>
+
+
 
                                             <td class="align-middle">
-                                                @if ($ground_balance != 0)
-                                                    <div
-                                                        class="badge {{ $ground_balance < 0 ? 'badge-success' : 'badge-danger' }} ">
-                                                        {{ money(abs($ground_balance)) }}
-                                                    </div>
-                                                @endif
-
+                                                <div class="badge {{ $balance < 0 ? 'badge-success' : 'badge-danger' }} ">
+                                                    {{ money(abs($balance)) }}
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
