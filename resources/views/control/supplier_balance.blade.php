@@ -62,7 +62,6 @@
                                     <tr>
                                         <th class="border-0">Name </th>
                                         <th class="border-0">Nick Name</th>
-                                        <th class="border-0">Net Weight </th>
 
                                         <th class="border-0">Amount Supplied </th>
                                         <th class="border-0">Capital </th>
@@ -71,12 +70,9 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($suppliers as $supplier)
-                                        @php
-                                            $ground_balance =
-                                                $supplier->account_summary['total_capital'] +
-                                                $supplier->account_summary['total_paid'] -
-                                                $supplier->account_summary['total_purcahsed'];
-                                        @endphp
+                                       @php
+                                           $balance = supplierCredit($supplier->id);
+                                       @endphp
                                         <tr class=" {{ $supplier->balance >= 0 ? '' : 'text-danger' }} ">
                                             <td class="align-middle">
                                                 <a href="/control/supplier/{{ $supplier->id }}">
@@ -87,9 +83,7 @@
                                                 {{ $supplier->nick_name }}
                                             </td>
 
-                                            <td class="align-middle">
-                                                {{ number_format($supplier->account_summary['total_net_weight']) }} kg
-                                            </td>
+                                    
                                             <td class="align-middle">
                                                 {{ money($supplier->account_summary['total_purcahsed']) }}
                                             </td>
@@ -100,8 +94,8 @@
 
                                             <td class="align-middle">
                                                 <div
-                                                    class="badge  {{ $ground_balance > 0 ? 'badge-danger' : 'badge-success' }} ">
-                                                    {{ money(abs($ground_balance)) }}
+                                                    class="badge  {{ $balance > 0 ? 'badge-danger' : 'badge-success' }} ">
+                                                    {{ money(abs($balance)) }}
                                                 </div>
                                             </td>
                                         </tr>

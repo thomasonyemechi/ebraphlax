@@ -127,8 +127,7 @@
                                     <thead>
                                         <tr>
                                             <th>Amount</th>
-                                            <th>Type</th>
-                                            <th>Vocher <br> Number </th>
+                            
                                             <th>Date</th>
                                             <th>added by</th>
                                             <th></th>
@@ -141,9 +140,7 @@
                                         @foreach ($capitals as $capital)
                                             <tr>
                                                 <td>{{ money($capital->total) }}</td>
-                                                <td>{{ $capital->type }}</td>
-                                                <td>{{ $capital->vocher_number }}</td>
-
+                                          
                                                 <td>
                                                     <div class="badge py-1 badge-success">
                                                         {{ date('j M, Y', strtotime($capital->created_at)) }}

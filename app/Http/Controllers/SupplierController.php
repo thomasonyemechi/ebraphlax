@@ -39,8 +39,11 @@ class SupplierController extends Controller
         $stocks = Stock::where(['supplier_id' => $supplier->id])->orderby('id', 'desc')->limit(50)->get();
 
         $total_capital = Stock::where(['supplier_id' => $supplier->id, 'action' => 'capital'])->sum('total');
-        $capitals = Stock::where(['supplier_id' => $supplier->id, 'action' => 'capital'])->orderby('id', 'desc')->limit(5)->get();
-        $total_supplied = Stock::where(['supplier_id' => $supplier->id, 'action' => 'import'])->sum('total');
+        $capitals = Stock::where(['supplier_id' => $supplier->id, 'action' => 'capital'])->orderby('id', 'desc')->limit(10)->get();
+
+
+        $adjustment = Stock::where([ 'supplier_id' => $supplier_id, ['action',  'like', "%adjustment%"]])->sum('total');
+        $total_supplied = Stock::where(['supplier_id' => $supplier->id, 'action' => 'import'])->sum('total') + $adjustment;
 
         $total_paid =  Stock::where(['supplier_id' => $supplier->id, 'action' => 'import'])->sum('amount_paid');
 
