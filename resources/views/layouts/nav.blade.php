@@ -112,6 +112,13 @@
                 @endif
 
 
+                @if ($mis->business_detial)
+                <li class="">
+                    <a class="" href="/control/branch_stock" class="">
+                        <span> All Branch Stock </span>
+                    </a>
+                </li>
+            @endif
 
                 @if ($mis->cost_analysis)
                     <li class="">
@@ -186,7 +193,18 @@
                 @endif
 
 
+
+
+
+
                 @if ($mis->manage_customer)
+                    <li class="">
+                        <a class="" href="/control/make_export_ledger" class="">
+                            <span> Make Export </span>
+                        </a>
+                    </li>
+
+
                     <li>
                         <a href="#" class=""><span>
                                 Exporters
@@ -261,6 +279,9 @@
                         </ul>
                     </li>
                 @endif
+
+
+      
 
 
 

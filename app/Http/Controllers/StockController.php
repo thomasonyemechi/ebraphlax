@@ -11,6 +11,7 @@ use App\Models\Sales;
 use App\Models\SalesSummary;
 use App\Models\Stock;
 use App\Models\Supplier;
+use App\Models\WareHouse;
 use Illuminate\Http\Request;
 
 class StockController extends Controller
@@ -337,4 +338,7 @@ class StockController extends Controller
     //         'status' => true
     //     ]);
     // }
+
+
+
 }

@@ -20,7 +20,7 @@
 
                     <div class="col-sm-6">
                         <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary make_adjust">Make Adjustment</button>
+                            <button class="btn btn-primary mr-2 make_adjust">Make Adjustment</button>
                         </div>
                     </div>
                 </div>
@@ -250,10 +250,11 @@
                                             <div class="mb-3">
                                                 <label class="form-label ">Select Product<span
                                                         class="required">*</span></label>
+                                                <input type="hidden" name="action" value="import">
                                                 <select name="product" id="product" class="form-control">
                                                     @foreach ($products as $product)
-                                                        <option value="{{ json_encode($product) }}"> {{ $product->name }} |
-                                                            {{ money($product->price) }} </option>
+                                                        <option value="{{ json_encode($product) }}"> {{ $product->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                                 <input type="hidden" name="product_id" id="product_id"
@@ -498,7 +499,9 @@
                                                     {{ date('j F Y', strtotime($stock->created_at)) }}
                                                 </td>
                                                 <td class="align-middle">
-                                                    {{ $stock->client->name }}
+                                                    <span class="fw-bold"> <a
+                                                            href="/control/supplier/{{ $stock->supplier_id }}">{{ $stock->client->name }}</a>
+                                                    </span>
                                                 </td>
                                                 <td class="align-middle">
                                                     {{ $stock->product->name }}
@@ -575,7 +578,9 @@
                                                     {{ date('j F Y', strtotime($stock->created_at)) }}
                                                 </td>
                                                 <td class="align-middle">
-                                                    {{ $stock->client->name }}
+                                                    <span class="fw-bold"> <a
+                                                            href="/control/supplier/{{ $stock->supplier_id }}">{{ $stock->client->name }}</a>
+                                                    </span>
                                                 </td>
                                                 <td class="align-middle">
                                                     {{ $stock->product->name }}
@@ -583,15 +588,14 @@
 
                                                 <td class="align-middle">-</td>
                                                 <td class="align-middle">
-                                                  -
+                                                    -
                                                 </td>
 
                                                 <td class="align-middle">-</td>
                                                 <td class="align-middle">-</td>
                                                 <td class="align-middle">-</td>
                                                 <td class="align-middle">
-                                                    <div
-                                                        class="badge badge-warning">
+                                                    <div class="badge badge-warning">
                                                         {{ number_format(abs($stock->net_weight)) }} kg
                                                     </div>
                                                 </td>
@@ -612,11 +616,6 @@
                                                 <td class="align-middle ">
                                                     <div class="d-flex  justify-content-end">
 
-
-                                                        {{-- <a href="#"
-                                                            style="border-radius: 4px; font-size : 20px "
-                                                            class="fw-bold text-info mr-2"> <i class="fa fa-edit"></i>
-                                                        </a> --}}
 
 
                                                         <a href="/control/delete_stock_act/{{ $stock->id }}"
@@ -748,6 +747,7 @@
             </div>
         </div>
     </div>
+
 
 
 
@@ -899,6 +899,14 @@
 
     <script>
         $(function() {
+
+
+            $('body').on('click', '.sundry_loss', function() {
+                modal = $('#sundry');
+
+                modal.modal('show');
+
+            })
 
             $('body').on('click', '.make_adjust', function() {
                 // data = $(this).data('data');

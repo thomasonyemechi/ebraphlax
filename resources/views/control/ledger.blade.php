@@ -38,7 +38,7 @@
 
 
             @if ($stock->action == 'export')
-                @if (!in_array($stock->summary_id, $export_array))
+                {{-- @if (!in_array($stock->summary_id, $export_array))
                     <tr>
                         <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>
                         <td> Exported </td>
@@ -62,7 +62,35 @@
                     @php
                         $export_array[] = $stock->summary_id;
                     @endphp
-                @endif
+                @endif --}}
+            @elseif ($stock->action == 'sundry_loss')
+
+            @elseif ($stock->action == 'client_export')
+                <tr>
+                    <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>
+                    <td> Exported </td>
+                    <td> - </td>
+                    <td> - </td>
+                    <td>{{ $stock->product->name }} </td>
+                    <td> {{ number_format(abs($stock->bags)) }}
+                    </td>
+
+                    <td> {{ number_format(abs($stock->gross_weight)) }}
+                    </td>
+
+                    <td> {{ abs($stock->tares) }} </td>
+                    <td> {{ number_format(abs($stock->moisture_discount)) }}
+                    </td>
+                    <td> {{ number_format(abs($stock->net_weight)) }}
+                    </td>
+                    <td> {{ money($stock->sales_price) }} </td>
+                    <td> {{ money($stock->total) }} </td>
+                    <td> - </td>
+
+                    <td> {{ money(touchBalance($stock->id, $stock->customer_id, $role_in)) }}
+                    </td>
+
+                </tr>
             @elseif ($stock->action == 'import')
                 <tr>
                     <td> {{ date('j M, Y', strtotime($stock->created_at)) }} </td>

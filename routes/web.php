@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\CostAnalysisController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\JuteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
@@ -61,6 +62,10 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/pos', [StockController::class, 'posIndex']);
     Route::post('/import_stock', [StockController::class, 'restockProduct']);
     Route::post('/make_export', [CostAnalysisController::class, 'makeSales']);
+    Route::post('/add_export_ledger', [ExportController::class, 'addExport']);
+    Route::post('/update_export', [ExportController::class, 'updateExport']);
+    Route::get('/delete_export_act/{id}', [ExportController::class, 'deleteExport']);
+    Route::get('/make_export_ledger', [ExportController::class, 'addExportIndex']);
 
     Route::get('/staffs', [StaffController::class, 'createStaffIndex']);
     Route::post('/add_staff', [StaffController::class, 'createStaff']);
@@ -117,7 +122,10 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
 
     Route::get('/manage-stock', [CostAnalysisController::class, 'coostanalysisIndex']);
+    Route::get('/branch_stock', [CostAnalysisController::class, 'branch_stock']);
+    Route::get('/branch_stock/{id}', [CostAnalysisController::class, 'branch_stockSingle']);
     Route::post('/add-stocks', [CostAnalysisController::class, 'addStocks']);
+    Route::post('/sundry-loss', [CostAnalysisController::class, 'sundryLoss']);
     Route::post('/adjustment', [CostAnalysisController::class, 'adjustment']);
     Route::post('/enter_sumary', [CostAnalysisController::class, 'enter_sumary']);
     Route::post('/edit_stock_transaction', [CostAnalysisController::class, 'editStockTransaction']);

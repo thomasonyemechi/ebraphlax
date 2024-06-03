@@ -68,7 +68,7 @@
         <!-- App's Basic Js  -->
         <script src="{{ asset('assets/js/jquery.min.js?v=3.5') }}"></script>
         <script src="{{ asset('assets/js/bootstrap.bundle.min.js?v=3.5') }}"></script>
-        <script src="{{ asset('assets/js/metisMenu.min.js?v=3.5') }}"></script>
+        <script src="{{ asset('assets/js/metismenu.min.js?v=3.5') }}"></script>
         <script src="{{ asset('assets/js/jquery.slimscroll.js?v=3.5') }}"></script>
         <script src="{{ asset('assets/js/waves.min.js?v=3.5') }}"></script>
         <!-- App js-->

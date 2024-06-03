@@ -11,6 +11,7 @@ use App\Models\SalesSummary;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\Customer;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,7 +33,7 @@ class CostAnalysisController extends Controller
 
 
         $clients = Supplier::orderby('name','asc')->get(['id', 'name', 'nick_name']);
-        $stocks = Stock::where('action', 'import')->orwhere('action', 'like', '%adjustment%')->orderby('id', 'desc')->paginate(100);
+        $stocks = Stock::where('action', 'import')->orwhere('action', 'like', '%adjustment%')->orwhere('action', 'like', '%sundry_loss%')->orderby('id', 'desc')->paginate(100);
         return view('control.manage_stock', compact(['products', 'stocks', 'clients', 'selected_stock']));
     }
 
@@ -96,6 +97,31 @@ class CostAnalysisController extends Controller
 
 
 
+    function sundryLoss(Request $request)
+    {
+        Validator::make($request->all(), [
+            'product_id' => 'required|exists:products,id',
+            'supplier_id' => 'required|string|exists:suppliers,id', 
+            'bags' => 'required',
+            'weight' => 'required',
+        ])->validate();
+
+        $stock = Stock::create([
+            'product_id' => $request->product_id,
+            'warehouse_id' => 1,
+            'net_weight' => -$request->weight,
+            'supplier_id' => $request->supplier_id,
+            'summary_id' => 0,
+            'price' => $request->price,
+            'bags' => -$request->bags,
+            'action' => 'sundry_loss',
+            'user_id' => auth()->user()->id,
+        ]);
+
+        return back()->with('success', 'Sundry loss has been added');
+    }
+
+
 
     function addStocks(Request $request)
     {
@@ -111,40 +137,42 @@ class CostAnalysisController extends Controller
             'tares' => 'required',
         ])->validate();
 
-        
-        $res = Restock::create([
-            'product_id' => $request->product_id,
-            'net_weight' => $request->net_weight,
-            'gross_weight' => $request->gross_weight,
-            'bags' => $request->bags,
-            'tares' => $request->tares,
-            'rate' => $request->rate,
-            'price' => $request->price,
-            'moisture_discount' => $request->moisture_discount ?? 0,
-            'supplier_id' => $request->supplier,
-            'user_id' => auth()->user()->id,
-            'amount_paid' => $request->amount_paid,
-            'total' => ($request->price * $request->net_weight),
-        ]);
 
+   
+                        
+            $res = Restock::create([
+                'product_id' => $request->product_id,
+                'net_weight' => $request->net_weight,
+                'gross_weight' => $request->gross_weight,
+                'bags' => $request->bags,
+                'tares' => $request->tares,
+                'rate' => $request->rate,
+                'price' => $request->price,
+                'moisture_discount' => $request->moisture_discount ?? 0,
+                'supplier_id' => $request->supplier,
+                'user_id' => auth()->user()->id,
+                'amount_paid' => $request->amount_paid,
+                'total' => ($request->price * $request->net_weight),
+            ]);
 
-        $stock = Stock::create([
-            'product_id' => $request->product_id,
-            'warehouse_id' => 1,
-            'net_weight' => $request->net_weight,
-            'gross_weight' => $request->gross_weight,
-            'customer_id' => 0,
-            'supplier_id' => $request->supplier,
-            'summary_id' => $res->id,
-            'price' => $request->price,
-            'bags' => $request->bags,
-            'tares' => $request->tares,
-            'total' => ($request->price * $request->net_weight),
-            'action' => 'import',
-            'moisture_discount' => $request->moisture_discount ?? 0,
-            'user_id' => auth()->user()->id,
-            'amount_paid' => $request->amount_paid,
-        ]);
+            $stock = Stock::create([
+                'product_id' => $request->product_id,
+                'warehouse_id' => 1,
+                'net_weight' => $request->net_weight,
+                'gross_weight' => $request->gross_weight,
+                'customer_id' => 0,
+                'supplier_id' => $request->supplier,
+                'summary_id' => $res->id,
+                'price' => $request->price,
+                'bags' => $request->bags,
+                'tares' => $request->tares,
+                'total' => ($request->price * $request->net_weight),
+                'action' => 'import',
+                'moisture_discount' => $request->moisture_discount ?? 0,
+                'user_id' => auth()->user()->id,
+                'amount_paid' => $request->amount_paid,
+            ]);
+
 
         $stock->update([
             'bag_balance' => $this->productBags($request->product_id),
@@ -152,13 +180,14 @@ class CostAnalysisController extends Controller
             'current_balance' => supplierCredit($request->supplier)
         ]);
 
-        $product = Products::find($request->product_id);
 
-        $body  = 'We have received a supply of '.$request->bags.' bags of '.$product->name .' ('.$request->net_weight.' kg) from you at '. money($request->price) .' per kg for total of '.(money($request->price * $request->net_weight)).' thanks' ;
-        $to = Supplier::find($request->supplier);
-        $to = $to->phone;
-        $this->sendSms($body, $to);
+            $product = Products::find($request->product_id);
 
+            $body  = 'We have received a supply of '.$request->bags.' bags of '.$product->name .' ('.$request->net_weight.' kg) from you at '. money($request->price) .' per kg for total of '.(money($request->price * $request->net_weight)).' thanks' ;
+            $to = Supplier::find($request->supplier);
+            $to = $to->phone;
+            $this->sendSms($body, $to);
+    
         return back()->with('success', 'Stock has been sucessfuly updated');
     }
 
@@ -406,9 +435,11 @@ class CostAnalysisController extends Controller
             $client_id = $request->customer_id;
         }
 
+
+
         $bags = $request->bags; $weight = $request->weight;
 
-        if($request->action == 'export'){
+        if($request->action == 'export' OR $request->action == 'sundry loss'){
             $bags = -$bags; $weight = -($weight);
         }
 
@@ -472,5 +503,46 @@ class CostAnalysisController extends Controller
         $total_bags = Cstock::where(['product_id' => $product_id, 'warehouse_id' => $warehouse])->sum('weight');
         return $total_bags;
     }
+
+
+
+    
+    function branch_stock()
+    {
+        
+
+        $branches = Warehouse::get();
+
+        foreach($branches  as $branch) {
+            $branch->products = $products = Products::get();
+
+            foreach($branch->products as $product) {
+                $product->stock_weight = $this->stockWeight($product->id, $branch->id);
+                $product->stock_bag = $this->stockBags($product->id,  $branch->id);
+            }
+        }
+
+       
+        return view('control.branch_stock', compact(['branches']));
+    }
+
+
+    function branch_stockSingle($id)
+    {
+        $branch = Warehouse::findorfail($id);
+
+            $branch->products = $products = Products::get();
+
+            foreach($branch->products as $product) {
+                $product->stock_weight = $this->stockWeight($product->id, $branch->id);
+                $product->stock_bag = $this->stockBags($product->id,  $branch->id);
+            }
+
+            $stocks = Cstock::where(['warehouse_id' => $branch->id])->paginate(100);
+
+       
+        return view('control.branch_stock_single', compact(['branch', 'stocks']));
+    }
+
 
 }

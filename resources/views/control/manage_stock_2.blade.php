@@ -39,6 +39,7 @@
                                             <select name="action" id="action" class="form-control px-1">
                                                 <option>import</option>
                                                 <option>export</option>
+                                                <option>sundry loss</option>
                                             </select>
                                             <input type="hidden" name="product_id" id="product_id"
                                                 class="form-control mt-2">
@@ -287,6 +288,11 @@
             </div>
         </div>
     </div>
+
+
+
+
+    
 @endsection
 
 

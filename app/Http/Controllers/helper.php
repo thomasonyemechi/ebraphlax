@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Capital;
+use App\Models\Export;
 use App\Models\RestockSummary;
 use App\Models\Sales;
 use App\Models\SalesSummary;
@@ -25,11 +26,9 @@ function itemQty($id)
 
 function customerCredit($user_id)
 {
-    $total_received = Stock::where(['customer_id' => $user_id, 'action' => 'export' , ])->sum('total');
+    $total_received = Export::where(['customer_id' => $user_id])->sum('total');
     $total_capital = Stock::where(['customer_id' => $user_id, 'action' => 'capital'])->sum('total');
-
     return ($total_capital ) - $total_received;
-    
 }
 
 
@@ -78,7 +77,7 @@ function touchBalance($stock_id, $client_id , $action="supplier")
     
         return ($total_capital - $total_received) - $adjustment;
     }else {
-        $total_received = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, 'action' => 'export' , ])->sum('total');
+        $total_received = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, 'action' => 'client_export' , ])->sum('total');
     
         $total_capital = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, 'action' => 'capital'])->sum('total');
     

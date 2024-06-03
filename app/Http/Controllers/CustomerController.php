@@ -90,8 +90,7 @@ class CustomerController extends Controller
 
         $total_capital = Stock::where(['customer_id' => $customer->id, 'action' => 'capital'])->sum('total');
         $capitals = Stock::where(['customer_id' => $customer->id, 'action' => 'capital'])->orderby('id', 'desc')->limit(5)->get();
-        $total_supplied = Stock::where(['customer_id' => $customer->id, 'action' => 'export'])->sum('total');
-
+        $total_supplied = Stock::where(['customer_id' => $customer->id, 'action' => 'client_export'])->sum('total');
         return view('control.customer', compact(['customer', 'capitals', 'total_capital', 'total_supplied', 'stocks']));
     }
 
