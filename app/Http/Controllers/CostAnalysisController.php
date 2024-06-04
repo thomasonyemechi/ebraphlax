@@ -11,7 +11,7 @@ use App\Models\SalesSummary;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\Customer;
-use App\Models\Warehouse;
+use App\Models\WareHouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -511,7 +511,7 @@ class CostAnalysisController extends Controller
     {
         
 
-        $branches = Warehouse::get();
+        $branches = WareHouse::get();
 
         foreach($branches  as $branch) {
             $branch->products = $products = Products::get();

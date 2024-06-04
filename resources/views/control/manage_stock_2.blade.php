@@ -267,9 +267,10 @@
                                                 {{ $stock->user->name }}
                                             </td>
                                             <td class="align-middle ">
-                                                <a onclick="return confirm('This transaction will be deleted')" href="/control/delete_store_stock/{{$stock->id}}"
-                                                    class="mr-2 btn-danger py-1 shadow text-white px-2" style="border-radius: 4px;" > <i
-                                                        class="fa fa-trash"></i> </a>
+                                                <a onclick="return confirm('This transaction will be deleted')"
+                                                    href="/control/delete_store_stock/{{ $stock->id }}"
+                                                    class="mr-2 btn-danger py-1 shadow text-white px-2"
+                                                    style="border-radius: 4px;"> <i class="fa fa-trash"></i> </a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -288,11 +289,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-    
 @endsection
 
 
@@ -304,13 +300,13 @@
                 console.log(val);
 
 
-                if (val == 'import') {
+                if (val == 'export') {
+                    $('#supplier').hide();
+                    $('#customer').show();
+                } else {
                     $('#supplier').show();
                     $('#customer').hide();
 
-                } else {
-                    $('#supplier').hide();
-                    $('#customer').show();
                 }
             })
         })

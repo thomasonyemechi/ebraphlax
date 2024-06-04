@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('page_title')
-    Csutomer Balance
+Exporters Balance
 @endsection
 
 @section('page_content')
@@ -11,10 +11,10 @@
             <div class="page-title-box">
                 <div class="row align-items-center">
                     <div class="col-sm-6">
-                        <h4 class="page-title">Customer Management</h4>
+                        <h4 class="page-title">Exporters Management</h4>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#" class="ic-javascriptVoid">Customer</a></li>
-                            <li class="breadcrumb-item active"> Customer Balance </li>
+                            <li class="breadcrumb-item active"> Exporters Balance </li>
                         </ol>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div>
-                                <span class="fs-6 text-uppercase small fw-semi-bold">Total Owning </span>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Ammount Payable </span>
                             </div>
                             <h2 class="fw-bold mt-0 mb-1">
                                 {{ money(abs($total_credit)) }}

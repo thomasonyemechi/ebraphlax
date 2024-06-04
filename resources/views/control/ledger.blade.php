@@ -83,7 +83,7 @@
                     </td>
                     <td> {{ number_format(abs($stock->net_weight)) }}
                     </td>
-                    <td> {{ money($stock->sales_price) }} </td>
+                    <td> {{ money($stock->price) }} </td>
                     <td> {{ money($stock->total) }} </td>
                     <td> - </td>
 

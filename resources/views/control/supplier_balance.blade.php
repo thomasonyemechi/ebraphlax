@@ -42,7 +42,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div>
-                                <span class="fs-6 text-uppercase small fw-semi-bold">Total Owning </span>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Ammount Payable </span>
                             </div>
                             <h2 class="fw-bold mt-0 mb-1">
                                {{ money(abs($total_credit)) }}
