@@ -10,4 +10,9 @@ class Customer extends Model
     use HasFactory;
 
     protected $guarded;
+
+    function stock()
+    {
+        return $this->hasMany(Stock::class, 'customer_id');
+    }
 }

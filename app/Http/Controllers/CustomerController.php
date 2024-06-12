@@ -117,6 +117,17 @@ class CustomerController extends Controller
     }
 
 
+    public function inactiveIndex()
+    {
+        $exporters = Customer::with(['stock'])->orderby('id', 'desc')->paginate(100);
+        foreach($exporters as $sup) 
+        {
+            $sup->last_trno = Stock::where(['supplier_id' => $sup->id])->orderby('id', 'desc')->first()->updated_at ?? 'notime';
+        }
+        return view('control.inactive_exporter', compact(['exporters']));
+    }
+
+
     function customerBalanceIndex()
     {
         $customers = Customer::orderby('name', 'asc')->paginate(100);

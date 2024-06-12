@@ -200,6 +200,10 @@
                                             </td>
                                             <td class="align-middle">
                                                 {{ $stock->client->name }}
+
+                                                @if ($stock->action == 'sundry_action')
+                                                    (Sundry Loss)
+                                                @endif
                                             </td>
                                             <td class="align-middle">
                                                 {{ $stock->product->name }}

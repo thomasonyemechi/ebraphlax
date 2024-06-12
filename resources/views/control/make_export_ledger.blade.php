@@ -19,8 +19,12 @@
                     </div>
 
                     <div class="col-sm-6">
-                        <div class="d-flex justify-content-end">
+                        {{-- <div class="d-flex justify-content-end">
                             <button class="btn btn-primary make_adjust">Add to Ledger</button>
+                        </div> --}}
+
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary mr-2 make_adjust">Make Adjustment</button>
                         </div>
                     </div>
                 </div>
@@ -490,6 +494,113 @@
             </div>
         </div>
     </div>
+
+
+
+    
+    <div class="modal fade" id="make_adjustment" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title m-0" id="exampleModalLongTitle">Make Adjustment </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <form method="POST" class="row" action="/control/adjustment">
+                        @csrf
+
+
+                        <div class="col-lg-5">
+                            <div class="mb-3">
+                                <label class="form-label ">Select Client<span class="required">*</span></label>
+                                <input type="hidden" name="action" value="exporter" id="">
+                                <select name="supplier_id" class="form-control" id="">
+                                    @foreach ($clients as $client)
+                                        <option value="{{ $client->id }}"> {{ $client->name }} |
+                                            {{ $client->name }} </option>
+                                    @endforeach
+                                </select>
+                                @error('supplier')
+                                    <i class="text-danger small"> {{ $message }} </i>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7 mb-2 ">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Adjustment Type</label>
+                                        <select name="adjustment" class="form-control" id="">
+                                            <option>mositure adjustment</option>
+                                            <option>price adjustment</option>
+                                            <option>tares adjustment</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="">Commodity</label>
+                                        <select name="product_id" class="form-control">
+                                            @foreach ($products as $product)
+                                                <option value="{{ $product->id }}">
+                                                    {{ $product->name }} </option>
+                                            @endforeach
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Kilogram (KG)</label>
+                                <input type="number" class="form-control" step="any" name="change_value">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Price </label>
+                                <input type="number" step="any" class="form-control" name="change_price">
+                            </div>
+
+                            {{-- <input type="hidden" class="form-control" name="change_net_weight">
+                            <input type="hidden" class="form-control" name="change_price">
+                            <input type="hidden" class="form-control" name="stock_id"> --}}
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Adjustment Total <span class="text-danger">*</span></label>
+                                <input type="number" step="any" class="form-control" name="adjustment_total">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <div class="mb-3 mt-2">
+                                <label for="">Narration</label>
+                                <textarea name="remark" class="form-control" id=""></textarea>
+                            </div>
+                            <div class="d-flex mt-3 justify-content-end">
+                                <button type="submit" class="btn py-2 btn-primary">Submit Adjustment </button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 

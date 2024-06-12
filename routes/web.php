@@ -79,6 +79,8 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
 
     Route::get('/suppliers', [SupplierController::class, 'allSupplierIndex']);
     Route::get('/supplier/all', [SupplierController::class, 'supplierListIndex']);
+    Route::get('/supplier/tb', [SupplierController::class, 'supplierListIndex2']);
+    Route::get('/suppliers/inactive', [SupplierController::class, 'inactiveSupplier']);
     Route::get('/supplier/{supplier_id}', [SupplierController::class, 'supplierIndex']);
     Route::get('/suppliers/balance', [SupplierController::class, 'supplierBalanceIndex']);
     Route::get('/suppliers/account', [SupplierController::class, 'supplierAccountIndex']);
@@ -94,6 +96,7 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/customer/ledger/{customer_id}', [CustomerController::class, 'customerLedgerIndex']);
     Route::get('/supplier/ledger/{customer_id}', [CustomerController::class, 'supplierLedgerIndex']);
     Route::get('/customers/balance', [CustomerController::class, 'customerBalanceIndex']);
+    Route::get('/customers/inactive', [CustomerController::class, 'inactiveIndex']);
 
 
 

@@ -32,6 +32,32 @@ class SupplierController extends Controller
     }
 
 
+
+    function inactiveSupplier()
+    {
+        $suppliers = Supplier::with(['stock'])->orderby('id', 'desc')->paginate(100);
+        foreach($suppliers as $sup) 
+        {
+            $sup->last_trno = Stock::where(['supplier_id' => $sup->id])->orderby('id', 'desc')->first()->updated_at ?? 'notime';
+        }
+        return view('control.inactive_customer', compact(['suppliers']));
+    }
+
+
+    function supplierListIndex2(Request $request)
+    {
+        if ($request->supplier) {
+            $suppliers = Supplier::where('name', 'like', "%$request->supplier%")->orwhere('nick_name', 'like', "%$request->supplier%")
+                ->orwhere('company_name', 'like', "%$request->supplier%")->orwhere('phone', 'like', "%$request->supplier%")->orwhere('address', 'like', "%$request->supplier%")->orderby('name', 'asc')->paginate(21);
+        } else {
+            $suppliers = Supplier::orderby('id', 'desc')->paginate(21);
+        }
+
+
+        return view('control.supplier_tb', compact(['suppliers']));
+    }
+
+
     function supplierIndex($supplier_id)
     {
         $supplier = Supplier::findorfail($supplier_id);

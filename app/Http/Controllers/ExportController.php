@@ -14,7 +14,7 @@ class ExportController extends Controller
 
     function addExportIndex(Request $request)
     {
-        $stocks = Stock::where('action', 'client_export')->orderby('id', 'desc')->paginate(100);
+        $stocks = Stock::where('action', 'client_export')->orwhere('action', 'like', '%adjustment%')->where('customer_id', '>', 0)->orderby('id', 'desc')->paginate(100);
         $clients = Customer::orderby('name','asc')->get(['id', 'name', 'nick_name']);
         $products = Products::orderby('id', 'asc')->get();
 

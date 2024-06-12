@@ -28,7 +28,8 @@ function customerCredit($user_id)
 {
     $total_received = Export::where(['customer_id' => $user_id])->sum('total');
     $total_capital = Stock::where(['customer_id' => $user_id, 'action' => 'capital'])->sum('total');
-    return ($total_capital ) - $total_received;
+    $adjustment = Stock::where([ 'customer_id' => $user_id, ['action',  'like', "%adjustment%"]])->sum('total');
+    return ($total_capital ) - $total_received - $adjustment;
 }
 
 
@@ -80,8 +81,11 @@ function touchBalance($stock_id, $client_id , $action="supplier")
         $total_received = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, 'action' => 'client_export' , ])->sum('total');
     
         $total_capital = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, 'action' => 'capital'])->sum('total');
+        $adjustment = Stock::where([['id', '<=', $stock_id], 'customer_id' => $client_id, ['action',  'like', "%adjustment%"]])->sum('total');
+
+        // $adjustment = Stock::where([ 'customer_id' => $client_id, ['action',  'like', "%adjustment%"]])->sum('total');
     
-        return ($total_capital ) - $total_received;
+        return ($total_capital ) - $total_received - $adjustment;
     }
 
 }

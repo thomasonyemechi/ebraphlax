@@ -12,4 +12,11 @@ class Supplier extends Model
     protected $guarded;
 
     
+
+    function stock()
+    {
+        return $this->hasMany(Stock::class, 'supplier_id');
+
+    }
+
 }

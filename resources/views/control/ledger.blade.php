@@ -84,8 +84,9 @@
                     <td> {{ number_format(abs($stock->net_weight)) }}
                     </td>
                     <td> {{ money($stock->price) }} </td>
-                    <td> {{ money($stock->total) }} </td>
                     <td> - </td>
+
+                    <td> {{ money($stock->total) }} </td>
 
                     <td> {{ money(touchBalance($stock->id, $stock->customer_id, $role_in)) }}
                     </td>
@@ -158,7 +159,7 @@
                     <td> {{ money($stock->total) }} </td>
 
 
-                    <td> {{ money(touchBalance($stock->id, $stock->supplier_id, $role_in)) }} </td>
+                    <td> {{ money(touchBalance($stock->id, $stock->supplier_id ?? $stock->customer_id, $role_in)) }} </td>
 
                 </tr>
             @endif

@@ -122,10 +122,10 @@
                                                         data-index="{{ $stock->id }}" style="width:60px"></td>
                                                 <td><input type="number"
                                                         class="gross_weight form-control px-2 me-2 py-0 p-0" min="1"
-                                                        max="{{ $stock->gross_weight }}"
-                                                        value="{{ $stock->gross_weight }}"
+                                                        max="{{ $stock->gross_weight - $stock->weight_out }}"
+                                                        value="{{ $stock->gross_weight - $stock->weight_out }}"
                                                         data-index="{{ $stock->id }}"
-                                                        name="gross_weight_{{ $stock->id }}" readonly
+                                                        name="gross_weight_{{ $stock->id }}"
                                                         style="width:100px"></td>
                                                 <td><input type="number"
                                                         class="moisture_discount form-control px-2 me-2 py-0 p-0"

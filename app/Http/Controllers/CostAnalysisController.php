@@ -79,7 +79,6 @@ class CostAnalysisController extends Controller
         $stock = Stock::create([
             'product_id' => $request->product_id,
             'warehouse_id' => 1,
-            'supplier_id' => $request->supplier_id,
             'price' => $request->change_price,
             'total' => $request->adjustment_total,
             'action' => $request->adjustment,
@@ -88,9 +87,20 @@ class CostAnalysisController extends Controller
             'net_weight' => $request->change_value
         ]);
 
-        $stock->update([
-            'current_balance' => supplierCredit($request->supplier_id)
-        ]);
+  
+
+        if($request->action == 'exporter')
+        {
+            $stock->update([
+                'customer_id' => $request->supplier_id,
+                'current_balance' => customerCredit($request->supplier_id)
+            ]);
+        }else {
+            $stock->update([
+                'supplier_id' => $request->supplier_id,
+                'current_balance' => supplierCredit($request->supplier_id)
+            ]);
+        }
 
         return back()->with('success', 'Adjustment has been succesfuly submited'); 
     }

@@ -181,12 +181,14 @@
                             </li>
                             <li class=""><a href="/control/supplier/all">All Suppliers</a>
                             </li>
+                            <li class=""><a href="/control/supplier/tb"> Suppliers List 2</a>
+                            </li>
                             <li class=""><a href="/control/suppliers/balance">Suppliers Balance</a>
                             </li>
                             <li class=""><a href="/control/suppliers/account">Bank Details</a>
                             </li>
 
-                            <li class=""><a href="javascript::">Inactive Supplier </a>
+                            <li class=""><a href="/control/suppliers/inactive">Inactive Supplier </a>
                             </li>
                         </ul>
                     </li>
@@ -226,7 +228,7 @@
                             <li class=""><a href="/control/customers/balance">Exporters Balance </a>
                             </li>
 
-                            <li class=""><a href="javascript:;">Inactive Exporters </a>
+                            <li class=""><a href="/control/customers/inactive">Inactive Exporters </a>
                             </li>
                         </ul>
                     </li>
