@@ -151,6 +151,56 @@ class SupplierController extends Controller
 
 
 
+
+    function ExpectedSupply()
+    {
+        $suppliers = Supplier::orderby('name', 'asc')->paginate(1500);
+
+        $total_credit = $total_debit = 0;
+
+        $new_supliers = [];
+        foreach($suppliers as $cus) {
+            $sup_bal = supplierCredit($cus->id);
+
+            if($sup_bal > 0) {
+                $total_debit += $sup_bal;
+
+                $new_supliers[] = $cus;
+            }else {
+                $total_credit +=  $sup_bal;
+            }
+            $cus->account_summary = $this->calculateSupply($cus->id);
+        }
+
+        $suppliers = $new_supliers;
+
+        
+        return view('control.expected_supply', compact(['suppliers', 'total_debit', 'total_credit']));
+    }
+
+
+    function amtPayable()
+    {
+        $suppliers = Supplier::orderby('name', 'asc')->paginate(1500);
+        $total_credit = $total_debit = 0;
+        $new_supliers = [];
+        foreach($suppliers as $cus) {
+            $sup_bal = supplierCredit($cus->id);
+
+            if($sup_bal > 0) {
+            }else {
+                $total_credit +=  $sup_bal;
+                $new_supliers[] = $cus;
+
+            }
+            $cus->account_summary = $this->calculateSupply($cus->id);
+        }
+        $suppliers = $new_supliers;
+        return view('control.amount_payable', compact(['suppliers', 'total_debit', 'total_credit']));
+    }
+
+
+
     function supplierAccountIndex()
     {
         $suppliers = Supplier::orderby('name', 'asc')->paginate(150);
@@ -165,6 +215,7 @@ class SupplierController extends Controller
     function calculateSupply($customer_id)
     {
         $total_purchased = Stock::where(['supplier_id' => $customer_id, 'action' => 'import'])->sum('total');
+        $total_purchased = $total_purchased + Stock::where([ 'supplier_id' => $customer_id, ['action',  'like', "%adjustment%"]])->sum('total');
         $total_paid = Stock::where(['supplier_id' => $customer_id,  'action' => 'import'])->sum('amount_paid');
         $stocks = Stock::where(['supplier_id' => $customer_id])->get();
 

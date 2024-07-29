@@ -1,7 +1,8 @@
 @extends('layouts.app')
 @section('page_title')
-    Supplier Balance
+    Expected Supply
 @endsection
+
 
 @section('page_content')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,10 +12,10 @@
             <div class="page-title-box">
                 <div class="row align-items-center">
                     <div class="col-sm-6">
-                        <h4 class="page-title">Supplier Management</h4>
+                        <h4 class="page-title">Expected Supply</h4>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#" class="ic-javascriptVoid">Supplier</a></li>
-                            <li class="breadcrumb-item active"> Supplier Balance </li>
+                            <li class="breadcrumb-item active"> Expected Supply </li>
                         </ol>
                     </div>
                 </div>
@@ -27,33 +28,17 @@
                 <div class="col-md-6">
                     <div class="card shadow mb-4">
                         <div class="card-body">
-                            <a href="/control/suppliers/expected_supply">
-                                <div>
-                                    <span class="fs-6 text-uppercase small fw-semi-bold">Expected Supply</span>
-                                </div>
-                                <h2 class="fw-bold mt-0 mb-1">
-                                    {{ money($total_debit) }}
+                            <div>
+                                <span class="fs-6 text-uppercase small fw-semi-bold">Expected Supply</span>
+                            </div>
+                            <h2 class="fw-bold mt-0 mb-1">
+                                {{ money($total_debit) }}
 
-                                </h2>
-                            </a>
+                            </h2>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <a href="/control/suppliers/payable">
-                                <div>
-                                    <span class="fs-6 text-uppercase small fw-semi-bold">Amount Payable </span>
-                                </div>
-                                <h2 class="fw-bold mt-0 mb-1">
-                                    {{ money(abs($total_credit)) }}
-                                </h2>
-                            </a>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="col-md-12">
                     <div class="card shadow">
@@ -75,6 +60,7 @@
                                         @php
                                             $balance = supplierCredit($supplier->id);
                                         @endphp
+
                                         <tr class=" {{ $supplier->balance >= 0 ? '' : 'text-danger' }} ">
                                             <td class="align-middle">
                                                 <a href="/control/supplier/{{ $supplier->id }}">
@@ -103,12 +89,13 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
 
 
                     <div class="nav d-flex mt-3 justify-content-end ">
-                        {{ $suppliers->links('pagination::bootstrap-4') }}
+                        {{-- {{ $suppliers->links('pagination::bootstrap-4') }} --}}
                     </div>
 
 

@@ -52,31 +52,31 @@ class Controller extends BaseController
             'sent_by' => auth()->user()->id ?? 1 
         ]);
 
-        $res = Http::asForm()->post(env('SMS_ENDPOINT'), [
-            'from' => $from,
-            'to' => $to,
-            'body' => $body,
-            'api_token' => env("SMS_API_TOKEN"),
-            'gateway' => '1',
-            'append_sender' => env('SMS_DEFAULT_SENDER')
-        ]);
+        // $res = Http::asForm()->post(env('SMS_ENDPOINT'), [
+        //     'from' => $from,
+        //     'to' => $to,
+        //     'body' => $body,
+        //     'api_token' => env("SMS_API_TOKEN"),
+        //     'gateway' => '1',
+        //     'append_sender' => env('SMS_DEFAULT_SENDER')
+        // ]);
 
-        $res = json_decode($res);
+        // $res = json_decode($res);
 
-        if(isset($res->data->status)) {
-              if($res->data->status == 'success') {
-            $sms->update([
-                'status' => $res->data->status ?? 'Message has been sucessgully sent'
-            ]);
-              }
-        }else {
-            $sms->update([
-                'status' => $res->data->status ?? 'Message was not sent'
-            ]);    
-        }
+        // if(isset($res->data->status)) {
+        //       if($res->data->status == 'success') {
+        //     $sms->update([
+        //         'status' => $res->data->status ?? 'Message has been sucessgully sent'
+        //     ]);
+        //       }
+        // }else {
+        //     $sms->update([
+        //         'status' => $res->data->status ?? 'Message was not sent'
+        //     ]);    
+        // }
 
     
-        return $res;
+        // return $res;
     }
 
     
@@ -98,6 +98,20 @@ class Controller extends BaseController
     {
         $this->sendSms('Soem sms has been sent to you', 9038772366, 'Ralphlak Aco');
         return 'done';
+    }
+
+
+
+    function fillStockDate()
+    {
+        $stocks = Stock::get(['id', 'date', 'created_at']);
+
+        foreach($stocks as $stock)
+        {
+            $stock->update([
+                'date' => date('Y-m-d' ,strtotime($stock->created_at))
+            ]);
+        }
     }
 
 }

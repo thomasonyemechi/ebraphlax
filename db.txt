@@ -5,3 +5,15 @@ ALTER TABLE `sales_summaries` ADD `gross_weight` DOUBLE(20,2) NULL AFTER `sales_
 
 
 INSERT INTO `ware_houses` (`id`, `name`, `nick_name`, `phone`, `alt_phone`, `address`, `created_at`, `updated_at`) VALUES (NULL, 'New warehouse', NULL, NULL, NULL, 'No 63/65, sabo college road, ondo', NULL, NULL), (NULL, 'Old Warehouse', NULL, NULL, NULL, NULL, NULL, NULL);
+
+
+
+
+
+
+
+
+
+
+
+ALTER TABLE `cstocks` ADD `date` VARCHAR(100) NULL AFTER `user_id`;

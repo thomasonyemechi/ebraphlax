@@ -54,6 +54,21 @@
                                 <form action="/control/edit_stock_transaction" method="post"> @csrf
                                     <div class="row">
 
+                                        
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-3 offset-9 ">
+                                                <div class="mb-3">
+                                                    <label class="form-label ">Transaction Date<span class="required">*</span></label>
+                                                    <input type="date" name="date" value="{{ $selected_stock->date }}" class="form-control">
+                                                    @error('date')
+                                                        <i class="text-danger small"> {{ $message }} </i>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                         <div class="col-xl-2">
                                             <div class="mb-3">
@@ -244,6 +259,23 @@
                                 </div>
                                 <form action="/control/add-stocks" method="post"> @csrf
                                     <div class="row">
+
+
+
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-3 offset-9 ">
+                                                    <div class="mb-3">
+                                                        <label class="form-label ">Transaction Date<span
+                                                                class="required">*</span></label>
+                                                        <input type="date" name="date" class="form-control">
+                                                        @error('date')
+                                                            <i class="text-danger small"> {{ $message }} </i>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
 
                                         <div class="col-xl-2">
@@ -495,9 +527,12 @@
                                     @foreach ($stocks as $stock)
                                         @if ($stock->action == 'import')
                                             <tr class=" {{ $stock->bags > 0 ? 'text-success' : 'text-danger' }} ">
+                                        
                                                 <td class="align-middle">
-                                                    {{ date('j F Y', strtotime($stock->created_at)) }}
+                                                    {{ date('j F Y', strtotime($stock->date ?? $stock->created_at )) }}
                                                 </td>
+
+
                                                 <td class="align-middle">
                                                     <span class="fw-bold"> <a
                                                             href="/control/supplier/{{ $stock->supplier_id }}">{{ $stock->client->name }}</a>
@@ -574,9 +609,12 @@
                                             </tr>
                                         @else
                                             <tr class="text-warning ">
+                                          
                                                 <td class="align-middle">
-                                                    {{ date('j F Y', strtotime($stock->created_at)) }}
+                                                    {{ date('j F Y', strtotime($stock->date ?? $stock->created_at )) }}
                                                 </td>
+
+
                                                 <td class="align-middle">
                                                     <span class="fw-bold"> <a
                                                             href="/control/supplier/{{ $stock->supplier_id }}">{{ $stock->client->name }}</a>
@@ -638,8 +676,6 @@
                     <div class="nav d-flex mt-3 justify-content-end ">
                         {{ $stocks->links('pagination::bootstrap-4') }}
                     </div>
-
-
                 </div>
             </div>
         </div>

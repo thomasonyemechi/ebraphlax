@@ -98,7 +98,7 @@
                                     <span class="{{ $balance > 0 ? 'text-success' : 'text-danger' }} ">
                                         {{ $balance > 0 ? 'To Supply' : 'owing' }}
                                         <br>
-                                        {{ money( $balance ) }}
+                                        {{ money($balance) }}
                                     </span>
                                 </div>
                             @else
@@ -205,11 +205,22 @@
                             <input type="hidden" name="user_id" value="{{ $supplier->id }}">
 
                             <div class="row">
-                                <div class="col-md-12">
+
+                                <div class="col-md-8">
                                     <label class="form-label">Capital Amount<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" name="amount">
                                 </div>
-                        
+
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-control" name="date">
+                                </div>
+
+
+
+                      
+
                             </div>
 
                             <label class="form-label mt-3">Capital Narration<span class="text-danger">*</span></label>
@@ -354,7 +365,6 @@
 
             </div>
         </div>
-    </div>
     </div>
 @endsection
 

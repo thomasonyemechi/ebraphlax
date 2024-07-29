@@ -33,7 +33,7 @@ class CostAnalysisController extends Controller
 
 
         $clients = Supplier::orderby('name','asc')->get(['id', 'name', 'nick_name']);
-        $stocks = Stock::where('action', 'import')->orwhere('action', 'like', '%adjustment%')->orwhere('action', 'like', '%sundry_loss%')->orderby('id', 'desc')->paginate(100);
+        $stocks = Stock::where('action', 'import')->orwhere('action', 'like', '%adjustment%')->orwhere('action', 'like', '%sundry_loss%')->orderby('date', 'desc')->paginate(100);
         return view('control.manage_stock', compact(['products', 'stocks', 'clients', 'selected_stock']));
     }
 
@@ -181,6 +181,7 @@ class CostAnalysisController extends Controller
                 'moisture_discount' => $request->moisture_discount ?? 0,
                 'user_id' => auth()->user()->id,
                 'amount_paid' => $request->amount_paid,
+                'date' => $request->date ?? date('Y-m-d'),
             ]);
 
 
@@ -251,6 +252,7 @@ class CostAnalysisController extends Controller
             'moisture_discount' => $request->moisture_discount ?? 0,
             'user_id' => auth()->user()->id,
             'amount_paid' => $request->amount_paid,
+            'date' => $request->date ?? now(),
         ]);
 
   
@@ -426,7 +428,7 @@ class CostAnalysisController extends Controller
             'action' => 'required|string', 
             'product_id' => 'required|exists:products,id',
             'bags' => 'required', 
-            'weight' => 'required'
+            'weight' => 'required',
         ])->validate();
 
         $client_id = 0;
@@ -461,7 +463,8 @@ class CostAnalysisController extends Controller
             'bags' => $bags,
             'weight' => $weight,
             'status' => 1,
-            'user_id' => auth()->user()->id
+            'date' => $request->date ?? date('Y-m-d'),
+            'user_id' => auth()->user()->id,
         ]);
 
         $stock->update([

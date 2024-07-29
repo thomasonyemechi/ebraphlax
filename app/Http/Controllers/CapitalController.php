@@ -25,6 +25,7 @@ class CapitalController extends Controller
             'type' => $request->type,
             'vocher_number' => $request->vocher_number,
             'bank' => $request->bank,
+            'date' => $request->date ?? date('Y-m-d')
         ]);
 
 

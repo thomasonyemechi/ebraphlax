@@ -217,10 +217,17 @@
 
 
                             <div class="row" >
-                                <div class="col-md-12" >
+                                <div class="col-md-8">
                                     <label class="form-label">Capital Amount<span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" name="amount">
                                 </div>
+
+
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-control" name="date">
+                                </div>
+
                        
                             </div>
 

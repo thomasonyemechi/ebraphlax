@@ -113,12 +113,12 @@
 
 
                 @if ($mis->business_detial)
-                <li class="">
-                    <a class="" href="/control/branch_stock" class="">
-                        <span> All Branch Stock </span>
-                    </a>
-                </li>
-            @endif
+                    <li class="">
+                        <a class="" href="/control/branch_stock" class="">
+                            <span> All Branch Stock </span>
+                        </a>
+                    </li>
+                @endif
 
                 @if ($mis->cost_analysis)
                     <li class="">
@@ -186,6 +186,12 @@
                             <li class=""><a href="/control/suppliers/balance">Suppliers Balance</a>
                             </li>
                             <li class=""><a href="/control/suppliers/account">Bank Details</a>
+                            </li>
+
+                            <li class=""><a href="/control/suppliers/expected_supply">Expected Supply</a>
+                            </li>
+
+                            <li class=""><a href="/control/suppliers/payable">Amount Payable</a>
                             </li>
 
                             <li class=""><a href="/control/suppliers/inactive">Inactive Supplier </a>
@@ -283,7 +289,7 @@
                 @endif
 
 
-      
+
 
 
 

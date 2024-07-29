@@ -33,6 +33,23 @@
                             <form action="/control/add_store_stock" method="post"> @csrf
                                 <div class="row">
 
+
+
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-3 offset-9 ">
+                                                <div class="mb-3">
+                                                    <label class="form-label ">Transaction Date<span class="required">*</span></label>
+                                                    <input type="date" name="date" class="form-control">
+                                                    @error('date')
+                                                        <i class="text-danger small"> {{ $message }} </i>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                     <div class="col-xl-1">
                                         <div class="mb-3">
                                             <label class="form-label "> Action<span class="required">*</span></label>

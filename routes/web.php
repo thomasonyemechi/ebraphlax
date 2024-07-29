@@ -43,6 +43,7 @@ Route::get('/', function () {
 
 Route::get('/search', [StockController::class, 'searchItem']);
 Route::get('/faker_user', [TestController::class, 'fakerExport']);
+Route::get('/fill_stockdat', [Controller::class, 'fillStockDate']);
 Route::get('/sendd', [Controller::class, 'seeeeend']);
 Route::get('/getcredit/{id}', function ($id) {
     return supplierCredit($id);
@@ -83,6 +84,8 @@ Route::group((['prefix' => 'control/', 'as' => 'control.', 'middleware' => ['aut
     Route::get('/suppliers/inactive', [SupplierController::class, 'inactiveSupplier']);
     Route::get('/supplier/{supplier_id}', [SupplierController::class, 'supplierIndex']);
     Route::get('/suppliers/balance', [SupplierController::class, 'supplierBalanceIndex']);
+    Route::get('/suppliers/expected_supply', [SupplierController::class, 'ExpectedSupply']);
+    Route::get('/suppliers/payable', [SupplierController::class, 'amtPayable']);
     Route::get('/suppliers/account', [SupplierController::class, 'supplierAccountIndex']);
     Route::post('/add_supplier', [SupplierController::class, 'addSupplier']);
     Route::post('/edit_supplier', [SupplierController::class, 'editSupplier']);
